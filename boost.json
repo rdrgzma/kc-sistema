@@ -1,0 +1,21 @@
+{
+    "agents": [
+        "gemini"
+    ],
+    "guidelines": true,
+    "packages": [
+        "spatie/laravel-activitylog",
+        "laravel/fortify",
+        "spatie/laravel-permission"
+    ],
+    "skills": [
+        "laravel-best-practices",
+        "fluxui-development",
+        "livewire-development",
+        "pest-testing",
+        "tailwindcss-development",
+        "echo-development",
+        "fortify-development",
+        "laravel-permission-development"
+    ]
+}

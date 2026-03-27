@@ -1,0 +1,66 @@
+# Backlog de Desenvolvimento – Sistema Jurídico K&C 2.0
+
+**Stack:** Laravel 13, PHP 8.4, Livewire v4, Filament (Headless), TailwindCSS v4, MySQL, Reverb, sqlite.
+
+## ÉPICO 1: Fundação e Infraestrutura (Setup)
+- [ X] Inicializar o projeto Laravel 13.
+- [ x] Configurar o banco de dados sqlite para o ambiente de desenvolvimento local.
+- [X ] Criar o repositório no GitHub sob o namespace `rdrgzma/kc-sistema` e realizar o primeiro commit.
+- [x ] Instalar o Livewire v4 e configurar o layout base com TailwindCSS v4.
+- [x ] Instalar os pacotes `filament/forms`, `filament/tables` e `filament/actions` (Headless).
+- [x ] Instalar e configurar o `spatie/laravel-permission` (Migrations e Seeders das Roles: Admin, Sócio, Advogado, Operacional).
+- [x ] Instalar e publicar as configurações do `spatie/laravel-activitylog`.
+- [x ] Criar a Trait `HasLegacyData` para o mapeamento futuro do banco antigo.
+
+## ÉPICO 2: Módulo Base (Pessoas e Lookups)
+- [ ] Criar Migrations, Models e Factories para as tabelas de apoio (Lookups: Áreas, Fases, Procedimentos, Sentenças).
+- [ ] Desenvolver a estrutura unificada de Pessoas (PF e PJ) (Migration, Model, Controller/Livewire).
+- [ ] Construir o formulário de criação/edição de Pessoas usando Filament Forms no frontend.
+- [ ] Construir a tabela de listagem de Pessoas com Filament Tables (filtros por tipo, CPF/CNPJ).
+- [ ] Criar Migrations e Models para Seguradoras e Profissionais (Peritos, Assistentes).
+
+## ÉPICO 3: Módulo Processual e Mérito (Core)
+- [ ] Criar a Migration e o Model principal de `Processos`, incluindo os campos de `economia_gerada` e `perda_estimada`.
+- [ ] Desenvolver o formulário complexo de Processos (vinculando Pessoa, Seguradora, Lookups de Fases).
+- [ ] Implementar a tabela de listagem de Processos com busca avançada e paginação otimizada.
+- [ ] Criar a interface "Case View" (página de detalhes do processo centralizando todas as informações).
+- [ ] Configurar o registro automático de logs (Activitylog) no Model de Processos.
+
+## ÉPICO 4: Módulo Gestão de Rotina (GR) Avançado
+- [ ] Desenvolver a estrutura polimórfica de Documentos (Migration, Model).
+- [ ] Criar o componente Livewire de upload múltiplo de Documentos (anexáveis em Pessoas ou Processos).
+- [ ] Desenvolver a estrutura de Interações (Migration, Model para WhatsApp, Ligações, Reuniões).
+- [ ] Criar o formulário de registro de Interações dentro do "Case View" e do perfil do cliente.
+- [ ] Implementar o Onboarding de Fluxo (wizard simplificado para o primeiro contato/cadastro).
+
+## ÉPICO 5: Módulo Financeiro e Rendimento Profissional
+- [ ] Criar a Migration e o Model de Lançamentos Financeiros e Categorias.
+- [ ] Implementar o CRUD de receitas e despesas vinculadas a processos.
+- [ ] Desenvolver a estrutura de Rateio de Honorários (Migration Pivot entre Lançamento e User).
+- [ ] Criar a lógica de cálculo (Service) para divisão automática de honorários baseada em percentual de êxito.
+- [ ] Construir a interface de visualização financeira restrita (Policies para bloquear acesso do nível "Operacional").
+
+## ÉPICO 6: Planner, Colaboração e Timeline
+- [ ] Desenvolver a base do Planner (Migrations de Planners, Buckets, Tasks e Progressos).
+- [ ] Criar o componente Kanban interativo em Livewire com drag-and-drop.
+- [ ] Desenvolver a estrutura polimórfica de Comentários (Inline Threads).
+- [ ] Integrar os Comentários nas Tarefas, Documentos e Processos.
+- [ ] Criar o feed cronológico da Timeline (unificando andamentos, interações e logs de auditoria visualmente).
+
+## ÉPICO 7: Relatórios, Dashboards e Notificações (Real-time)
+- [ ] Instalar o Laravel Reverb e configurar o Laravel Echo no frontend.
+- [ ] Criar os eventos de broadcast (ex: `NovoAndamentoRegistrado`, `HonorarioLiberado`).
+- [ ] Desenvolver os widgets do Dashboard (Chart.js) para rendimento diário/semanal/mensal por advogado.
+- [ ] Instalar o `maatwebsite/excel` e criar Actions de exportação na tabela de Produtividade e Processos.
+
+## ÉPICO 8: Migração de Dados (Legado K&C)
+- [ ] Configurar conexão secundária de banco de dados (`database.php`) para acessar o MySQL legado.
+- [ ] Desenvolver Console Commands (`php artisan migrate:legacy-pessoas`, `migrate:legacy-processos`).
+- [ ] Escrever a lógica de normalização de dados e inserção utilizando a Trait `HasLegacyData`.
+- [ ] Executar testes de integridade dos dados migrados.
+
+## ÉPICO 9: Deploy e CI/CD (Produção)
+- [ ] Configurar os arquivos `Dockerfile` e `docker-compose.yml` para os serviços da aplicação (PHP, Nginx, Redis, Reverb).
+- [ ] Desenvolver o workflow do GitHub Actions para testes automatizados e build da imagem para o Docker Hub.
+- [ ] Configurar o deploy automatizado no servidor de produção gerenciado pelo Portainer.
+- [ ] Configurar o roteamento e certificados SSL através do Traefik.
