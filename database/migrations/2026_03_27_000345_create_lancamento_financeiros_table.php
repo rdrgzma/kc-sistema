@@ -19,7 +19,7 @@ return new class extends Migration
             $table->date('data_pagamento')->nullable();
             $table->string('tipo'); // 'receita' ou 'despesa'
             $table->string('status'); // 'pendente', 'pago', 'cancelado'
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
             
             // Polimorfismo: pode estar vinculado a Pessoa ou Processo
             $table->morphs('lancamentable');

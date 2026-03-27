@@ -1,23 +1,3 @@
-<?php
-
-use App\Models\Processo;
-use Livewire\Volt\Component;
-use Livewire\Attributes\Layout;
-
-new class extends Component 
-{
-    public Processo $processo;
-
-    public function mount(Processo $processo)
-    {
-        // Carregamos as relações necessárias
-        $this->processo = $processo->load(['pessoa', 'timelineEvents.user']);
-    }
-
-
-}; // <-- O fechamento da classe DEVE estar aqui, após os métodos.
-?>
-
 <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
     <div class="mb-8 flex justify-between items-end border-b pb-6">
         <div>
@@ -59,15 +39,23 @@ new class extends Component
                 </div>
             </div>
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 dark:bg-zinc-900 dark:border-zinc-800">
+
+                <x-heroicon-o-folder-open class="w-5 h-5 text-blue-500 dark:text-blue-400"/>
                 <h4 class="text-sm font-bold text-gray-900 uppercase tracking-wider mb-4 border-b pb-2 dark:text-gray-200 dark:border-gray-700">Documentos</h4>
                 <livewire:document-manager :model="$processo" />
             </div>
 
             <div class="bg-gray-50 rounded-xl border border-dashed border-gray-300 p-6 text-sm space-y-2 dark:bg-zinc-900 dark:border-zinc-800">
-                <h4 class="font-bold text-gray-900 uppercase tracking-wider mb-2 dark:text-gray-200 dark:border-gray-700">Cliente</h4>
-                <p><span class="text-gray-500 dark:text-gray-200 dark:border-gray-700">Nome:</span> {{ $processo->pessoa->nome_razao }}</p>
-                <p><span class="text-gray-500 dark:text-gray-200 dark:border-gray-700">Doc:</span> {{ $processo->pessoa->cpf_cnpj }}</p>
+          <x-heroicon-o-banknotes class="w-5 h-5 text-blue-500 dark:text-blue-400"/>
+          <h4 class="text-sm font-bold text-gray-900 uppercase tracking-wider mb-4 border-b pb-2 dark:text-gray-200 dark:border-gray-700">Lançamentos Financeiros</h4>
                 <livewire:financeiro-manager :model="$processo" />
+                
+            </div>
+                        <div class="bg-gray-50 rounded-xl border border-dashed border-gray-300 p-6 text-sm space-y-2 dark:bg-zinc-900 dark:border-zinc-800">
+                             <x-heroicon-o-chat-bubble-left-right class="w-5 h-5 text-blue-500 dark:text-blue-400"/>
+                    <h4 class="text-sm font-bold text-gray-900 dark:text-gray-200 uppercase tracking-wider">Atendimentos</h4>
+                
+                <livewire:interacao-manager :model="$processo" />
             </div>
         </div>
     </div>

@@ -13,6 +13,18 @@ return new class extends Migration
     {
         Schema::create('interacaos', function (Blueprint $table) {
             $table->id();
+            $table->morphs('interactable');
+            
+            // Quem realizou o atendimento
+            $table->foreignId('user_id')->nullable()->constrained('users');
+            
+            $table->enum('tipo', ['whatsapp', 'telefone', 'email', 'reuniao', 'presencial'])->default('whatsapp');
+            $table->string('assunto');
+            $table->text('descricao')->nullable();
+            $table->dateTime('data_interacao');
+            
+            // Controle de agenda vs realizado
+            $table->enum('status', ['agendada', 'realizada', 'cancelada'])->default('realizada');
             $table->timestamps();
         });
     }
