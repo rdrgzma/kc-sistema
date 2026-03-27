@@ -10,13 +10,16 @@ use Filament\Tables\Table;
 use Filament\Actions\BulkAction;
 use Filament\Actions\CreateAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Select;
 use Filament\Schemas\Components\Section;
 use Illuminate\Database\Eloquent\Collection;
-use Livewire\Component;
+use Illuminate\Support\Facades\Http;
+use Filament\Schemas\Components\Utilities\Set;
+use Livewire\Volt\Component;
 
 new class extends Component implements HasForms, HasTable, HasActions
 {
@@ -67,7 +70,11 @@ new class extends Component implements HasForms, HasTable, HasActions
                     ->label('Editar')
                     ->color('gray')
                     ->slideOver()
-                    ->form(self::obterSchemaDoFormulario()) // <-- Chamada estática segura!
+                    ->form(self::obterSchemaDoFormulario()),
+                Action::make('view')
+                    ->label('Ficha do Cliente')
+                    ->icon('heroicon-m-user')
+                    ->url(fn (Pessoa $record): string => route('pessoas.show', $record))
             ])
             ->bulkActions([
                 BulkAction::make('deletar')
@@ -116,16 +123,66 @@ new class extends Component implements HasForms, HasTable, HasActions
                     TextInput::make('telefone')
                         ->tel()
                         ->maxLength(255),
+    ]), 
+    Section::make('Endereço')
+                ->description('Informe o CEP para preenchimento automático.')
+                ->columns(3)
+                ->schema([
+                    TextInput::make('cep')
+                        ->label('CEP')
+                        ->mask('99999-999')
+                        ->placeholder('00000-000')
+                        ->live(onBlur: true) // Dispara quando o usuário sai do campo
+                        ->afterStateUpdated(function ($state, Set $set) {
+                            $cep = preg_replace('/[^0-9]/', '', $state);
+                            
+                            if (strlen($cep) !== 8) return;
+
+                            $response = Http::get("https://viacep.com.br/ws/{$cep}/json/");
+                            
+                            if ($response->failed()) return;
+
+                            $data = $response->json();
+
+                            if (isset($data['erro'])) return;
+
+                            $set('logradouro', $data['logradouro'] ?? '');
+                            $set('bairro', $data['bairro'] ?? '');
+                            $set('cidade', $data['localidade'] ?? '');
+                            $set('estado', $data['uf'] ?? '');
+                        }),
+
+                    TextInput::make('logradouro')
+                        ->label('Logradouro')
+                        ->columnSpan(2),
+
+                    TextInput::make('numero')
+                        ->label('Número'),
+
+                    TextInput::make('complemento')
+                        ->label('Complemento'),
+
+                    TextInput::make('bairro')
+                        ->label('Bairro'),
+
+                    TextInput::make('cidade')
+                        ->label('Cidade'),
+
+                    TextInput::make('estado')
+                        ->label('UF')
+                        ->maxLength(2),
                 ])
+
+
         ];
     }
 }; 
 ?>
 
-<div class="bg-white p-6 rounded-lg border border-gray-100 shadow-sm">
+<div class="bg-white p-6 rounded-lg border border-gray-100 shadow-sm dark:bg-zinc-900 dark:border-zinc-800">
     <div class="mb-6">
-        <h2 class="text-xl font-bold text-gray-800">Gestão de Pessoas</h2>
-        <p class="text-sm text-gray-500">Clientes físicos e jurídicos unificados</p>
+        <h2 class="text-xl font-bold text-gray-800 dark:text-zinc-50">Gestão de Pessoas</h2>
+        <p class="text-sm text-gray-500 dark:text-zinc-400">Clientes físicos e jurídicos unificados</p>
     </div>
 
     {{ $this->table }}

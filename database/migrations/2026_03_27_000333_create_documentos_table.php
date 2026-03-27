@@ -13,6 +13,15 @@ return new class extends Migration
     {
         Schema::create('documentos', function (Blueprint $table) {
             $table->id();
+            $table->morphs('documentable'); // Vincula a Processo ou Pessoa
+            
+            $table->string('nome_arquivo'); // Nome original (ex: peticao_inicial.pdf)
+            $table->string('caminho');      // Caminho no storage (ex: documentos/abc123.pdf)
+            $table->string('extensao');     // pdf, docx, jpg
+            $table->bigInteger('tamanho');  // em bytes
+            
+            $table->string('categoria')->nullable(); // Petição, Sentença, Documento Pessoal
+            $table->foreignId('user_id')->constrained('users'); // Quem subiu o arquivo
             $table->timestamps();
         });
     }

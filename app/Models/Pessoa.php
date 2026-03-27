@@ -46,4 +46,9 @@ class Pessoa extends Model
     {
         return $this->morphMany(Documento::class, 'documentable');
     }
+
+    public function lancamentosFinanceiros(): MorphMany
+    {
+        return $this->morphMany(LancamentoFinanceiro::class, 'lancamentable');
+    }
 }

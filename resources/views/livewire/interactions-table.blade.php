@@ -9,7 +9,7 @@ use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
-use Livewire\Component;
+use Livewire\Volt\Component;
 
 new class extends Component implements HasForms, HasTable, HasActions
 {

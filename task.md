@@ -13,17 +13,17 @@
 - [x ] Criar a Trait `HasLegacyData` para o mapeamento futuro do banco antigo.
 
 ## ÉPICO 2: Módulo Base (Pessoas e Lookups)
-- [ ] Criar Migrations, Models e Factories para as tabelas de apoio (Lookups: Áreas, Fases, Procedimentos, Sentenças).
-- [ ] Desenvolver a estrutura unificada de Pessoas (PF e PJ) (Migration, Model, Controller/Livewire).
-- [ ] Construir o formulário de criação/edição de Pessoas usando Filament Forms no frontend.
-- [ ] Construir a tabela de listagem de Pessoas com Filament Tables (filtros por tipo, CPF/CNPJ).
-- [ ] Criar Migrations e Models para Seguradoras e Profissionais (Peritos, Assistentes).
+- [ x] Criar Migrations, Models e Factories para as tabelas de apoio (Lookups: Áreas, Fases, Procedimentos, Sentenças).
+- [ x] Desenvolver a estrutura unificada de Pessoas (PF e PJ) (Migration, Model, Controller/Livewire).
+- [ x] Construir o formulário de criação/edição de Pessoas usando Filament Forms no frontend.
+- [ x] Construir a tabela de listagem de Pessoas com Filament Tables (filtros por tipo, CPF/CNPJ).
+- [ x] Criar Migrations e Models para Seguradoras e Profissionais (Peritos, Assistentes).
 
 ## ÉPICO 3: Módulo Processual e Mérito (Core)
-- [ ] Criar a Migration e o Model principal de `Processos`, incluindo os campos de `economia_gerada` e `perda_estimada`.
+- [x ] Criar a Migration e o Model principal de `Processos`, incluindo os campos de `economia_gerada` e `perda_estimada`.
 - [ ] Desenvolver o formulário complexo de Processos (vinculando Pessoa, Seguradora, Lookups de Fases).
 - [ ] Implementar a tabela de listagem de Processos com busca avançada e paginação otimizada.
-- [ ] Criar a interface "Case View" (página de detalhes do processo centralizando todas as informações).
+- [x ] Criar a interface "Case View" (página de detalhes do processo centralizando todas as informações).
 - [ ] Configurar o registro automático de logs (Activitylog) no Model de Processos.
 
 ## ÉPICO 4: Módulo Gestão de Rotina (GR) Avançado
