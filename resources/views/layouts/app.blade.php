@@ -1,30 +1,35 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8" />
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <meta name="application-name" content="{{ config('app.name') }}" />
-        <meta name="csrf-token" content="{{ csrf_token() }}" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{ $title ?? 'K&C Analytics' }}</title>
+    
+    <style>
+        [x-cloak] { display: none !important; }
+    </style>
 
-        <title>{{ config('app.name') }}</title>
+    @livewireStyles
+    @filamentStyles
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+</head>
+<body class="bg-gray-50 text-gray-900 font-sans antialiased flex h-screen overflow-hidden">
 
-        <style>
-            [x-cloak] {
-                display: none !important;
-            }
-        </style>
+    @include('layouts.app.sidebar')
 
-        @filamentStyles
-        @vite('resources/css/app.css')
-    </head>
+    <div class="flex-1 flex flex-col overflow-hidden">
+        
+        @include('layouts.app.header')
 
-    <body class="antialiased">
-        {{ $slot }}
+        <main class="flex-1 overflow-y-auto p-8">
+            {{ $slot }}
+        </main>
+    </div>
 
-        @livewire('notifications')
-
-        @filamentScripts
-        @vite('resources/js/app.js')
-    </body>
+    @livewireScripts
+    @filamentScripts
+   
+</body>
 </html>

@@ -1,11 +1,12 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Livewire\Volt\Volt;
 
-Route::view('/', 'welcome')->name('home');
+// Rota do Dashboard (Página Inicial)
+Volt::route('/', 'dashboard')->name('dashboard');
 
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::view('dashboard', 'dashboard')->name('dashboard');
-});
+// Rota da Gestão de Pessoas
+Volt::route('/pessoas', 'pessoas-table')->name('pessoas.index');
 
 require __DIR__.'/settings.php';
