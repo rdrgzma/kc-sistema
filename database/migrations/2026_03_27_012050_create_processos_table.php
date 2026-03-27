@@ -18,10 +18,12 @@ return new class extends Migration
             // Relacionamento com Pessoas
             $table->foreignId('pessoa_id')->constrained('pessoas')->cascadeOnDelete();
             
-            // Outros campos base do ERD
-            $table->string('seguradora_id')->nullable();
-            $table->string('area_id')->nullable();
-            $table->string('fase_id')->nullable();
+            // Outros campos base do ERD (Relacionamentos com Tabelas de Apoio)
+            $table->foreignId('seguradora_id')->nullable()->constrained('seguradoras');
+            $table->foreignId('area_id')->nullable()->constrained('areas');
+            $table->foreignId('fase_id')->nullable()->constrained('fases');
+            $table->foreignId('procedimento_id')->nullable()->constrained('procedimentos');
+            $table->foreignId('sentenca_id')->nullable()->constrained('sentencas');
             
             // Performance e Mérito (do Aditivo)
             $table->decimal('economia_gerada', 15, 2)->nullable();

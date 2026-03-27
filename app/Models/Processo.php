@@ -19,6 +19,8 @@ class Processo extends Model
         'seguradora_id',
         'area_id',
         'fase_id',
+        'procedimento_id',
+        'sentenca_id',
         'economia_gerada',
         'perda_estimada',
     ];
@@ -26,6 +28,31 @@ class Processo extends Model
     public function pessoa(): BelongsTo
     {
         return $this->belongsTo(Pessoa::class);
+    }
+
+    public function seguradora(): BelongsTo
+    {
+        return $this->belongsTo(Seguradora::class);
+    }
+
+    public function area(): BelongsTo
+    {
+        return $this->belongsTo(Area::class);
+    }
+
+    public function fase(): BelongsTo
+    {
+        return $this->belongsTo(Fase::class);
+    }
+
+    public function procedimento(): BelongsTo
+    {
+        return $this->belongsTo(Procedimento::class);
+    }
+
+    public function sentenca(): BelongsTo
+    {
+        return $this->belongsTo(Sentenca::class);
     }
     // app/Models/Processo.php
 

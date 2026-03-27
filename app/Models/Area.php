@@ -6,5 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Area extends Model
 {
-    //
+    protected $fillable = [
+        'nome',
+    ];
+
+    public function processos()
+    {
+        return $this->hasMany(Processo::class);
+    }
 }

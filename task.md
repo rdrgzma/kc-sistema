@@ -22,20 +22,20 @@
 ## ÉPICO 3: Módulo Processual e Mérito (Core)
 - [x ] Criar a Migration e o Model principal de `Processos`, incluindo os campos de `economia_gerada` e `perda_estimada`.
 - [ ] Desenvolver o formulário complexo de Processos (vinculando Pessoa, Seguradora, Lookups de Fases).
-- [ ] Implementar a tabela de listagem de Processos com busca avançada e paginação otimizada.
+- [x ] Implementar a tabela de listagem de Processos com busca avançada e paginação otimizada.
 - [x ] Criar a interface "Case View" (página de detalhes do processo centralizando todas as informações).
 - [ ] Configurar o registro automático de logs (Activitylog) no Model de Processos.
 
 ## ÉPICO 4: Módulo Gestão de Rotina (GR) Avançado
-- [ ] Desenvolver a estrutura polimórfica de Documentos (Migration, Model).
-- [ ] Criar o componente Livewire de upload múltiplo de Documentos (anexáveis em Pessoas ou Processos).
+- [ x] Desenvolver a estrutura polimórfica de Documentos (Migration, Model).
+- [x ] Criar o componente Livewire de upload múltiplo de Documentos (anexáveis em Pessoas ou Processos).
 - [ ] Desenvolver a estrutura de Interações (Migration, Model para WhatsApp, Ligações, Reuniões).
 - [ ] Criar o formulário de registro de Interações dentro do "Case View" e do perfil do cliente.
 - [ ] Implementar o Onboarding de Fluxo (wizard simplificado para o primeiro contato/cadastro).
 
 ## ÉPICO 5: Módulo Financeiro e Rendimento Profissional
-- [ ] Criar a Migration e o Model de Lançamentos Financeiros e Categorias.
-- [ ] Implementar o CRUD de receitas e despesas vinculadas a processos.
+- [ x] Criar a Migration e o Model de Lançamentos Financeiros e Categorias.
+- [ x] Implementar o CRUD de receitas e despesas vinculadas a processos.
 - [ ] Desenvolver a estrutura de Rateio de Honorários (Migration Pivot entre Lançamento e User).
 - [ ] Criar a lógica de cálculo (Service) para divisão automática de honorários baseada em percentual de êxito.
 - [ ] Construir a interface de visualização financeira restrita (Policies para bloquear acesso do nível "Operacional").
