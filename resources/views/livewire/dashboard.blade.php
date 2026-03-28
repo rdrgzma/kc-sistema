@@ -1,18 +1,3 @@
-<?php
-
-use Livewire\Volt\Component;
-use Livewire\Attributes\Title;
-
-new #[Title('Dashboard')] class extends Component
-{
-    // Aqui no futuro injetaremos os Services para buscar os dados reais do banco
-    public string $ganhos = 'R$ 780.000,00';
-    public string $perdas = 'R$ 320.000,00';
-    public string $custos = 'R$ 180.000,00';
-    public string $eficiencia = '78%';
-};
-?>
-
 <div class="space-y-8">
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

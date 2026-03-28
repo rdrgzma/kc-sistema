@@ -6,12 +6,26 @@ use App\Traits\HasLegacyData;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use App\Models\TimelineEvent;
-use App\Models\Documento;
+use Spatie\Activitylog\Models\Concerns\LogsActivity;
+use Spatie\Activitylog\Support\LogOptions;
 
 class Processo extends Model
 {
-    use HasLegacyData;
+    use HasLegacyData, LogsActivity;
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logFillable()
+            ->logOnlyDirty()
+            ->dontLogEmptyChanges()
+            ->setDescriptionForEvent(fn (string $eventName) => match ($eventName) {
+                'created' => 'Processo cadastrado',
+                'updated' => 'Processo atualizado',
+                'deleted' => 'Processo removido',
+                default => "Processo {$eventName}",
+            });
+    }
 
     protected $fillable = [
         'numero_processo',
@@ -23,6 +37,7 @@ class Processo extends Model
         'sentenca_id',
         'economia_gerada',
         'perda_estimada',
+
     ];
 
     public function pessoa(): BelongsTo
@@ -56,11 +71,11 @@ class Processo extends Model
     }
     // app/Models/Processo.php
 
-/**
- * Define a relação polimórfica com os eventos da Timeline.
- * Como o evento usa 'timelineable', o Laravel buscará os registros 
- * onde timelineable_id é o ID do processo e timelineable_type é o model Processo.
- */
+    /**
+     * Define a relação polimórfica com os eventos da Timeline.
+     * Como o evento usa 'timelineable', o Laravel buscará os registros
+     * onde timelineable_id é o ID do processo e timelineable_type é o model Processo.
+     */
     public function timelineEvents(): MorphMany
     {
         return $this->morphMany(TimelineEvent::class, 'timelineable');
@@ -68,11 +83,16 @@ class Processo extends Model
 
     public function documentos(): MorphMany
     {
-        return $this->morphMany(Documento::class, 'documentable');   
+        return $this->morphMany(Documento::class, 'documentable');
     }
 
     public function lancamentosFinanceiros(): MorphMany
     {
         return $this->morphMany(LancamentoFinanceiro::class, 'lancamentable');
+    }
+
+    public function interacoes(): MorphMany
+    {
+        return $this->morphMany(Interacao::class, 'interactable');
     }
 }
