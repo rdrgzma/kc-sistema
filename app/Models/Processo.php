@@ -33,11 +33,14 @@ class Processo extends Model
         'seguradora_id',
         'area_id',
         'fase_id',
+        'fase_recursal_id',
         'procedimento_id',
         'sentenca_id',
+        'responsavel_id',
+        'perito_id',
+        'assistentes_tecnico_id',
         'economia_gerada',
         'perda_estimada',
-
     ];
 
     public function pessoa(): BelongsTo
@@ -60,6 +63,12 @@ class Processo extends Model
         return $this->belongsTo(Fase::class);
     }
 
+    public function faseRecursal(): BelongsTo
+    {
+        // if you later create a FaseRecursal model/table, change this accordingly
+        return $this->belongsTo(Fase::class, 'fase_recursal_id');
+    }
+
     public function procedimento(): BelongsTo
     {
         return $this->belongsTo(Procedimento::class);
@@ -69,13 +78,22 @@ class Processo extends Model
     {
         return $this->belongsTo(Sentenca::class);
     }
-    // app/Models/Processo.php
 
-    /**
-     * Define a relação polimórfica com os eventos da Timeline.
-     * Como o evento usa 'timelineable', o Laravel buscará os registros
-     * onde timelineable_id é o ID do processo e timelineable_type é o model Processo.
-     */
+    public function responsavel(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'responsavel_id');
+    }
+
+    public function perito(): BelongsTo
+    {
+        return $this->belongsTo(Perito::class, 'perito_id');
+    }
+
+    public function assistenteTecnico(): BelongsTo
+    {
+        return $this->belongsTo(AssistentesTecnico::class, 'assistentes_tecnico_id');
+    }
+
     public function timelineEvents(): MorphMany
     {
         return $this->morphMany(TimelineEvent::class, 'timelineable');
