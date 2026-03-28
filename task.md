@@ -20,11 +20,11 @@
 - [x] Criar Migrations e Models para Seguradoras e Profissionais (Peritos, Assistentes).
 
 ## ÉPICO 3: Módulo Processual e Mérito (Core)
-- [x ] Criar a Migration e o Model principal de `Processos`, incluindo os campos de `economia_gerada` e `perda_estimada`.
-- [ ] Desenvolver o formulário complexo de Processos (vinculando Pessoa, Seguradora, Lookups de Fases).
-- [x ] Implementar a tabela de listagem de Processos com busca avançada e paginação otimizada.
-- [x ] Criar a interface "Case View" (página de detalhes do processo centralizando todas as informações).
-- [ ] Configurar o registro automático de logs (Activitylog) no Model de Processos.
+- [x] Criar a Migration e o Model principal de `Processos`, incluindo os campos de `economia_gerada` e `perda_estimada`.
+- [x] Desenvolver o formulário complexo de Processos (vinculando Pessoa, Seguradora, Lookups de Fases).
+- [x] Implementar a tabela de listagem de Processos com busca avançada e paginação otimizada.
+- [x] Criar a interface "Case View" (página de detalhes do processo centralizando todas as informações).
+- [x] Configurar o registro automático de logs (Activitylog) no Model de Processos.
 
 ## ÉPICO 4: Módulo Gestão de Rotina (GR) Avançado
 - [x] Desenvolver a estrutura polimórfica de Documentos (Migration, Model).
