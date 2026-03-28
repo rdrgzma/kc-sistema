@@ -21,7 +21,7 @@ return new class extends Migration
             $table->bigInteger('tamanho');  // em bytes
             
             $table->string('categoria')->nullable(); // Petição, Sentença, Documento Pessoal
-            $table->foreignId('user_id')->constrained('users'); // Quem subiu o arquivo
+            $table->foreignId('user_id')->nullable()->constrained('users'); // Quem subiu o arquivo
             $table->timestamps();
         });
     }

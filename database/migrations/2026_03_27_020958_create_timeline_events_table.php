@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->morphs('timelineable'); 
     
-             $table->foreignId('user_id')->constrained('users'); // Quem registrou
+            $table->foreignId('user_id')->nullable()->constrained('users'); // Quem registrou
     
             $table->enum('tipo', ['A', 'J', 'F'])->default('A'); // Administrativo, Judicial, Financeiro
             $table->text('descricao');
