@@ -21,3 +21,39 @@
 }
 
 @variant dark (&:where(.dark, .dark *));
+
+/* Custom Sharp Slate Hover Effects (Filament 3) */
+.fi-ta-row {
+    transition: all 0.2s ease-in-out !important;
+}
+
+.fi-ta-row:hover td {
+    background-color: #95c2f1 !important;
+    /* Slate 100 */
+    cursor: pointer;
+}
+
+/* Aplica a barra azul diretamente na primeira célula para garantir visibilidade */
+.fi-ta-row:hover td:first-child {
+    box-shadow: inset 4px 0 0 0 #2563eb !important;
+}
+
+.dark .fi-ta-row:hover td {
+    background-color: #27272a !important;
+    /* Zinc 800 - Destaque nítido no escuro */
+}
+
+.dark .fi-ta-row:hover td:first-child {
+    box-shadow: inset 4px 0 0 0 #3b82f6 !important;
+    /* Azul mais brilhante para contraste premium */
+}
+
+/* Row separation and sharpness */
+.fi-ta-row {
+    border-bottom: 1px solid #e2e8f0 !important;
+    /* Slate 200 */
+}
+
+.dark .fi-ta-row {
+    border-bottom: 1px solid #27272a !important;
+}

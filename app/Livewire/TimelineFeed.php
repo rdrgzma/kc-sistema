@@ -3,7 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\TimelineEvent;
-use App\Models\Processo;
+use Illuminate\Database\Eloquent\Model;
 use Livewire\Component;
 use Illuminate\View\View;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -20,12 +20,23 @@ class TimelineFeed extends Component implements HasForms, HasActions
     use InteractsWithForms;
     use InteractsWithActions;
 
-    public Processo $processo;
+    public Model $model;
+    public bool $isInitialized = false;
+
+    public function mount(Model $model): void
+    {
+        $this->model = $model;
+        $this->isInitialized = true;
+    }
 
     public function getListeners()
     {
+        if (!$this->isInitialized) {
+            return [];
+        }
+        $morphClass = str_replace('\\', '.', $this->model->getMorphClass());
         return [
-            "echo:processos.{$this->processo->id},NovoAndamento" => '$refresh',
+            "echo:{$morphClass}.{$this->model->id},NovoAndamento" => '$refresh',
         ];
     }
 
@@ -48,7 +59,8 @@ class TimelineFeed extends Component implements HasForms, HasActions
                     ->required(),
             ])
             ->action(function (array $data) {
-                $this->processo->timelineEvents()->create([
+                // Tenta achar a relacao correta timelineEvents se existir.
+                $this->model->timelineEvents()->create([
                     'tipo' => $data['tipo'],
                     'descricao' => $data['descricao'],
                     'data_evento' => $data['data_evento'],
@@ -59,8 +71,12 @@ class TimelineFeed extends Component implements HasForms, HasActions
 
     public function with(): array
     {
+        if (!$this->isInitialized) {
+            return ['events' => collect()];
+        }
+
         return [
-            'events' => $this->processo->timelineEvents()->latest('data_evento')->get()
+            'events' => $this->model->timelineEvents()->latest('data_evento')->get()
         ];
     }
 

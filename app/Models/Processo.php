@@ -3,15 +3,17 @@
 namespace App\Models;
 
 use App\Traits\HasLegacyData;
+use App\Traits\HasTasks;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Support\Collection;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
 
 class Processo extends Model
 {
-    use HasLegacyData, LogsActivity;
+    use HasLegacyData, HasTasks, LogsActivity;
 
     public function getActivitylogOptions(): LogOptions
     {
@@ -112,5 +114,23 @@ class Processo extends Model
     public function interacoes(): MorphMany
     {
         return $this->morphMany(Interacao::class, 'interactable');
+    }
+
+    public function getTodosDocumentosAttribute(): Collection
+    {
+        // 1. Documentos diretos do processo
+        $diretos = $this->documentos;
+
+        // 2. Documentos das tarefas atreladas a este processo
+        $tarefasIds = $this->tasks()->pluck('id');
+        $dasTarefas = Documento::where('documentable_type', Task::class)
+            ->whereIn('documentable_id', $tarefasIds)
+            ->get();
+
+        // Une, remove duplicados (caso existam) e ordena por data
+        return $diretos->concat($dasTarefas)
+            ->unique('id')
+            ->sortByDesc('created_at')
+            ->values();
     }
 }

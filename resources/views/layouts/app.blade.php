@@ -23,7 +23,7 @@
         }
     </script>
 </head>
-<body class="bg-gray-50 text-gray-900 dark:bg-zinc-950 dark:text-zinc-100 font-sans antialiased flex h-screen overflow-hidden transition-colors"
+<body class="bg-slate-50 text-slate-900 dark:bg-zinc-950 dark:text-zinc-100 font-sans antialiased flex h-screen overflow-hidden transition-colors"
       x-data="{ 
           darkMode: localStorage.getItem('theme') === 'dark',
           isSidebarOpen: localStorage.getItem('sidebar') !== 'collapsed',

@@ -41,10 +41,10 @@
 - [ ] Construir a interface de visualização financeira restrita (Policies para bloquear acesso do nível "Operacional").
 
 ## ÉPICO 6: Planner, Colaboração e Timeline
-- [ ] Desenvolver a base do Planner (Migrations de Planners, Buckets, Tasks e Progressos).
-- [ ] Criar o componente Kanban interativo em Livewire com drag-and-drop.
-- [ ] Desenvolver a estrutura polimórfica de Comentários (Inline Threads).
-- [ ] Integrar os Comentários nas Tarefas, Documentos e Processos.
+- [x ] Desenvolver a base do Planner (Migrations de Planners, Buckets, Tasks e Progressos).
+- [x ] Criar o componente Kanban interativo em Livewire com drag-and-drop.
+- [x ] Desenvolver a estrutura polimórfica de Comentários (Inline Threads).
+- [x ] Integrar os Comentários nas Tarefas, Documentos e Processos.
 - [x] Criar a fundação da Timeline (Migration/Model TimelineEvent gerado automaticamente no Onboarding).
 
 ## ÉPICO 7: Relatórios, Dashboards e Notificações (Real-time)

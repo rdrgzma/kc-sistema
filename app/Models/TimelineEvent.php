@@ -28,7 +28,7 @@ class TimelineEvent extends Model
             });
     }
 
-    protected $fillable = ['tipo', 'descricao', 'data_evento', 'user_id'];
+    protected $fillable = ['timelineable_type', 'timelineable_id', 'tipo', 'descricao', 'data_evento', 'user_id'];
 
     public function timelineable(): MorphTo
     {
