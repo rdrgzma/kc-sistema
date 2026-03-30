@@ -15,40 +15,57 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     
     <script>
-        // Ant-FOUC para o load inicial
-        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-        }
+        // Anti-FOUC: aplica tema antes do Alpine iniciar
+        (function() {
+            var theme = localStorage.getItem('theme');
+            var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            var isDark = theme === 'dark' || (theme === 'system' && prefersDark) || (!theme && prefersDark);
+            document.documentElement.classList.toggle('dark', isDark);
+        })();
+    </script>
+
+    <script>
+        // Alpine Store global: fonte única de verdade para o tema
+        document.addEventListener('alpine:init', () => {
+            Alpine.store('theme', {
+                mode: localStorage.getItem('theme') || 'system',
+
+                get isDark() {
+                    if (this.mode === 'dark') return true;
+                    if (this.mode === 'light') return false;
+                    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+                },
+
+                set(mode) {
+                    this.mode = mode;
+                    localStorage.setItem('theme', mode);
+                    document.documentElement.classList.toggle('dark', this.isDark);
+                },
+
+                toggle() {
+                    this.set(this.isDark ? 'light' : 'dark');
+                }
+            });
+        });
     </script>
 </head>
 <body class="bg-slate-50 text-slate-900 dark:bg-zinc-950 dark:text-zinc-100 font-sans antialiased flex h-screen overflow-hidden transition-colors"
-      x-data="{ 
-          darkMode: localStorage.getItem('theme') === 'dark',
+      x-data="{
           isSidebarOpen: localStorage.getItem('sidebar') !== 'collapsed',
-          toggleTheme() {
-              this.darkMode = !this.darkMode;
-              localStorage.setItem('theme', this.darkMode ? 'dark' : 'light');
-              if (this.darkMode) {
-                  document.documentElement.classList.add('dark');
-              } else {
-                  document.documentElement.classList.remove('dark');
-              }
-          },
           toggleSidebar() {
               this.isSidebarOpen = !this.isSidebarOpen;
               localStorage.setItem('sidebar', this.isSidebarOpen ? 'open' : 'collapsed');
           }
       }">
 
-    <!-- Este script roda nativamente e sincronamente a CADA wire:navigate porque o Livewire reinjeta o body -->
+    <!-- Sync tema a cada wire:navigate -->
     <script>
-        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-        }
+        (function() {
+            var theme = localStorage.getItem('theme');
+            var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            var isDark = theme === 'dark' || (theme === 'system' && prefersDark) || (!theme && prefersDark);
+            document.documentElement.classList.toggle('dark', isDark);
+        })();
     </script>
 
 
