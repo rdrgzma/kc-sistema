@@ -7,6 +7,7 @@ namespace App\Models;
 use App\Traits\HasLegacyData;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
@@ -14,7 +15,7 @@ use Spatie\Activitylog\Support\LogOptions;
 
 class Pessoa extends Model
 {
-    use HasFactory, HasLegacyData, LogsActivity;
+    use \App\Traits\StratifiesData, HasFactory, HasLegacyData, LogsActivity;
 
     public function getActivitylogOptions(): LogOptions
     {
@@ -44,7 +45,13 @@ class Pessoa extends Model
         'bairro',
         'cidade',
         'estado',
+        'escritorio_id',
     ];
+
+    public function escritorio(): BelongsTo
+    {
+        return $this->belongsTo(Escritorio::class);
+    }
 
     // O Antigravity já pode deixar os relacionamentos declarados para quando criarmos as classes
 

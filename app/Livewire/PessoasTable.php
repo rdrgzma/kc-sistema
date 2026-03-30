@@ -33,7 +33,7 @@ class PessoasTable extends Component implements HasActions, HasForms, HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->query(Pessoa::query()->latest())
+            ->query(Pessoa::query()->estratificado()->latest())
             ->columns([
                 TextColumn::make('tipo')
                     ->badge()

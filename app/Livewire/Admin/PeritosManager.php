@@ -2,12 +2,13 @@
 
 namespace App\Livewire\Admin;
 
-use App\Models\Fase;
+use App\Models\Perito;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -18,7 +19,7 @@ use Filament\Tables\Table;
 use Illuminate\View\View;
 use Livewire\Component;
 
-class FasesManager extends Component implements HasActions, HasForms, HasTable
+class PeritosManager extends Component implements HasActions, HasForms, HasTable
 {
     use InteractsWithActions;
     use InteractsWithForms;
@@ -27,22 +28,26 @@ class FasesManager extends Component implements HasActions, HasForms, HasTable
     public function table(Table $table): Table
     {
         return $table
-            ->query(Fase::query())
+            ->query(Perito::query())
             ->columns([
                 TextColumn::make('nome')
-                    ->label('Fluxo / Fase')
+                    ->label('Nome do Perito')
                     ->searchable()
                     ->sortable()
                     ->weight('black'),
-                TextColumn::make('valor_custa_padrao')
-                    ->label('Custa Padrão')
-                    ->money('BRL')
-                    ->sortable()
-                    ->badge(),
+                TextColumn::make('especialidade.nome')
+                    ->label('Especialidade')
+                    ->badge()
+                    ->color('info')
+                    ->searchable(),
+                TextColumn::make('user.name')
+                    ->label('Usuário Vinculado')
+                    ->placeholder('Não vinculado')
+                    ->searchable(),
             ])
             ->headerActions([
                 CreateAction::make()
-                    ->label('Nova Fase')
+                    ->label('Novo Perito')
                     ->icon('heroicon-o-plus')
                     ->form($this->getFormSchema()),
             ])
@@ -52,27 +57,34 @@ class FasesManager extends Component implements HasActions, HasForms, HasTable
                     ->form($this->getFormSchema()),
                 DeleteAction::make(),
             ])
-            ->emptyStateHeading('Sem fases cadastradas');
+            ->emptyStateHeading('Nenhum perito cadastrado')
+            ->emptyStateDescription('Cadastre peritos judiciais aqui.');
     }
 
     protected function getFormSchema(): array
     {
         return [
             TextInput::make('nome')
-                ->label('Nome da Fase')
+                ->label('Nome do Perito')
                 ->required()
-                ->maxLength(255)
-                ->placeholder('Ex: Conhecimento, Execução...'),
-            TextInput::make('valor_custa_padrao')
-                ->label('Valor de Custa Padrão')
-                ->numeric()
-                ->prefix('R$')
-                ->default(0.00),
+                ->maxLength(255),
+            Select::make('especialidade_id')
+                ->label('Especialidade')
+                ->relationship('especialidade', 'nome')
+                ->required()
+                ->preload()
+                ->searchable(),
+            Select::make('user_id')
+                ->label('Usuário Vinculado (Opcional)')
+                ->relationship('user', 'name')
+                ->placeholder('Selecione se o perito já for um usuário do sistema')
+                ->preload()
+                ->searchable(),
         ];
     }
 
     public function render(): View
     {
-        return view('livewire.admin.fases-manager');
+        return view('livewire.admin.peritos-manager');
     }
 }

@@ -16,7 +16,7 @@ use Spatie\Activitylog\Support\LogOptions;
 #[ObservedBy(ProcessoObserver::class)]
 class Processo extends Model
 {
-    use HasLegacyData, HasTasks, LogsActivity;
+    use \App\Traits\StratifiesData, HasLegacyData, HasTasks, LogsActivity;
 
     public function getActivitylogOptions(): LogOptions
     {
@@ -46,11 +46,23 @@ class Processo extends Model
         'assistentes_tecnico_id',
         'economia_gerada',
         'perda_estimada',
+        'escritorio_id',
+        'equipe_id',
     ];
 
     public function pessoa(): BelongsTo
     {
         return $this->belongsTo(Pessoa::class);
+    }
+
+    public function escritorio(): BelongsTo
+    {
+        return $this->belongsTo(Escritorio::class);
+    }
+
+    public function equipe(): BelongsTo
+    {
+        return $this->belongsTo(Equipe::class);
     }
 
     public function seguradora(): BelongsTo

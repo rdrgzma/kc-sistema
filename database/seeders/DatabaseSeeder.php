@@ -16,7 +16,8 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $this->call([
-            RolesAndPermissionsSeeder::class,
+            RolesAndUsersSeeder::class,
+            OrganizacaoSeeder::class,
             // Lookup tables (sem dependências)
             AreaSeeder::class,
             FaseSeeder::class,

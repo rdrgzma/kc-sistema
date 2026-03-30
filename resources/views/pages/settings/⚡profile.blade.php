@@ -7,30 +7,52 @@ use Illuminate\Support\Facades\Session;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Title;
 use Livewire\Component;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Forms\Contracts\HasForms;
+use Filament\Schemas\Schema;
+use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 
-new #[Title('Profile settings')] class extends Component {
+new #[Title('Profile settings')] class extends Component implements HasForms {
     use ProfileValidationRules;
+    use InteractsWithForms;
 
-    public string $name = '';
-    public string $email = '';
+    public ?array $data = [];
 
     /**
      * Mount the component.
      */
     public function mount(): void
     {
-        $this->name = Auth::user()->name;
-        $this->email = Auth::user()->email;
+        $this->form->fill([
+            'name' => Auth::user()->name,
+            'email' => Auth::user()->email,
+        ]);
     }
 
-    /**
-     * Update the profile information for the currently authenticated user.
-     */
+    public function form(\Filament\Schemas\Schema $form): \Filament\Schemas\Schema
+    {
+        return $form
+            ->schema([
+                TextInput::make('name')
+                    ->label(__('Nome'))
+                    ->required()
+                    ->maxLength(255)
+                    ->autofocus(),
+                TextInput::make('email')
+                    ->label(__('E-mail'))
+                    ->email()
+                    ->required()
+                    ->maxLength(255),
+            ])
+            ->statePath('data');
+    }
+
     public function updateProfileInformation(): void
     {
         $user = Auth::user();
 
-        $validated = $this->validate($this->profileRules($user->id));
+        $validated = $this->form->getState();
 
         $user->fill($validated);
 
@@ -39,6 +61,12 @@ new #[Title('Profile settings')] class extends Component {
         }
 
         $user->save();
+        $this->form->fill(['name' => $user->name, 'email' => $user->email]);
+
+        Notification::make()
+            ->title('Perfil Atualizado com Sucesso')
+            ->success()
+            ->send();
 
         $this->dispatch('profile-updated', name: $user->name);
     }
@@ -64,13 +92,13 @@ new #[Title('Profile settings')] class extends Component {
     #[Computed]
     public function hasUnverifiedEmail(): bool
     {
-        return Auth::user() instanceof MustVerifyEmail && ! Auth::user()->hasVerifiedEmail();
+        return Auth::user() instanceof MustVerifyEmail && !Auth::user()->hasVerifiedEmail();
     }
 
     #[Computed]
     public function showDeleteUser(): bool
     {
-        return ! Auth::user() instanceof MustVerifyEmail
+        return !Auth::user() instanceof MustVerifyEmail
             || (Auth::user() instanceof MustVerifyEmail && Auth::user()->hasVerifiedEmail());
     }
 }; ?>
@@ -82,45 +110,38 @@ new #[Title('Profile settings')] class extends Component {
 
     <x-pages::settings.layout :heading="__('Profile')" :subheading="__('Update your name and email address')">
         <form wire:submit="updateProfileInformation" class="my-6 w-full space-y-6">
-            <flux:input wire:model="name" :label="__('Name')" type="text" required autofocus autocomplete="name" />
 
-            <div>
-                <flux:input wire:model="email" :label="__('Email')" type="email" required autocomplete="email" />
+            {{ $this->form }}
 
-                @if ($this->hasUnverifiedEmail)
-                    <div>
-                        <flux:text class="mt-4">
-                            {{ __('Your email address is unverified.') }}
+            @if ($this->hasUnverifiedEmail)
+                <div class="mt-4">
+                    <p class="text-sm text-slate-800 dark:text-zinc-200">
+                        {{ __('Your email address is unverified.') }}
 
-                            <flux:link class="text-sm cursor-pointer" wire:click.prevent="resendVerificationNotification">
-                                {{ __('Click here to re-send the verification email.') }}
-                            </flux:link>
-                        </flux:text>
+                        <button type="button"
+                            class="underline text-sm text-primary-600 hover:text-primary-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+                            wire:click.prevent="resendVerificationNotification">
+                            {{ __('Click here to re-send the verification email.') }}
+                        </button>
+                    </p>
 
-                        @if (session('status') === 'verification-link-sent')
-                            <flux:text class="mt-2 font-medium !dark:text-green-400 !text-green-600">
-                                {{ __('A new verification link has been sent to your email address.') }}
-                            </flux:text>
-                        @endif
-                    </div>
-                @endif
-            </div>
-
-            <div class="flex items-center gap-4">
-                <div class="flex items-center justify-end">
-                    <flux:button variant="primary" type="submit" class="w-full" data-test="update-profile-button">
-                        {{ __('Save') }}
-                    </flux:button>
+                    @if (session('status') === 'verification-link-sent')
+                        <p class="mt-2 font-medium text-sm text-green-600 dark:text-green-400">
+                            {{ __('A new verification link has been sent to your email address.') }}
+                        </p>
+                    @endif
                 </div>
+            @endif
 
-                <x-action-message class="me-3" on="profile-updated">
-                    {{ __('Saved.') }}
-                </x-action-message>
+            <div class="flex items-center gap-4 mt-6">
+                <div class="flex items-center justify-end">
+                    <x-filament::button type="submit" data-test="update-profile-button">
+                        {{ __('Salvar') }}
+                    </x-filament::button>
+                </div>
             </div>
         </form>
 
-        @if ($this->showDeleteUser)
-            <livewire:pages::settings.delete-user-form />
-        @endif
+
     </x-pages::settings.layout>
 </section>

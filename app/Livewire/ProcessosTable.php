@@ -31,7 +31,7 @@ class ProcessosTable extends Component implements HasActions, HasForms, HasTable
 
     public function table(Table $table): Table
     {
-        $query = Processo::query()->with(['pessoa', 'seguradora', 'fase', 'area'])->latest();
+        $query = Processo::query()->estratificado()->with(['pessoa', 'seguradora', 'fase', 'area'])->latest();
 
         if ($this->pessoaId) {
             $query->where('pessoa_id', $this->pessoaId);
@@ -57,6 +57,10 @@ class ProcessosTable extends Component implements HasActions, HasForms, HasTable
 
                 TextColumn::make('area.nome')
                     ->label('Área')
+                    ->toggleable(),
+
+                TextColumn::make('equipe.nome')
+                    ->label('Equipe')
                     ->toggleable(),
 
                 TextColumn::make('fase.nome')
@@ -128,6 +132,20 @@ class ProcessosTable extends Component implements HasActions, HasForms, HasTable
                         ->searchable()
                         ->preload()
                         ->required(),
+                       
+                        Select::make('escritorio_id')
+                            ->label('Escritório')
+                            ->relationship('escritorio', 'nome')
+                            ->searchable()
+                            ->preload()
+                            ->required(),
+    
+                        Select::make('equipe_id')
+                            ->label('Equipe')
+                            ->relationship('equipe', 'nome')
+                            ->searchable()
+                            ->preload()
+                            ->required(),                
                 ]),
 
             Section::make('Classificação Estratégica')

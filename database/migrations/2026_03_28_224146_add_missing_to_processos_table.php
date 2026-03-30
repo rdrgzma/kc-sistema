@@ -16,7 +16,7 @@ return new class extends Migration
 
             // perito & assistente_tecnico referencing new tables
             $table->foreignId('perito_id')->nullable()->constrained('peritos')->nullOnDelete()->after('responsavel_id');
-            $table->foreignId('assistentes_tecnico_id')->nullable()->constrained('assistentes_tecnicos')->nullOnDelete()->after('perito_id');
+            $table->foreignId('assistente_tecnico_id')->nullable()->constrained('assistentes_tecnicos')->nullOnDelete()->after('perito_id');
 
             // fase_recursal_id added as nullable index (add FK later if you create a fases_recursais table)
             $table->unsignedBigInteger('fase_recursal_id')->nullable()->index()->after('fase_id');  
@@ -35,7 +35,7 @@ return new class extends Migration
             if (Schema::hasColumn('processos', 'perito_id')) {
                 $table->dropForeign(['perito_id']);
             }
-            if (Schema::hasColumn('processos', 'assistentes_tecnico_id')) {
+            if (Schema::hasColumn('processos', 'assistente_tecnico_id')) {
                 $table->dropForeign(['assistente_tecnico_id']);
             }
             $table->dropColumn(['responsavel_id', 'perito_id', 'assistente_tecnico_id', 'fase_recursal_id']);

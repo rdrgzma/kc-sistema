@@ -6,8 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class AssistentesTecnico extends Model
+class AssistenteTecnico extends Model
 {
+    protected $table = 'assistentes_tecnicos';
+
     protected $fillable = ['nome', 'especialidade_id', 'user_id', 'legacy_id'];
 
     public function especialidade(): BelongsTo
@@ -22,6 +24,6 @@ class AssistentesTecnico extends Model
 
     public function processos(): HasMany
     {
-        return $this->hasMany(Processo::class, 'assistentes_tecnico_id');
+        return $this->hasMany(Processo::class, 'assistente_tecnico_id');
     }
 }

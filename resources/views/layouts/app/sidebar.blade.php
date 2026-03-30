@@ -23,6 +23,17 @@
                 ['route' => 'onboarding', 'icon' => 'heroicon-o-rocket-launch', 'label' => 'Fluxo Onboarding', 'active' => request()->routeIs('onboarding'), 'accent' => 'indigo'],
                 ['route' => 'planners.index', 'icon' => 'heroicon-o-calendar', 'label' => 'Planners', 'active' => request()->routeIs('planners.*'), 'accent' => 'primary'],
             ];
+
+            if (auth()->user()?->hasAnyRole(['Administrador', 'Sócio'])) {
+                $navItems[] = ['type' => 'divider', 'label' => 'Administração'];
+                $navItems[] = ['route' => 'admin.users', 'icon' => 'heroicon-o-user-group', 'label' => 'Usuários', 'active' => request()->routeIs('admin.users')];
+                $navItems[] = ['route' => 'admin.escritorios', 'icon' => 'heroicon-o-building-office-2', 'label' => 'Escritórios', 'active' => request()->routeIs('admin.escritorios')];
+                $navItems[] = ['route' => 'admin.equipes', 'icon' => 'heroicon-o-rectangle-group', 'label' => 'Equipes', 'active' => request()->routeIs('admin.equipes')];
+                $navItems[] = ['route' => 'admin.peritos', 'icon' => 'heroicon-o-academic-cap', 'label' => 'Peritos', 'active' => request()->routeIs('admin.peritos')];
+                $navItems[] = ['route' => 'admin.assistentes', 'icon' => 'heroicon-o-briefcase', 'label' => 'Assistentes', 'active' => request()->routeIs('admin.assistentes')];
+                $navItems[] = ['route' => 'admin.especialidades', 'icon' => 'heroicon-o-tag', 'label' => 'Especialidades', 'active' => request()->routeIs('admin.especialidades')];
+                $navItems[] = ['route' => 'admin.fases', 'icon' => 'heroicon-o-adjustments-horizontal', 'label' => 'Fases', 'active' => request()->routeIs('admin.fases')];
+            }
         @endphp
 
         @foreach($navItems as $item)

@@ -2,20 +2,24 @@
 
 use App\Concerns\PasswordValidationRules;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Hash;
 use Laravel\Fortify\Actions\DisableTwoFactorAuthentication;
 use Laravel\Fortify\Features;
 use Laravel\Fortify\Fortify;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Title;
 use Livewire\Component;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Forms\Contracts\HasForms;
+use Filament\Schemas\Schema;
+use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Section;
+use Filament\Notifications\Notification;
 
-new #[Title('Security settings')] class extends Component {
-    use PasswordValidationRules;
+new #[Title('Security settings')] class extends Component implements HasForms {
+    use InteractsWithForms;
 
-    public string $current_password = '';
-    public string $password = '';
-    public string $password_confirmation = '';
+    public ?array $passwordData = [];
 
     public bool $canManageTwoFactor;
 
@@ -28,6 +32,8 @@ new #[Title('Security settings')] class extends Component {
      */
     public function mount(DisableTwoFactorAuthentication $disableTwoFactorAuthentication): void
     {
+        $this->form->fill([]);
+        
         $this->canManageTwoFactor = Features::canManageTwoFactorAuthentication();
 
         if ($this->canManageTwoFactor) {
@@ -40,27 +46,50 @@ new #[Title('Security settings')] class extends Component {
         }
     }
 
-    /**
-     * Update the password for the currently authenticated user.
-     */
+    public function form(\Filament\Schemas\Schema $form): \Filament\Schemas\Schema
+    {
+        return $form
+            ->schema([
+                Section::make('Alteração de Senha')
+                    ->description('Certifique-se de que sua conta está usando uma senha longa e aleatória para se manter segura.')
+                    ->schema([
+                        TextInput::make('current_password')
+                            ->label(__('Senha atual'))
+                            ->password()
+                            ->required()
+                            ->currentPassword()
+                            ->revealable(),
+                        TextInput::make('password')
+                            ->label(__('Nova senha'))
+                            ->password()
+                            ->required()
+                            ->confirmed()
+                            ->minLength(8)
+                            ->revealable(),
+                        TextInput::make('password_confirmation')
+                            ->label(__('Confirme a nova senha'))
+                            ->password()
+                            ->required()
+                            ->revealable(),
+                    ])->columns(1)
+            ])
+            ->statePath('passwordData');
+    }
+
     public function updatePassword(): void
     {
-        try {
-            $validated = $this->validate([
-                'current_password' => $this->currentPasswordRules(),
-                'password' => $this->passwordRules(),
-            ]);
-        } catch (ValidationException $e) {
-            $this->reset('current_password', 'password', 'password_confirmation');
-
-            throw $e;
-        }
+        $validated = $this->form->getState();
 
         Auth::user()->update([
-            'password' => $validated['password'],
+            'password' => Hash::make($validated['password']),
         ]);
 
-        $this->reset('current_password', 'password', 'password_confirmation');
+        $this->form->fill([]);
+
+        Notification::make()
+            ->title('Senha Alterada')
+            ->success()
+            ->send();
 
         $this->dispatch('password-updated');
     }
@@ -90,43 +119,17 @@ new #[Title('Security settings')] class extends Component {
 
     <flux:heading class="sr-only">{{ __('Security settings') }}</flux:heading>
 
-    <x-pages::settings.layout :heading="__('Update password')" :subheading="__('Ensure your account is using a long, random password to stay secure')">
+    <x-pages::settings.layout :heading="__('Security')" :subheading="__('Ensure your account is using a long, random password to stay secure')">
         <form method="POST" wire:submit="updatePassword" class="mt-6 space-y-6">
-            <flux:input
-                wire:model="current_password"
-                :label="__('Current password')"
-                type="password"
-                required
-                autocomplete="current-password"
-                viewable
-            />
-            <flux:input
-                wire:model="password"
-                :label="__('New password')"
-                type="password"
-                required
-                autocomplete="new-password"
-                viewable
-            />
-            <flux:input
-                wire:model="password_confirmation"
-                :label="__('Confirm password')"
-                type="password"
-                required
-                autocomplete="new-password"
-                viewable
-            />
+            
+            {{ $this->form }}
 
-            <div class="flex items-center gap-4">
+            <div class="flex items-center gap-4 mt-6">
                 <div class="flex items-center justify-end">
-                    <flux:button variant="primary" type="submit" class="w-full" data-test="update-password-button">
-                        {{ __('Save') }}
-                    </flux:button>
+                    <x-filament::button type="submit" data-test="update-password-button">
+                        {{ __('Salvar Senha') }}
+                    </x-filament::button>
                 </div>
-
-                <x-action-message class="me-3" on="password-updated">
-                    {{ __('Saved.') }}
-                </x-action-message>
             </div>
         </form>
 

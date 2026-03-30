@@ -1,7 +1,7 @@
 <header class="h-24 bg-white dark:bg-zinc-900 flex items-center justify-between px-10 transition-all border-b border-slate-300 dark:border-zinc-800 relative z-40">
     <div class="flex flex-col">
         <h1 class="text-2xl font-black text-slate-900 dark:text-zinc-50 tracking-tight leading-none">{{ $headerTitle ?? 'Painel Estratégico' }}</h1>
-        <p class="text-[10px] font-black text-slate-500 dark:text-zinc-500 mt-2 uppercase tracking-[0.2em]">{{ $headerSubtitle ?? 'Silva & Associados' }}</p>
+        <p class="text-[10px] font-black text-slate-500 dark:text-zinc-500 mt-2 uppercase tracking-[0.2em]">{{ $headerSubtitle ?? (auth()->user()?->escritorio?->nome ?? 'K&C Analytics') }}</p>
     </div>
 
     <div class="flex items-center gap-10">
@@ -21,15 +21,15 @@
             
             <div class="h-8 w-px bg-slate-300 dark:bg-zinc-800 mx-2"></div>
 
-            <div class="flex items-center gap-4 text-right cursor-pointer group">
+            <a href="{{ route('profile.edit') }}" wire:navigate class="flex items-center gap-4 text-right cursor-pointer group">
                 <div class="hidden lg:block">
-                    <p class="text-sm font-black text-slate-900 dark:text-zinc-50 leading-tight group-hover:text-primary-600 transition-colors">Dr. Carlos Silva</p>
-                    <p class="text-[10px] font-black text-slate-400 dark:text-zinc-600 uppercase tracking-widest mt-1">Sócio Fundador</p>
+                    <p class="text-sm font-black text-slate-900 dark:text-zinc-50 leading-tight group-hover:text-primary-600 transition-colors">{{ auth()->user()?->name ?? 'Usuário' }}</p>
+                    <p class="text-[10px] font-black text-slate-400 dark:text-zinc-600 uppercase tracking-widest mt-1">{{ auth()->user()?->roles->first()?->name ?? 'Sem Papel' }}</p>
                 </div>
                 <div class="w-10 h-10 rounded-2xl bg-slate-900 dark:bg-zinc-100 text-white dark:text-slate-900 flex items-center justify-center font-black text-sm shadow-xl shadow-slate-900/10 border border-slate-900 dark:border-zinc-500">
-                    CS
+                    {{ auth()->user() ? auth()->user()->initials() : 'US' }}
                 </div>
-            </div>
+            </a>
         </div>
     </div>
 </header>
