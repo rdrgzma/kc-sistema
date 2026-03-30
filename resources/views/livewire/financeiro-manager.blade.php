@@ -7,22 +7,7 @@
         </button>
     </div>
 
-    <div class="space-y-2">
-        @forelse($this->model->lancamentosFinanceiros()->latest()->get() as $item)
-            <div class="flex items-center justify-between p-3 bg-white border rounded-lg shadow-sm dark:bg-zinc-900 dark:border-zinc-800">
-                <div class="flex flex-col">
-                    <span class="text-xs font-bold text-gray-700">{{ $item->descricao }}</span>
-                    <span class="text-[10px] text-gray-400">Vence em: {{ \Carbon\Carbon::parse($item->data_vencimento)->format('d/m/Y') }}</span>
-                </div>
-                <div class="text-right">
-                    <span class="text-sm font-black {{ $item->tipo === 'R' ? 'text-emerald-600' : 'text-rose-600' }}">
-                        {{ $item->tipo === 'D' ? '-' : '' }} R$ {{ number_format($item->valor, 2, ',', '.') }}
-                    </span>
-                    <div class="text-[9px] uppercase font-bold text-gray-400">{{ $item->status }}</div>
-                </div>
-            </div>
-        @empty
-            <p class="text-center text-xs text-gray-400 py-4">Nenhum movimento financeiro.</p>
-        @endforelse
+    <div class="mt-6">
+        {{ $this->table }}
     </div>
 </div>

@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\Admin\FasesManager;
 use App\Livewire\Dashboard;
 use App\Livewire\OnboardingWizard;
 use App\Livewire\PessoaDetalhe;
@@ -21,4 +22,10 @@ Route::livewire('/pessoas/{pessoa}', PessoaDetalhe::class)->name('pessoas.show')
 // Rota do Onboarding (Fluxo)
 Route::livewire('/onboarding', OnboardingWizard::class)->name('onboarding');
 Route::livewire('/planners', PlannerBoard::class)->name('planners.index');
+Route::get('/admin/fases', FasesManager::class)->name('admin.fases');
+// Gestão de Fases Admin
+Route::middleware(['role:Administrador|Sócio'])->group(function () {
+    Route::get('/admin/fases', FasesManager::class)->name('admin.fases');
+});
+
 require __DIR__.'/settings.php';

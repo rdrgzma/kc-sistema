@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use App\Observers\ProcessoObserver;
 use App\Traits\HasLegacyData;
 use App\Traits\HasTasks;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -11,6 +13,7 @@ use Illuminate\Support\Collection;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
 
+#[ObservedBy(ProcessoObserver::class)]
 class Processo extends Model
 {
     use HasLegacyData, HasTasks, LogsActivity;

@@ -8,7 +8,15 @@ class Fase extends Model
 {
     protected $fillable = [
         'nome',
+        'valor_custa_padrao',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'valor_custa_padrao' => 'float',
+        ];
+    }
 
     public function processos()
     {
