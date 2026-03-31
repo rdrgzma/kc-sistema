@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Escritorio extends Model
 {
+    use HasFactory;
+
     protected $fillable = ['nome', 'cnpj', 'cidade', 'uf'];
 
     public function equipes(): HasMany

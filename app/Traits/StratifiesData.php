@@ -7,6 +7,15 @@ use Illuminate\Database\Eloquent\Builder;
 
 trait StratifiesData
 {
+    public static function bootStratifiesData(): void
+    {
+        static::creating(function ($model) {
+            if (auth()->check() && ! $model->escritorio_id) {
+                $model->escritorio_id = auth()->user()->escritorio_id;
+            }
+        });
+    }
+
     public function scopeEstratificado(Builder $query): Builder
     {
         $user = auth()->user();

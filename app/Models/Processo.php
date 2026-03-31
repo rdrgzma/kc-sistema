@@ -5,7 +5,9 @@ namespace App\Models;
 use App\Observers\ProcessoObserver;
 use App\Traits\HasLegacyData;
 use App\Traits\HasTasks;
+use App\Traits\StratifiesData;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -16,7 +18,7 @@ use Spatie\Activitylog\Support\LogOptions;
 #[ObservedBy(ProcessoObserver::class)]
 class Processo extends Model
 {
-    use \App\Traits\StratifiesData, HasLegacyData, HasTasks, LogsActivity;
+    use HasFactory, HasLegacyData, HasTasks, LogsActivity, StratifiesData;
 
     public function getActivitylogOptions(): LogOptions
     {
@@ -108,7 +110,7 @@ class Processo extends Model
 
     public function assistenteTecnico(): BelongsTo
     {
-        return $this->belongsTo(AssistentesTecnico::class, 'assistentes_tecnico_id');
+        return $this->belongsTo(AssistenteTecnico::class, 'assistentes_tecnico_id');
     }
 
     public function timelineEvents(): MorphMany

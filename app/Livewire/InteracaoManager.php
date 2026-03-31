@@ -2,41 +2,37 @@
 
 namespace App\Livewire;
 
+use Filament\Actions\Action;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Schemas\Schema;
 use Illuminate\View\View;
 use Livewire\Component;
 
-class InteracaoManager extends Component implements HasForms
+class InteracaoManager extends Component implements HasActions, HasForms
 {
+    use InteractsWithActions;
     use InteractsWithForms;
 
     public $model;
 
-    /** @var array<string, mixed> */
-    public array $data = [];
-
     public function mount($model): void
     {
         $this->model = $model;
-
-        $this->form->fill([
-            'tipo' => 'whatsapp',
-            'status' => 'realizada',
-            'data_interacao' => now()->format('Y-m-d H:i:s'),
-        ]);
     }
 
-    public function form(Schema $schema): Schema
+    public function registrarAction(): Action
     {
-        return $schema
-            ->statePath('data')
-            ->components([
+        return Action::make('registrar')
+            ->label('Novo Atendimento')
+            ->icon('heroicon-o-chat-bubble-left-right')
+            ->color('primary')
+            ->form([
                 Select::make('tipo')
                     ->options([
                         'whatsapp' => 'WhatsApp',
@@ -45,56 +41,45 @@ class InteracaoManager extends Component implements HasForms
                         'reuniao' => 'Reunião Online',
                         'presencial' => 'Atendimento Presencial',
                     ])
+                    ->default('whatsapp')
                     ->required(),
-
                 TextInput::make('assunto')
                     ->required()
                     ->placeholder('Ex: Retorno sobre liminar')
                     ->maxLength(255),
-
                 DateTimePicker::make('data_interacao')
                     ->label('Data/Hora')
+                    ->default(now())
                     ->required(),
-
                 Select::make('status')
                     ->options([
                         'agendada' => 'Agendada (Futuro)',
                         'realizada' => 'Realizada',
                         'cancelada' => 'Cancelada',
                     ])
+                    ->default('realizada')
                     ->required(),
-
                 Textarea::make('descricao')
                     ->label('Resumo do Atendimento')
                     ->rows(3)
                     ->required()
                     ->columnSpanFull(),
             ])
-            ->columns(2);
-    }
+            ->action(function (array $data) {
+                $this->model->interacoes()->create([
+                    'tipo' => $data['tipo'],
+                    'assunto' => $data['assunto'],
+                    'data_interacao' => $data['data_interacao'],
+                    'status' => $data['status'],
+                    'descricao' => $data['descricao'],
+                    'user_id' => auth()->id(),
+                ]);
 
-    public function registrar(): void
-    {
-        $data = $this->form->getState();
-
-        $this->model->interacoes()->create([
-            'tipo' => $data['tipo'],
-            'assunto' => $data['assunto'],
-            'data_interacao' => $data['data_interacao'],
-            'status' => $data['status'],
-            'descricao' => $data['descricao'],
-            'user_id' => auth()->id(),
-        ]);
-
-        $this->form->fill([
-            'tipo' => 'whatsapp',
-            'status' => 'realizada',
-            'data_interacao' => now()->format('Y-m-d H:i:s'),
-            'assunto' => null,
-            'descricao' => null,
-        ]);
-
-        $this->dispatch('notify', message: 'Interação registrada com sucesso!');
+                $this->dispatch('notify', message: 'Interação registrada com sucesso!');
+            })
+            ->modalWidth('2xl')
+            ->modalHeading('Registrar Novo Atendimento')
+            ->modalSubmitActionLabel('Salvar Interação');
     }
 
     public function render(): View

@@ -11,7 +11,7 @@ class DatabaseSeeder extends Seeder
     {
         // Usuário padrão de dev
         $user = User::factory()->create([
-            'name'  => 'Administrador',
+            'name' => 'Administrador',
             'email' => 'admin@kc-sistema.dev',
         ]);
 
@@ -26,6 +26,8 @@ class DatabaseSeeder extends Seeder
             SeguradoraSeeder::class,
             // Entidades principais
             PessoaSeeder::class,
+            // Financeiro (Categorias e Lançamentos em Lote)
+            FinanceiroSeeder::class,
             // Processos + relacionados (timeline, lançamentos, interações)
             ProcessoSeeder::class,
         ]);

@@ -1,18 +1,11 @@
 <div class="space-y-6">
-    {{-- Formulário de registro --}}
-    <div class="bg-indigo-50/30 dark:bg-zinc-900 p-5 rounded-xl border border-indigo-100 dark:border-zinc-800 shadow-sm">
-        <h5 class="text-[10px] font-bold uppercase text-indigo-500 dark:text-gray-200 mb-3 tracking-widest flex items-center gap-2">
-            <x-heroicon-o-chat-bubble-left-right class="w-4 h-4"/>
-            Registrar Novo Atendimento
-        </h5>
-
-        {{ $this->form }}
-
-        <div class="mt-4 flex justify-end">
-            <button wire:click="registrar" class="bg-indigo-600 dark:bg-indigo-700 text-white px-6 py-2 rounded-lg font-bold text-xs hover:bg-indigo-700 dark:hover:bg-indigo-600 transition shadow-md">
-                Salvar Interação
-            </button>
+    {{-- Header com Ação --}}
+    <div class="flex justify-between items-center bg-white dark:bg-zinc-900 p-4 rounded-xl border border-slate-200 dark:border-zinc-800 shadow-sm">
+        <div class="flex items-center gap-3">
+            <x-heroicon-o-chat-bubble-left-right class="w-5 h-5 text-indigo-600 dark:text-indigo-400"/>
+            <h4 class="text-[11px] font-black uppercase tracking-widest text-slate-900 dark:text-gray-200">Histórico de Atendimentos</h4>
         </div>
+        {{ $this->registrarAction() }}
     </div>
 
     {{-- Lista de interações --}}
@@ -75,4 +68,7 @@
             </div>
         @endforelse
     </div>
+
+    {{-- Filament Actions Modals --}}
+    <x-filament-actions::modals />
 </div>

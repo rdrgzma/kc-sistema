@@ -4,7 +4,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ $title ?? 'K&C Analytics' }}</title>
+    <title>{{ $title ?? config('app.name') }}</title>
     
     <style>
         [x-cloak] { display: none !important; }
@@ -25,23 +25,19 @@
     </script>
 
     <script>
-        // Alpine Store global: fonte única de verdade para o tema
         document.addEventListener('alpine:init', () => {
             Alpine.store('theme', {
                 mode: localStorage.getItem('theme') || 'system',
-
                 get isDark() {
                     if (this.mode === 'dark') return true;
                     if (this.mode === 'light') return false;
                     return window.matchMedia('(prefers-color-scheme: dark)').matches;
                 },
-
                 set(mode) {
                     this.mode = mode;
                     localStorage.setItem('theme', mode);
                     document.documentElement.classList.toggle('dark', this.isDark);
                 },
-
                 toggle() {
                     this.set(this.isDark ? 'light' : 'dark');
                 }
@@ -51,7 +47,7 @@
 </head>
 <body class="bg-slate-50 text-slate-900 dark:bg-zinc-950 dark:text-zinc-100 font-sans antialiased flex h-screen overflow-hidden transition-colors"
       x-data="{
-          isSidebarOpen: localStorage.getItem('sidebar') !== 'collapsed',
+          isSidebarOpen: localStorage.getItem('sidebar') === 'open',
           toggleSidebar() {
               this.isSidebarOpen = !this.isSidebarOpen;
               localStorage.setItem('sidebar', this.isSidebarOpen ? 'open' : 'collapsed');
@@ -82,6 +78,5 @@
 
     @livewireScripts
     @filamentScripts
-   
 </body>
 </html>
