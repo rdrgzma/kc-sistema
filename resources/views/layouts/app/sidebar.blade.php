@@ -39,6 +39,13 @@
                     ]
                 ],
                 [
+                    'label' => 'Produtividade',
+                    'items' => [
+                        ['route' => 'dashboard.produtividade', 'icon' => 'heroicon-o-presentation-chart-line', 'label' => 'Painel Geral'],
+                        ['route' => 'dashboard.produtividade-equipe', 'icon' => 'heroicon-o-users', 'label' => 'Ranking da Equipe'],
+                    ]
+                ],
+                [
                     'label' => 'Planejamento',
                     'items' => [
                         ['route' => 'onboarding', 'icon' => 'heroicon-o-rocket-launch', 'label' => 'Onboarding'],
@@ -64,7 +71,14 @@
         @foreach ($sections as $section)
             @if (!isset($section['roles']) || auth()->user()?->hasAnyRole($section['roles']))
                 @php
-                    $isAnyItemActive = collect($section['items'])->contains(fn($item) => request()->routeIs($item['route'] . '*'));
+                    $isAnyItemActive = collect($section['items'])->contains(function($item) {
+                        if (isset($item['subitems'])) {
+                            return collect($item['subitems'])->contains(fn($sub) => request()->routeIs($sub['route'] . '*'));
+                        }
+                        return $item['route'] === 'dashboard'
+                            ? request()->routeIs('dashboard')
+                            : request()->routeIs($item['route'] . '*');
+                    });
                 @endphp
 
                 <div x-data="{ expanded: {{ $isAnyItemActive ? 'true' : 'false' }} }" class="flex flex-col gap-1 focus:outline-none">
@@ -86,27 +100,72 @@
                         class="flex flex-col gap-0.5 transition-all duration-300">
                         @foreach ($section['items'] as $item)
                             @php
-                                $isActive = request()->routeIs($item['route'] . '*');
+                                $hasSubitems = isset($item['subitems']);
+                                $isActive = false;
+                                if ($hasSubitems) {
+                                    $isActive = collect($item['subitems'])->contains(fn($sub) => request()->routeIs($sub['route'] . '*'));
+                                } else {
+                                    $isActive = $item['route'] === 'dashboard'
+                                        ? request()->routeIs('dashboard')
+                                        : request()->routeIs($item['route'] . '*');
+                                }
                             @endphp
-                            <div class="relative px-1">
-                                <a href="{{ route($item['route']) }}" wire:navigate
-                                    class="group/item flex items-center justify-center lg:justify-start px-3 py-2 text-sm font-bold rounded-xl transition-all border {{ $isActive ? 'text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20 border-primary-100 dark:border-primary-800/40' : 'text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-100 hover:bg-slate-50 dark:hover:bg-zinc-800 border-transparent hover:border-slate-100 dark:hover:border-zinc-700' }}">
+                            
+                            @if ($hasSubitems)
+                                <div x-data="{ open: @json($isActive) }" class="flex flex-col gap-0.5 w-full relative px-1">
+                                    {{-- Parent Toggle Button --}}
+                                    <button @click="open = !open"
+                                        class="group/item flex items-center justify-between w-full px-3 py-2 text-sm font-bold rounded-xl transition-all border outline-none {{ $isActive ? 'text-primary-600 dark:text-primary-400 bg-primary-50/50 dark:bg-primary-900/10 border-primary-100/50 dark:border-primary-800/20' : 'text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-100 hover:bg-slate-50 dark:hover:bg-zinc-800 border-transparent hover:border-slate-100 dark:hover:border-zinc-700' }}">
+                                        <div class="flex items-center">
+                                            <x-dynamic-component :component="$item['icon']"
+                                                class="w-5 h-5 shrink-0 transition-colors {{ $isActive ? 'text-primary-600 dark:text-primary-400' : 'text-slate-400 dark:text-zinc-600 group-hover/item:text-slate-900 dark:group-hover/item:text-zinc-100' }}" />
 
-                                    <x-dynamic-component :component="$item['icon']"
-                                        class="w-5 h-5 shrink-0 transition-colors {{ $isActive ? 'text-primary-600 dark:text-primary-400' : 'text-slate-400 dark:text-zinc-600 group-hover/item:text-slate-900 dark:group-hover/item:text-zinc-100' }}" />
+                                            <span x-show="isSidebarOpen" class="ml-3.5 overflow-hidden whitespace-nowrap tracking-tight">
+                                                {{ $item['label'] }}
+                                            </span>
+                                        </div>
 
-                                    <span x-show="isSidebarOpen" class="ml-3.5 overflow-hidden whitespace-nowrap tracking-tight">
-                                        {{ $item['label'] }}
-                                    </span>
+                                        <x-heroicon-o-chevron-down x-show="isSidebarOpen"
+                                            class="w-3.5 h-3.5 transition-transform duration-200 text-slate-400 dark:text-zinc-600 group-hover/item:text-slate-600 dark:group-hover/item:text-zinc-400"
+                                            x-bind:class="open ? 'rotate-180' : ''" />
+                                    </button>
 
-                                    <!-- Tip / Tooltip flutuante quando recolhido -->
-                                    <div x-show="!isSidebarOpen"
-                                        class="absolute left-full ml-4 top-1/2 -translate-y-1/2 px-3 py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-[10px] font-black uppercase tracking-widest rounded-lg shadow-2xl opacity-0 invisible group-hover/item:opacity-100 group-hover/item:visible transition-all pointer-events-none z-50 whitespace-nowrap">
-                                        {{ $item['label'] }}
-                                        <div class="absolute w-2 h-2 bg-slate-900 dark:bg-white transform rotate-45 -left-1 top-1/2 -translate-y-1/2"></div>
+                                    {{-- Sub-items list --}}
+                                    <div x-show="open" class="flex flex-col gap-0.5 mt-0.5">
+                                        @foreach ($item['subitems'] as $sub)
+                                            @php
+                                                $subActive = request()->routeIs($sub['route'] . '*');
+                                            @endphp
+                                            <div class="relative">
+                                                <a href="{{ route($sub['route']) }}" wire:navigate
+                                                    class="flex items-center pl-12 pr-3 py-1.5 text-xs font-bold rounded-lg transition-all border {{ $subActive ? 'text-primary-600 dark:text-primary-400 bg-primary-50/30 dark:bg-primary-900/10 border-primary-100/30 dark:border-primary-800/20' : 'text-slate-500 dark:text-zinc-500 hover:text-slate-800 dark:hover:text-zinc-200 hover:bg-slate-50/50 dark:hover:bg-zinc-800 border-transparent' }}">
+                                                    <span>{{ $sub['label'] }}</span>
+                                                </a>
+                                            </div>
+                                        @endforeach
                                     </div>
-                                </a>
-                            </div>
+                                </div>
+                            @else
+                                <div class="relative px-1">
+                                    <a href="{{ route($item['route']) }}" wire:navigate
+                                        class="group/item flex items-center justify-center lg:justify-start px-3 py-2 text-sm font-bold rounded-xl transition-all border {{ $isActive ? 'text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20 border-primary-100 dark:border-primary-800/40' : 'text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-100 hover:bg-slate-50 dark:hover:bg-zinc-800 border-transparent hover:border-slate-100 dark:hover:border-zinc-700' }}">
+
+                                        <x-dynamic-component :component="$item['icon']"
+                                            class="w-5 h-5 shrink-0 transition-colors {{ $isActive ? 'text-primary-600 dark:text-primary-400' : 'text-slate-400 dark:text-zinc-600 group-hover/item:text-slate-900 dark:group-hover/item:text-zinc-100' }}" />
+
+                                        <span x-show="isSidebarOpen" class="ml-3.5 overflow-hidden whitespace-nowrap tracking-tight">
+                                            {{ $item['label'] }}
+                                        </span>
+
+                                        <!-- Tip / Tooltip flutuante quando recolhido -->
+                                        <div x-show="!isSidebarOpen"
+                                            class="absolute left-full ml-4 top-1/2 -translate-y-1/2 px-3 py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-[10px] font-black uppercase tracking-widest rounded-lg shadow-2xl opacity-0 invisible group-hover/item:opacity-100 group-hover/item:visible transition-all pointer-events-none z-50 whitespace-nowrap">
+                                            {{ $item['label'] }}
+                                            <div class="absolute w-2 h-2 bg-slate-900 dark:bg-white transform rotate-45 -left-1 top-1/2 -translate-y-1/2"></div>
+                                        </div>
+                                    </a>
+                                </div>
+                            @endif
                         @endforeach
                     </div>
                 </div>

@@ -18,6 +18,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -173,6 +174,14 @@ class FinanceiroManager extends Component implements HasActions, HasForms, HasTa
                     ->label('Novo Lançamento')
                     ->icon('heroicon-o-plus')
                     ->form($this->getFormSchema())
+                    ->mutateFormDataUsing(function (array $data): array {
+                        if ($this->model) {
+                            $data['lancamentable_id'] = $this->model->id;
+                            $data['lancamentable_type'] = get_class($this->model);
+                        }
+
+                        return $data;
+                    })
                     ->modalWidth('2xl'),
                 Action::make('export_pdf')
                     ->label('Exportar PDF')
@@ -238,6 +247,32 @@ class FinanceiroManager extends Component implements HasActions, HasForms, HasTa
     protected function getFormSchema(): array
     {
         return [
+            Select::make('lancamentable_type')
+                ->label('Tipo de Origem')
+                ->options([
+                    Processo::class => 'Processo',
+                    Pessoa::class => 'Cliente/Pessoa',
+                ])
+                ->required()
+                ->live()
+                ->visible(fn () => ! $this->model)
+                ->columnSpan(1),
+            Select::make('lancamentable_id')
+                ->label('Origem')
+                ->options(function (Get $get) {
+                    $type = $get('lancamentable_type');
+                    if ($type === Processo::class) {
+                        return Processo::pluck('numero_processo', 'id');
+                    }
+                    if ($type === Pessoa::class) {
+                        return Pessoa::pluck('nome_razao', 'id');
+                    }
+
+                    return [];
+                })
+                ->required()
+                ->visible(fn (Get $get) => ! $this->model && $get('lancamentable_type'))
+                ->columnSpan(1),
             TextInput::make('descricao')
                 ->label('Descrição')
                 ->required()

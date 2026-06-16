@@ -11,11 +11,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 use Laravel\Fortify\TwoFactorAuthenticatable;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Permission\Traits\HasRoles;
 
 #[Fillable(['name', 'email', 'password', 'escritorio_id', 'is_active'])]
@@ -23,7 +23,7 @@ use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, HasLegacyData, HasRoles, Notifiable, TwoFactorAuthenticatable, SoftDeletes;
+    use HasFactory, HasLegacyData, HasRoles, Notifiable, SoftDeletes, TwoFactorAuthenticatable;
 
     /**
      * Get the attributes that should be cast.
@@ -64,5 +64,15 @@ class User extends Authenticatable
     public function equipes(): BelongsToMany
     {
         return $this->belongsToMany(Equipe::class);
+    }
+
+    public function apontamentosTempo(): HasMany
+    {
+        return $this->hasMany(ApontamentoTempo::class);
+    }
+
+    public function pecasProcessuais(): HasMany
+    {
+        return $this->hasMany(PecaProcessual::class, 'autor_id');
     }
 }

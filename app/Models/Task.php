@@ -4,14 +4,18 @@ namespace App\Models;
 
 use App\Enums\DurationUnit;
 use App\Enums\TaskUrgency;
+use App\Observers\TaskObserver;
 use App\Services\TaskDurationService;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+#[ObservedBy(TaskObserver::class)]
 class Task extends Model
 {
     use SoftDeletes;
@@ -20,6 +24,7 @@ class Task extends Model
         'bucket_id', 'taskable_id', 'taskable_type',
         'title', 'description', 'assigned_to',
         'due_date', 'duration_value', 'duration_unit', 'urgency', 'sort',
+        'pessoa_id', 'processo_id',
     ];
 
     protected function casts(): array
@@ -81,13 +86,28 @@ class Task extends Model
         return $this->morphMany(Comentario::class, 'commentable')->latest();
     }
 
-    public function documentos(): MorphMany
+    public function documentos(): HasMany
     {
-        return $this->morphMany(Documento::class, 'documentable')->latest();
+        return $this->hasMany(Documento::class)->latest();
     }
 
     public function timelineEvents(): MorphMany
     {
         return $this->morphMany(TimelineEvent::class, 'timelineable')->latest();
+    }
+
+    public function pecaProcessual(): HasOne
+    {
+        return $this->hasOne(PecaProcessual::class);
+    }
+
+    public function pessoa(): BelongsTo
+    {
+        return $this->belongsTo(Pessoa::class);
+    }
+
+    public function processo(): BelongsTo
+    {
+        return $this->belongsTo(Processo::class);
     }
 }

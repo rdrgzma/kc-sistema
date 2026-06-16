@@ -14,9 +14,17 @@
             </p>
         </div>
         
-        <span class="inline-flex items-center px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-[0.25em] bg-primary-100 text-primary-700 dark:text-primary-400 dark:bg-primary-900/40 border border-primary-200/50">
-            Ativo
-        </span>
+        <div class="flex items-center gap-3">
+            <a href="{{ route('planners.index', ['processo_id' => $processo->id]) }}" 
+               class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-[0.15em] bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm border border-indigo-700 transition-colors">
+                <x-heroicon-o-plus class="w-4 h-4"/>
+                Nova Tarefa (Planner)
+            </a>
+
+            <span class="inline-flex items-center px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-[0.25em] bg-primary-100 text-primary-700 dark:text-primary-400 dark:bg-primary-900/40 border border-primary-200/50">
+                Ativo
+            </span>
+        </div>
     </div>
 
     {{-- Panorama Estratégico Topo --}}
@@ -81,6 +89,22 @@
                 <x-heroicon-o-chat-bubble-left-right class="w-5 h-5"/>
                 Atendimentos
             </button>
+            <button 
+                @click="tab = 'decisoes'" 
+                :class="tab === 'decisoes' ? 'bg-white dark:bg-zinc-700 shadow-lg text-primary-600 dark:text-primary-400 scale-[1.02]' : 'text-slate-500 dark:text-gray-400 hover:text-slate-700'"
+                class="flex items-center gap-3 px-8 py-3 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all duration-400 scale-100 hover:scale-[1.01]"
+            >
+                <x-heroicon-o-scale class="w-5 h-5"/>
+                Decisões
+            </button>
+            <button 
+                @click="tab = 'pecas'" 
+                :class="tab === 'pecas' ? 'bg-white dark:bg-zinc-700 shadow-lg text-primary-600 dark:text-primary-400 scale-[1.02]' : 'text-slate-500 dark:text-gray-400 hover:text-slate-700'"
+                class="flex items-center gap-3 px-8 py-3 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all duration-400 scale-100 hover:scale-[1.01]"
+            >
+                <x-heroicon-o-document-text class="w-5 h-5"/>
+                Peças Produzidas
+            </button>
         </div>
 
         {{-- Tab Panels Full-Width --}}
@@ -103,6 +127,18 @@
         <div x-show="tab === 'atendimentos'" x-cloak x-transition:enter="transition-all ease-out duration-500" x-transition:enter-start="opacity-0 translate-y-8" x-transition:enter-end="opacity-100 translate-y-0">
             <div class="overflow-hidden bg-slate-50/30 dark:bg-zinc-900/30">
                 <livewire:interacao-manager :model="$processo" />
+            </div>
+        </div>
+
+        <div x-show="tab === 'decisoes'" x-cloak x-transition:enter="transition-all ease-out duration-500" x-transition:enter-start="opacity-0 translate-y-8" x-transition:enter-end="opacity-100 translate-y-0">
+            <div class="overflow-hidden bg-slate-50/30 dark:bg-zinc-900/30">
+                <livewire:processo.decisoes-relation-manager :processo="$processo" />
+            </div>
+        </div>
+
+        <div x-show="tab === 'pecas'" x-cloak x-transition:enter="transition-all ease-out duration-500" x-transition:enter-start="opacity-0 translate-y-8" x-transition:enter-end="opacity-100 translate-y-0">
+            <div class="overflow-hidden bg-slate-50/30 dark:bg-zinc-900/30">
+                <livewire:processo.pecas-relation-manager :processo="$processo" />
             </div>
         </div>
     </div>

@@ -2,8 +2,11 @@
 
 namespace App\Models;
 
+use App\Observers\ComentarioObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
 
+#[ObservedBy(ComentarioObserver::class)]
 class Comentario extends Model
 {
     protected $table = 'comentarios';

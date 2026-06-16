@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use App\Observers\DocumentoObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Facades\Storage;
 
+#[ObservedBy(DocumentoObserver::class)]
 class Documento extends Model
 {
     protected $fillable = [
@@ -19,6 +22,8 @@ class Documento extends Model
         'tamanho',
         'categoria',
         'user_id',
+        'peca_processual_id',
+        'task_id',
     ];
 
     public function pasta(): BelongsTo
@@ -34,6 +39,16 @@ class Documento extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function pecaProcessual(): BelongsTo
+    {
+        return $this->belongsTo(PecaProcessual::class);
+    }
+
+    public function task(): BelongsTo
+    {
+        return $this->belongsTo(Task::class);
     }
 
     public function getUrlAttribute()

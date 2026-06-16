@@ -29,6 +29,8 @@ class LancamentoFinanceiro extends Model
         'user_id',
         'categoria_financeira_id',
         'escritorio_id',
+        'lancamentable_type',
+        'lancamentable_id',
     ];
 
     public function categoria(): BelongsTo

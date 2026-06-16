@@ -4,6 +4,9 @@ namespace App\Livewire;
 
 use App\Models\Documento;
 use App\Models\Pasta;
+use App\Models\Pessoa;
+use App\Models\Processo;
+use App\Models\Task;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
@@ -32,8 +35,34 @@ class DocumentManager extends Component implements HasActions, HasForms
         $this->model = $model;
     }
 
+    public function getPastableInfo(): array
+    {
+        if ($this->model instanceof Task) {
+            if ($this->model->processo_id) {
+                return [
+                    'type' => Processo::class,
+                    'id' => $this->model->processo_id,
+                ];
+            }
+
+            if ($this->model->pessoa_id) {
+                return [
+                    'type' => Pessoa::class,
+                    'id' => $this->model->pessoa_id,
+                ];
+            }
+        }
+
+        return [
+            'type' => get_class($this->model),
+            'id' => $this->model->id,
+        ];
+    }
+
     public function createFolderAction(): Action
     {
+        $pastable = $this->getPastableInfo();
+
         return Action::make('createFolder')
             ->label('Nova Pasta')
             ->icon('heroicon-o-plus-circle')
@@ -45,18 +74,18 @@ class DocumentManager extends Component implements HasActions, HasForms
                     ->maxLength(255),
                 Select::make('parent_id')
                     ->label('Pasta Superior (Opcional)')
-                    ->options(fn () => Pasta::where('pastable_id', $this->model->id)
-                        ->where('pastable_type', get_class($this->model))
+                    ->options(fn () => Pasta::where('pastable_id', $pastable['id'])
+                        ->where('pastable_type', $pastable['type'])
                         ->pluck('nome', 'id'))
                     ->default($this->current_folder_id)
                     ->searchable(),
             ])
-            ->action(function (array $data) {
+            ->action(function (array $data) use ($pastable) {
                 Pasta::create([
                     'nome' => $data['nome'],
                     'parent_id' => $data['parent_id'],
-                    'pastable_id' => $this->model->id,
-                    'pastable_type' => get_class($this->model),
+                    'pastable_id' => $pastable['id'],
+                    'pastable_type' => $pastable['type'],
                     'escritorio_id' => auth()->user()->escritorio_id,
                 ]);
 
@@ -68,6 +97,8 @@ class DocumentManager extends Component implements HasActions, HasForms
 
     public function uploadAction(): Action
     {
+        $pastable = $this->getPastableInfo();
+
         return Action::make('upload')
             ->label('Subir Arquivos')
             ->icon('heroicon-o-arrow-up-tray')
@@ -82,8 +113,8 @@ class DocumentManager extends Component implements HasActions, HasForms
                     ->required(),
                 Select::make('pasta_id')
                     ->label('Salvar na Pasta')
-                    ->options(fn () => Pasta::where('pastable_id', $this->model->id)
-                        ->where('pastable_type', get_class($this->model))
+                    ->options(fn () => Pasta::where('pastable_id', $pastable['id'])
+                        ->where('pastable_type', $pastable['type'])
                         ->pluck('nome', 'id'))
                     ->default($this->current_folder_id)
                     ->searchable()
@@ -95,14 +126,31 @@ class DocumentManager extends Component implements HasActions, HasForms
                 }
 
                 foreach ($data['arquivos'] as $file) {
-                    $this->model->documentos()->create([
+                    $insertData = [
                         'nome_arquivo' => basename($file),
                         'caminho' => $file,
                         'extensao' => pathinfo($file, PATHINFO_EXTENSION),
                         'tamanho' => Storage::disk('public')->exists($file) ? Storage::disk('public')->size($file) : 0,
                         'pasta_id' => $data['pasta_id'],
                         'user_id' => auth()->id(),
-                    ]);
+                    ];
+
+                    if ($this->model instanceof Task) {
+                        $insertData['task_id'] = $this->model->id;
+                        if ($this->model->processo_id) {
+                            $insertData['documentable_type'] = Processo::class;
+                            $insertData['documentable_id'] = $this->model->processo_id;
+                        } elseif ($this->model->pessoa_id) {
+                            $insertData['documentable_type'] = Pessoa::class;
+                            $insertData['documentable_id'] = $this->model->pessoa_id;
+                        } else {
+                            $insertData['documentable_type'] = Task::class;
+                            $insertData['documentable_id'] = $this->model->id;
+                        }
+                        Documento::create($insertData);
+                    } else {
+                        $this->model->documentos()->create($insertData);
+                    }
                 }
 
                 $this->dispatch('notify', message: 'Arquivos enviados com sucesso!');
@@ -187,13 +235,31 @@ class DocumentManager extends Component implements HasActions, HasForms
 
     public function render(): View
     {
-        $queryFolders = Pasta::where('pastable_id', $this->model->id)
-            ->where('pastable_type', get_class($this->model))
+        $pastable = $this->getPastableInfo();
+
+        $queryFolders = Pasta::where('pastable_id', $pastable['id'])
+            ->where('pastable_type', $pastable['type'])
             ->where('parent_id', $this->current_folder_id);
 
-        $queryDocs = Documento::where('documentable_id', $this->model->id)
-            ->where('documentable_type', get_class($this->model))
-            ->where('pasta_id', $this->current_folder_id);
+        if ($this->model instanceof Task) {
+            if ($this->model->processo_id) {
+                $queryDocs = Documento::where('documentable_type', Processo::class)
+                    ->where('documentable_id', $this->model->processo_id)
+                    ->where('pasta_id', $this->current_folder_id);
+            } elseif ($this->model->pessoa_id) {
+                $queryDocs = Documento::where('documentable_type', Pessoa::class)
+                    ->where('documentable_id', $this->model->pessoa_id)
+                    ->where('pasta_id', $this->current_folder_id);
+            } else {
+                $queryDocs = Documento::where('documentable_type', Task::class)
+                    ->where('documentable_id', $this->model->id)
+                    ->where('pasta_id', $this->current_folder_id);
+            }
+        } else {
+            $queryDocs = Documento::where('documentable_id', $this->model->id)
+                ->where('documentable_type', get_class($this->model))
+                ->where('pasta_id', $this->current_folder_id);
+        }
 
         $breadcrumb = [];
         if ($this->current_folder_id) {
@@ -206,8 +272,8 @@ class DocumentManager extends Component implements HasActions, HasForms
         }
 
         // Para a árvore lateral (global do modelo)
-        $treeFolders = Pasta::where('pastable_id', $this->model->id)
-            ->where('pastable_type', get_class($this->model))
+        $treeFolders = Pasta::where('pastable_id', $pastable['id'])
+            ->where('pastable_type', $pastable['type'])
             ->whereNull('parent_id')
             ->with('subpastas')
             ->get();

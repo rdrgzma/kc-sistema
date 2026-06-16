@@ -2,12 +2,15 @@
 
 namespace App\Models;
 
+use App\Observers\InteracaoObserver;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
 
+#[ObservedBy(InteracaoObserver::class)]
 class Interacao extends Model
 {
     use LogsActivity;

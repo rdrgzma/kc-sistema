@@ -41,5 +41,25 @@ class ProcessoObserver
                 }
             }
         }
+
+        if ($processo->wasChanged('sentenca_id')) {
+            if ($processo->sentenca_id) {
+                $sentenca = $processo->sentenca;
+                $nomeDecisao = $sentenca ? $sentenca->nome : 'Nova Decisão';
+                $processo->timelineEvents()->create([
+                    'tipo' => 'J',
+                    'descricao' => "Nova decisão registrada: {$nomeDecisao}.",
+                    'data_evento' => now(),
+                    'user_id' => auth()->id(),
+                ]);
+            } else {
+                $processo->timelineEvents()->create([
+                    'tipo' => 'J',
+                    'descricao' => 'Decisão removida do processo.',
+                    'data_evento' => now(),
+                    'user_id' => auth()->id(),
+                ]);
+            }
+        }
     }
 }

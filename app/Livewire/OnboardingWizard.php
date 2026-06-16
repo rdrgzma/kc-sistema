@@ -13,8 +13,8 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Utilities\Set;
 use Filament\Schemas\Components\Wizard;
 use Filament\Schemas\Components\Wizard\Step;
 use Filament\Schemas\Schema;
@@ -157,7 +157,11 @@ class OnboardingWizard extends Component implements HasForms
             return;
         }
 
-        $pessoa = Pessoa::where('cpf_cnpj', 'like', "%{$cpfCnpjLivre}%")->first();
+        $pessoa = Pessoa::where(function ($query) use ($cpfCnpj, $cpfCnpjLivre) {
+            $query->where('cpf_cnpj', $cpfCnpj)
+                ->orWhere('cpf_cnpj', $cpfCnpjLivre)
+                ->orWhereRaw("replace(replace(replace(cpf_cnpj, '.', ''), '-', ''), '/', '') = ?", [$cpfCnpjLivre]);
+        })->first();
 
         if ($pessoa) {
             $this->pessoaExistenteId = $pessoa->id;
@@ -180,16 +184,21 @@ class OnboardingWizard extends Component implements HasForms
         $data = $this->form->getState();
 
         DB::transaction(function () use ($data) {
-            // Reutiliza pessoa existente ou cria nova
-            $pessoa = $this->pessoaExistenteId
-                ? Pessoa::findOrFail($this->pessoaExistenteId)
-                : Pessoa::create([
-                    'tipo' => $data['tipo'],
-                    'nome_razao' => $data['nome_razao'],
-                    'cpf_cnpj' => $data['cpf_cnpj'],
-                    'email' => $data['email'] ?? null,
-                    'telefone' => $data['telefone'] ?? null,
-                ]);
+            // Busca por garantia para evitar duplicados se o evento blur não disparou ou por formatação
+            $cpfCnpjLivre = preg_replace('/[^0-9]/', '', (string) $data['cpf_cnpj']);
+            $pessoaExistente = Pessoa::where(function ($query) use ($data, $cpfCnpjLivre) {
+                $query->where('cpf_cnpj', $data['cpf_cnpj'])
+                    ->orWhere('cpf_cnpj', $cpfCnpjLivre)
+                    ->orWhereRaw("replace(replace(replace(cpf_cnpj, '.', ''), '-', ''), '/', '') = ?", [$cpfCnpjLivre]);
+            })->first();
+
+            $pessoa = $pessoaExistente ?? Pessoa::create([
+                'tipo' => $data['tipo'],
+                'nome_razao' => $data['nome_razao'],
+                'cpf_cnpj' => $data['cpf_cnpj'],
+                'email' => $data['email'] ?? null,
+                'telefone' => $data['telefone'] ?? null,
+            ]);
 
             $processo = $pessoa->processos()->create([
                 'numero_processo' => $data['numero_processo'],
@@ -205,6 +214,9 @@ class OnboardingWizard extends Component implements HasForms
                 'data_evento' => $data['data_evento'],
                 'user_id' => auth()->id(),
             ]);
+
+            // Atualiza o ID caso tenha criado/reutilizado
+            $this->pessoaExistenteId = $pessoa->id;
         });
 
         $msg = $this->pessoaExistenteId

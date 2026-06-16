@@ -21,4 +21,19 @@ class LancamentoFinanceiroObserver
             ]);
         }
     }
+
+    public function updated(LancamentoFinanceiro $lancamento): void
+    {
+        if ($lancamento->lancamentable_type === Processo::class && $lancamento->lancamentable_id) {
+            $descricao = $lancamento->descricao ?? 'Sem descrição';
+            $valorFormatado = number_format((float) $lancamento->valor, 2, ',', '.');
+
+            $lancamento->lancamentable->timelineEvents()->create([
+                'tipo' => 'F',
+                'descricao' => "Lançamento financeiro editado: {$descricao} no valor de R$ {$valorFormatado}.",
+                'data_evento' => now(),
+                'user_id' => auth()->id(),
+            ]);
+        }
+    }
 }

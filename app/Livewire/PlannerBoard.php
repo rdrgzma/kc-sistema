@@ -4,15 +4,18 @@ namespace App\Livewire;
 
 use App\Enums\DurationUnit;
 use App\Enums\TaskUrgency;
+use App\Models\Bucket;
+use App\Models\Pessoa;
 use App\Models\Planner;
+use App\Models\Processo;
 use App\Models\Task;
 use App\Models\User;
 use App\Services\TaskDurationService;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
-use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\ColorPicker;
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
@@ -37,12 +40,30 @@ class PlannerBoard extends Component implements HasActions, HasForms
     #[Url(as: 'p')]
     public ?int $selectedPlannerId = null;
 
+    #[Url]
+    public ?int $processo_id = null;
+
+    #[Url]
+    public ?int $pessoa_id = null;
+
     // Agora é uma Collection de Planners ou um único Planner
     public $plannersData;
 
     public function mount()
     {
         $this->loadPlanners();
+
+        if ($this->processo_id) {
+            $processo = Processo::find($this->processo_id);
+            if ($processo) {
+                $this->pessoa_id = $processo->pessoa_id;
+            }
+
+            if (! $this->selectedPlannerId && $this->plannersData instanceof Collection && $this->plannersData->isNotEmpty()) {
+                $this->selectedPlannerId = $this->plannersData->first()->id;
+                $this->loadPlanners();
+            }
+        }
     }
 
     /**
@@ -53,12 +74,13 @@ class PlannerBoard extends Component implements HasActions, HasForms
         if ($this->selectedPlannerId) {
             $this->plannersData = Planner::with(['buckets.tasks.assignee', 'plannable'])
                 ->find($this->selectedPlannerId);
-            
+
             // Se não encontrar, volta para o index
-            if (!$this->plannersData) {
+            if (! $this->plannersData) {
                 $this->selectedPlannerId = null;
                 $this->loadPlanners();
             }
+
             return;
         }
 
@@ -119,7 +141,7 @@ class PlannerBoard extends Component implements HasActions, HasForms
                     ->label('Colunas (Fases)')
                     ->schema([
                         TextInput::make('name')->label('Nome')->required(),
-                        ColorPicker::make('color')->label('Cor')->required()
+                        ColorPicker::make('color')->label('Cor')->required(),
                     ])
                     ->defaultItems(3)
                     ->default([
@@ -127,7 +149,7 @@ class PlannerBoard extends Component implements HasActions, HasForms
                         ['name' => 'Em Andamento', 'color' => '#3b82f6'],
                         ['name' => 'Concluído', 'color' => '#10b981'],
                     ])
-                    ->reorderableWithDragAndDrop()
+                    ->reorderableWithDragAndDrop(),
             ])
             ->action(function (array $data) {
                 $plannerData = [
@@ -165,14 +187,14 @@ class PlannerBoard extends Component implements HasActions, HasForms
                     ->required(),
                 ColorPicker::make('color')
                     ->label('Cor')
-                    ->default('#64748b')
+                    ->default('#64748b'),
             ])
             ->action(function (array $data, array $arguments) {
-                \App\Models\Bucket::create([
+                Bucket::create([
                     'planner_id' => $arguments['planner_id'],
                     'name' => $data['name'],
                     'color' => $data['color'],
-                    'sort' => 999
+                    'sort' => 999,
                 ]);
                 $this->loadPlanners();
             });
@@ -183,20 +205,20 @@ class PlannerBoard extends Component implements HasActions, HasForms
         return Action::make('editBucket')
             ->label('Editar Coluna')
             ->modalWidth('sm')
-            ->fillForm(fn (array $arguments) => \App\Models\Bucket::find($arguments['bucket_id'])->toArray())
+            ->fillForm(fn (array $arguments) => Bucket::find($arguments['bucket_id'])->toArray())
             ->form([
                 TextInput::make('name')
                     ->label('Nome da Coluna')
                     ->required(),
                 ColorPicker::make('color')
-                    ->label('Cor')
+                    ->label('Cor'),
             ])
             ->action(function (array $data, array $arguments) {
-                $bucket = \App\Models\Bucket::find($arguments['bucket_id']);
+                $bucket = Bucket::find($arguments['bucket_id']);
                 if ($bucket) {
                     $bucket->update([
                         'name' => $data['name'],
-                        'color' => $data['color']
+                        'color' => $data['color'],
                     ]);
                 }
                 $this->loadPlanners();
@@ -265,6 +287,15 @@ class PlannerBoard extends Component implements HasActions, HasForms
                                     View::make('livewire.planner.partials.tab-timeline')
                                         ->viewData(['task' => $task]),
                                 ]),
+
+                            // ABA 5: Produção (Peça Processual)
+                            Tab::make('Produção (Peça)')
+                                ->icon('heroicon-o-document-text')
+                                ->badge($task->pecaProcessual ? 1 : null)
+                                ->schema([
+                                    View::make('livewire.planner.partials.tab-peca')
+                                        ->viewData(['task' => $task]),
+                                ]),
                         ])
                         ->activeTab(1) // Abre sempre nos Detalhes
                         ->contained(false), // Remove a borda excessiva das tabs do Filament
@@ -282,7 +313,6 @@ class PlannerBoard extends Component implements HasActions, HasForms
             });
     }
 
-
     /**
      * O esquema "mágico" do formulário, reaproveitado para Criar e Editar.
      */
@@ -293,6 +323,38 @@ class PlannerBoard extends Component implements HasActions, HasForms
                 ->label('Título da Tarefa')
                 ->required()
                 ->maxLength(255),
+
+            Select::make('pessoa_id')
+                ->label('Cliente (Opcional)')
+                ->options(fn () => Pessoa::orderBy('nome_razao')
+                    ->pluck('nome_razao', 'id')
+                    ->map(fn ($val) => $val ?? 'Sem Nome')
+                    ->toArray())
+                ->searchable()
+                ->nullable()
+                ->live()
+                ->default(fn () => $this->pessoa_id),
+
+            Select::make('processo_id')
+                ->label('Processo (Opcional)')
+                ->options(function (Get $get) {
+                    $pessoaId = $get('pessoa_id');
+                    if ($pessoaId) {
+                        return Processo::where('pessoa_id', $pessoaId)
+                            ->orderBy('numero_processo')
+                            ->pluck('numero_processo', 'id')
+                            ->map(fn ($val) => $val ?? 'Sem Número')
+                            ->toArray();
+                    }
+
+                    return Processo::orderBy('numero_processo')
+                        ->pluck('numero_processo', 'id')
+                        ->map(fn ($val) => $val ?? 'Sem Número')
+                        ->toArray();
+                })
+                ->searchable()
+                ->nullable()
+                ->default(fn () => $this->processo_id),
 
             Select::make('urgency')
                 ->label('Urgência')

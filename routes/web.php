@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\FinanceiroReportController;
+use App\Http\Controllers\ProdutividadeReportController;
+use App\Livewire\Admin\ApontamentosManager;
 use App\Livewire\Admin\AssistentesTecnicosManager;
 use App\Livewire\Admin\EquipesManager;
 use App\Livewire\Admin\EscritoriosManager;
@@ -9,6 +11,8 @@ use App\Livewire\Admin\FasesManager;
 use App\Livewire\Admin\PeritosManager;
 use App\Livewire\Admin\UsersManager;
 use App\Livewire\Dashboard;
+use App\Livewire\DashboardProdutividade;
+use App\Livewire\DashboardProdutividadeEquipe;
 use App\Livewire\Financeiro\FinanceiroManager;
 use App\Livewire\OnboardingWizard;
 use App\Livewire\PessoaDetalhe;
@@ -25,12 +29,17 @@ Route::get('/', function () {
 Route::middleware(['auth'])->group(function () {
     // Rota do Dashboard (Página Inicial)
     Route::livewire('/dashboard', Dashboard::class)->name('dashboard');
+    Route::get('/dashboard/produtividade', DashboardProdutividade::class)->name('dashboard.produtividade');
+    Route::get('/dashboard/produtividade/equipe', DashboardProdutividadeEquipe::class)->name('dashboard.produtividade-equipe');
+    Route::get('/dashboard/produtividade/exportar-decisoes', [ProdutividadeReportController::class, 'exportDecisoes'])->name('produtividade.exportar-decisoes');
+    Route::get('/dashboard/produtividade/exportar-apontamentos', [ProdutividadeReportController::class, 'exportApontamentos'])->name('produtividade.exportar-apontamentos');
 
     // Rota da Gestão de Pessoas
     Route::livewire('/pessoas', PessoasTable::class)->name('pessoas.index');
     Route::livewire('/processos', ProcessosTable::class)->name('processos.index');
     Route::livewire('/processos/{processo}', ProcessoDetalhe::class)->name('processos.show');
     Route::livewire('/pessoas/{pessoa}', PessoaDetalhe::class)->name('pessoas.show');
+    Route::get('/apontamentos', ApontamentosManager::class)->name('apontamentos.index');
 
     // Rota do Onboarding (Fluxo)
     Route::livewire('/onboarding', OnboardingWizard::class)->name('onboarding');

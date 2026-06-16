@@ -95,13 +95,20 @@
                                                     'docx', 'doc' => 'heroicon-m-document',
                                                     'xls', 'xlsx' => 'heroicon-m-table-cells',
                                                     'jpg', 'png', 'webp' => 'heroicon-m-photo',
-                                                    default => 'heroicon-m-document-outline'
+                                                    default => 'heroicon-m-document'
                                                 };
                                             @endphp
                                             <x-dynamic-component :component="$icon" class="w-5 h-5 text-slate-400 group-hover/link:text-primary-600 transition-colors"/>
                                         </div>
                                         <div>
-                                            <p class="text-sm font-black text-slate-900 dark:text-gray-200 group-hover:text-primary-600 transition-colors truncate max-w-md">{{ $doc->nome_arquivo }}</p>
+                                            <div class="flex items-center gap-2 flex-wrap">
+                                                <p class="text-sm font-black text-slate-900 dark:text-gray-200 group-hover:text-primary-600 transition-colors truncate max-w-md">{{ $doc->nome_arquivo }}</p>
+                                                @if($doc->pecaProcessual)
+                                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-wider bg-indigo-50 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
+                                                        Peça: {{ $doc->pecaProcessual->tipo_peca->getLabel() }}
+                                                    </span>
+                                                @endif
+                                            </div>
                                             <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">{{ $doc->created_at->format('d/m/Y \à\s H:i') }}</p>
                                         </div>
                                     </a>

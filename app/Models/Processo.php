@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Collection;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
@@ -131,6 +132,21 @@ class Processo extends Model
     public function interacoes(): MorphMany
     {
         return $this->morphMany(Interacao::class, 'interactable');
+    }
+
+    public function apontamentosTempo(): HasMany
+    {
+        return $this->hasMany(ApontamentoTempo::class);
+    }
+
+    public function pecasProcessuais(): HasMany
+    {
+        return $this->hasMany(PecaProcessual::class);
+    }
+
+    public function tasks(): HasMany
+    {
+        return $this->hasMany(Task::class, 'processo_id');
     }
 
     public function getTodosDocumentosAttribute(): Collection
