@@ -149,6 +149,11 @@ class Processo extends Model
         return $this->hasMany(Task::class, 'processo_id');
     }
 
+    public function calculos(): HasMany
+    {
+        return $this->hasMany(Calculo::class);
+    }
+
     public function getTodosDocumentosAttribute(): Collection
     {
         // 1. Documentos diretos do processo

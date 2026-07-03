@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('password');
             $table->rememberToken();
             $table->string('legacy_id')->nullable()->index();
-    $table->string('legacy_table')->nullable();
+            $table->string('legacy_table')->nullable();
             $table->timestamps();
         });
 

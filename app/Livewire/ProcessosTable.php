@@ -132,20 +132,20 @@ class ProcessosTable extends Component implements HasActions, HasForms, HasTable
                         ->searchable()
                         ->preload()
                         ->required(),
-                       
-                        Select::make('escritorio_id')
-                            ->label('Escritório')
-                            ->relationship('escritorio', 'nome')
-                            ->searchable()
-                            ->preload()
-                            ->required(),
-    
-                        Select::make('equipe_id')
-                            ->label('Equipe')
-                            ->relationship('equipe', 'nome')
-                            ->searchable()
-                            ->preload()
-                            ->required(),                
+
+                    Select::make('escritorio_id')
+                        ->label('Escritório')
+                        ->relationship('escritorio', 'nome')
+                        ->searchable()
+                        ->preload()
+                        ->required(),
+
+                    Select::make('equipe_id')
+                        ->label('Equipe')
+                        ->relationship('equipe', 'nome')
+                        ->searchable()
+                        ->preload()
+                        ->required(),
                 ]),
 
             Section::make('Classificação Estratégica')

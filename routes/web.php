@@ -10,6 +10,7 @@ use App\Livewire\Admin\EspecialidadesManager;
 use App\Livewire\Admin\FasesManager;
 use App\Livewire\Admin\PeritosManager;
 use App\Livewire\Admin\UsersManager;
+use App\Livewire\CalculoManager;
 use App\Livewire\Dashboard;
 use App\Livewire\DashboardProdutividade;
 use App\Livewire\DashboardProdutividadeEquipe;
@@ -40,6 +41,7 @@ Route::middleware(['auth'])->group(function () {
     Route::livewire('/processos/{processo}', ProcessoDetalhe::class)->name('processos.show');
     Route::livewire('/pessoas/{pessoa}', PessoaDetalhe::class)->name('pessoas.show');
     Route::get('/apontamentos', ApontamentosManager::class)->name('apontamentos.index');
+    Route::get('/calculos', CalculoManager::class)->name('calculos.index');
 
     // Rota do Onboarding (Fluxo)
     Route::livewire('/onboarding', OnboardingWizard::class)->name('onboarding');

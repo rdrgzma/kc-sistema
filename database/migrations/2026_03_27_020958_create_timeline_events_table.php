@@ -13,14 +13,14 @@ return new class extends Migration
     {
         Schema::create('timeline_events', function (Blueprint $table) {
             $table->id();
-            $table->morphs('timelineable'); 
-    
+            $table->morphs('timelineable');
+
             $table->foreignId('user_id')->nullable()->constrained('users'); // Quem registrou
-    
+
             $table->enum('tipo', ['A', 'J', 'F'])->default('A'); // Administrativo, Judicial, Financeiro
             $table->text('descricao');
             $table->datetime('data_evento');
-            
+
             $table->string('legacy_id')->nullable()->index();
             $table->timestamps();
         });

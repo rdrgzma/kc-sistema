@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignId('assistente_tecnico_id')->nullable()->constrained('assistentes_tecnicos')->nullOnDelete()->after('perito_id');
 
             // fase_recursal_id added as nullable index (add FK later if you create a fases_recursais table)
-            $table->unsignedBigInteger('fase_recursal_id')->nullable()->index()->after('fase_id');  
+            $table->unsignedBigInteger('fase_recursal_id')->nullable()->index()->after('fase_id');
         });
     }
 

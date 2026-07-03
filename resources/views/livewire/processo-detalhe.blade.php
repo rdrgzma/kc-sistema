@@ -105,6 +105,14 @@
                 <x-heroicon-o-document-text class="w-5 h-5"/>
                 Peças Produzidas
             </button>
+            <button 
+                @click="tab = 'calculos'" 
+                :class="tab === 'calculos' ? 'bg-white dark:bg-zinc-700 shadow-lg text-primary-600 dark:text-primary-400 scale-[1.02]' : 'text-slate-500 dark:text-gray-400 hover:text-slate-700'"
+                class="flex items-center gap-3 px-8 py-3 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all duration-400 scale-100 hover:scale-[1.01]"
+            >
+                <x-heroicon-o-calculator class="w-5 h-5"/>
+                Cálculos
+            </button>
         </div>
 
         {{-- Tab Panels Full-Width --}}
@@ -139,6 +147,12 @@
         <div x-show="tab === 'pecas'" x-cloak x-transition:enter="transition-all ease-out duration-500" x-transition:enter-start="opacity-0 translate-y-8" x-transition:enter-end="opacity-100 translate-y-0">
             <div class="overflow-hidden bg-slate-50/30 dark:bg-zinc-900/30">
                 <livewire:processo.pecas-relation-manager :processo="$processo" />
+            </div>
+        </div>
+
+        <div x-show="tab === 'calculos'" x-cloak x-transition:enter="transition-all ease-out duration-500" x-transition:enter-start="opacity-0 translate-y-8" x-transition:enter-end="opacity-100 translate-y-0">
+            <div class="overflow-hidden bg-slate-50/30 dark:bg-zinc-900/30">
+                <livewire:calculo-manager :processo="$processo" />
             </div>
         </div>
     </div>

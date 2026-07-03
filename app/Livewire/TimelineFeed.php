@@ -2,25 +2,25 @@
 
 namespace App\Livewire;
 
-use App\Models\TimelineEvent;
-use Illuminate\Database\Eloquent\Model;
-use Livewire\Component;
-use Illuminate\View\View;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
+use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
-use Filament\Actions\Action;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Forms\Contracts\HasForms;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\View\View;
+use Livewire\Component;
 
-class TimelineFeed extends Component implements HasForms, HasActions
+class TimelineFeed extends Component implements HasActions, HasForms
 {
-    use InteractsWithForms;
     use InteractsWithActions;
+    use InteractsWithForms;
 
     public Model $model;
+
     public bool $isInitialized = false;
 
     public function mount(Model $model): void
@@ -31,10 +31,11 @@ class TimelineFeed extends Component implements HasForms, HasActions
 
     public function getListeners()
     {
-        if (!$this->isInitialized) {
+        if (! $this->isInitialized) {
             return [];
         }
         $morphClass = str_replace('\\', '.', $this->model->getMorphClass());
+
         return [
             "echo:{$morphClass}.{$this->model->id},NovoAndamento" => '$refresh',
         ];
@@ -71,15 +72,14 @@ class TimelineFeed extends Component implements HasForms, HasActions
 
     public function with(): array
     {
-        if (!$this->isInitialized) {
+        if (! $this->isInitialized) {
             return ['events' => collect()];
         }
 
         return [
-            'events' => $this->model->timelineEvents()->latest('data_evento')->get()
+            'events' => $this->model->timelineEvents()->latest('data_evento')->get(),
         ];
     }
-
 
     public function render(): View
     {

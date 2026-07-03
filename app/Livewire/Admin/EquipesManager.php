@@ -3,11 +3,11 @@
 namespace App\Livewire\Admin;
 
 use App\Models\Equipe;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Contracts\HasActions;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
-use Filament\Actions\Concerns\InteractsWithActions;
-use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextArea;
 use Filament\Forms\Components\TextInput;

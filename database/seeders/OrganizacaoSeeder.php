@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\Escritorio;
 use App\Models\Equipe;
+use App\Models\Escritorio;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -29,16 +29,16 @@ class OrganizacaoSeeder extends Seeder
 
         // 2. Equipes SP
         $civilSp = Equipe::firstOrCreate(['nome' => 'Departamento Cível SP', 'escritorio_id' => $sp->id], [
-            'descricao' => 'Foco em litígios cíveis e estratégicos em SP'
+            'descricao' => 'Foco em litígios cíveis e estratégicos em SP',
         ]);
 
         $trabalhistaSp = Equipe::firstOrCreate(['nome' => 'Departamento Trabalhista SP', 'escritorio_id' => $sp->id], [
-            'descricao' => 'Contencioso e consultivo trabalhista patronal'
+            'descricao' => 'Contencioso e consultivo trabalhista patronal',
         ]);
 
         // 3. Equipes RJ
         $civilRj = Equipe::firstOrCreate(['nome' => 'Departamento Cível RJ', 'escritorio_id' => $rj->id], [
-            'descricao' => 'Operações cíveis na região do Rio'
+            'descricao' => 'Operações cíveis na região do Rio',
         ]);
 
         // 4. Usuários SP

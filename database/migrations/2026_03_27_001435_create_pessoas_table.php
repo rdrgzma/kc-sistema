@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('cpf_cnpj')->unique()->nullable();
             $table->string('email')->nullable();
             $table->string('telefone')->nullable();
-            
+
             // Campos de Endereço base
             $table->string('cep', 10)->nullable();
             $table->string('logradouro')->nullable();

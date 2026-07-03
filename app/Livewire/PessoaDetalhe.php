@@ -3,9 +3,9 @@
 namespace App\Livewire;
 
 use App\Models\Pessoa;
-use Livewire\Component;
 use Illuminate\View\View;
 use Livewire\Attributes\Layout;
+use Livewire\Component;
 
 #[Layout('layouts.app')]
 class PessoaDetalhe extends Component

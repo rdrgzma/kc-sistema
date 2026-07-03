@@ -20,10 +20,10 @@ return new class extends Migration
             $table->string('tipo'); // 'receita' ou 'despesa'
             $table->string('status'); // 'pendente', 'pago', 'cancelado'
             $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
-            
+
             // Polimorfismo: pode estar vinculado a Pessoa ou Processo
             $table->morphs('lancamentable');
-            
+
             $table->timestamps();
         });
     }

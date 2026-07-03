@@ -13,11 +13,11 @@ trait HasLegacyData
     public function scopeFromLegacy($query, $id, $table = null)
     {
         $query->where('legacy_id', $id);
-        
+
         if ($table) {
             $query->where('legacy_table', $table);
         }
-        
+
         return $query;
     }
 }

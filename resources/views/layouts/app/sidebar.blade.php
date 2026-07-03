@@ -35,6 +35,7 @@
                         ['route' => 'dashboard', 'icon' => 'heroicon-o-chart-pie', 'label' => 'Início'],
                         ['route' => 'processos.index', 'icon' => 'heroicon-o-scale', 'label' => 'Processos'],
                         ['route' => 'pessoas.index', 'icon' => 'heroicon-o-user-circle', 'label' => 'Clientes'],
+                        ['route' => 'calculos.index', 'icon' => 'heroicon-o-calculator', 'label' => 'Cálculos'],
                         ['route' => 'financeiro.index', 'icon' => 'heroicon-o-banknotes', 'label' => 'Financeiro'],
                     ]
                 ],

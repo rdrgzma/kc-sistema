@@ -3,18 +3,18 @@
 namespace App\Livewire;
 
 use App\Models\Interacao;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
-use Filament\Actions\Concerns\InteractsWithActions;
-use Filament\Actions\Contracts\HasActions;
-use Livewire\Component;
 use Illuminate\View\View;
+use Livewire\Component;
 
-class InteractionsTable extends Component implements HasForms, HasTable, HasActions
+class InteractionsTable extends Component implements HasActions, HasForms, HasTable
 {
     use InteractsWithActions;
     use InteractsWithForms;
@@ -35,7 +35,6 @@ class InteractionsTable extends Component implements HasForms, HasTable, HasActi
                     ->limit(50),
             ]);
     }
-
 
     public function render(): View
     {
