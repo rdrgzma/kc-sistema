@@ -1,7 +1,10 @@
 <div class="space-y-6">
     <div class="flex justify-between items-center dark:text-gray-200">
         <h3 class="text-lg font-bold text-gray-800 dark:text-gray-200 ">Histórico de Andamentos</h3>
-        {{ $this->registrarAndamento }}
+        <div class="flex gap-2">
+            {{ $this->lancarPublicacaoAction }}
+            {{ $this->novoAndamentoAction }}
+        </div>
     </div>
 
     <div class="relative">
@@ -9,7 +12,7 @@
 
         <div class="space-y-8 relative dark:text-gray-200">
             @foreach($events as $event)
-                <div class="flex items-start gap-4">
+                <div class="flex items-start gap-4 group">
                     <div class="z-10 w-8 h-8 rounded-full flex items-center justify-center shadow-sm 
                         {{ $event->tipo === 'J' ? 'bg-blue-600' : ($event->tipo === 'F' ? 'bg-green-600' : 'bg-gray-500') }}">
                         <span class="text-white text-xs font-bold">{{ $event->tipo }}</span>
@@ -23,6 +26,12 @@
                             <span class="text-xs text-gray-400 dark:text-gray-200 dark:border-gray-700">Por: {{ $event->user->name ?? 'Sistema' }}</span>
                         </div>
                         <p class="text-sm text-gray-700 leading-relaxed dark:text-gray-200 dark:border-gray-700">{{ $event->descricao }}</p>
+                        
+                        <div class="mt-3 flex justify-end opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button type="button" wire:click="mountAction('gerarTarefa', { id: {{ $event->id }} })" class="text-xs flex items-center gap-1 text-warning-600 hover:text-warning-500 font-medium">
+                                <x-heroicon-o-briefcase class="w-4 h-4"/> Gerar Tarefa
+                            </button>
+                        </div>
                     </div>
                 </div>
             @endforeach

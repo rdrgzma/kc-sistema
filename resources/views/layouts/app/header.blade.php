@@ -14,6 +14,20 @@
         <livewire:global-search />
 
         <div class="ml-auto flex items-center gap-4">
+            <!-- Zoom Controls -->
+            <div class="flex items-center h-[46px] bg-slate-50 dark:bg-zinc-800 rounded-2xl border border-slate-300 dark:border-zinc-700 shadow-sm px-2">
+                <button @click="$store.zoom.decrease()" class="px-2 text-slate-600 dark:text-zinc-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors font-semibold" title="Diminuir zoom">
+                    A-
+                </button>
+                <div class="w-px h-4 bg-slate-300 dark:bg-zinc-700 mx-1"></div>
+                <button @click="$store.zoom.reset()" class="px-2 text-[10px] uppercase font-black text-slate-400 hover:text-slate-600 dark:hover:text-zinc-300 transition-colors" title="Zoom Original" x-text="Math.round($store.zoom.level * 100) + '%'">
+                </button>
+                <div class="w-px h-4 bg-slate-300 dark:bg-zinc-700 mx-1"></div>
+                <button @click="$store.zoom.increase()" class="px-2 text-lg text-slate-600 dark:text-zinc-400 hover:text-primary-600 dark:hover:text-primary-400 transition-colors font-black leading-none" title="Aumentar zoom">
+                    A+
+                </button>
+            </div>
+
             <button @click="$store.theme.toggle()"
                 class="p-3 bg-slate-50 dark:bg-zinc-800 rounded-2xl text-slate-600 dark:text-zinc-400 hover:text-primary-600 dark:hover:text-primary-400 transition-all outline-none cursor-pointer border border-slate-300 dark:border-zinc-700 hover:border-primary-300 active:scale-95 shadow-sm"
                 title="Alternar tema">

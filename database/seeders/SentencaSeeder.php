@@ -10,16 +10,16 @@ class SentencaSeeder extends Seeder
     public function run(): void
     {
         $sentencas = [
-            'Procedente',
+            'Acordo',
+            'Aguardando Baixa',
+            'Arquivado',
             'Improcedente',
             'Parcialmente Procedente',
-            'Extinto sem Resolução de Mérito',
-            'Homologação de Acordo',
-            'Aguardando Julgamento',
+            'Procedente',
         ];
 
-        foreach ($sentencas as $nome) {
-            Sentenca::firstOrCreate(['nome' => $nome]);
+        foreach ($sentencas as $sentenca) {
+            Sentenca::firstOrCreate(['nome' => $sentenca]);
         }
     }
 }

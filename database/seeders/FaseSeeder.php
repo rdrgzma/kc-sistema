@@ -10,17 +10,16 @@ class FaseSeeder extends Seeder
     public function run(): void
     {
         $fases = [
-            'Pré-processual',
-            'Conhecimento - 1º Grau',
-            'Recurso - 2º Grau',
-            'Recurso Especial / Extraordinário',
-            'Execução',
-            'Cumprimento de Sentença',
-            'Encerrado',
+            ['nome' => 'Instrução', 'descricao' => 'Fase instrutória'],
+            ['nome' => 'Sentença', 'descricao' => 'Aguardando ou com sentença proferida'],
+            ['nome' => 'Execução', 'descricao' => 'Fase de execução'],
+            ['nome' => 'Fase Recursal', 'descricao' => 'Fase de recursos'],
+            ['nome' => 'Penhora', 'descricao' => 'Fase de penhora'],
+            ['nome' => 'Penhora/Execução', 'descricao' => 'Fase de penhora e execução combinadas'],
         ];
 
-        foreach ($fases as $nome) {
-            Fase::firstOrCreate(['nome' => $nome]);
+        foreach ($fases as $fase) {
+            Fase::firstOrCreate(['nome' => $fase['nome']]);
         }
     }
 }

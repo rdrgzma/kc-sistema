@@ -15,12 +15,17 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     
     <script>
-        // Anti-FOUC: aplica tema antes do Alpine iniciar
+        // Anti-FOUC: aplica tema e zoom antes do Alpine iniciar
         (function() {
             var theme = localStorage.getItem('theme');
             var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
             var isDark = theme === 'dark' || (theme === 'system' && prefersDark) || (!theme && prefersDark);
             document.documentElement.classList.toggle('dark', isDark);
+
+            var zoom = localStorage.getItem('zoom_level');
+            if (zoom) {
+                document.documentElement.style.fontSize = (parseFloat(zoom) * 16) + 'px';
+            }
         })();
     </script>
 
@@ -40,6 +45,26 @@
                 },
                 toggle() {
                     this.set(this.isDark ? 'light' : 'dark');
+                }
+            });
+
+            Alpine.store('zoom', {
+                level: parseFloat(localStorage.getItem('zoom_level')) || 1,
+                init() {
+                    this.apply();
+                },
+                increase() {
+                    if (this.level < 1.5) { this.level += 0.05; this.apply(); }
+                },
+                decrease() {
+                    if (this.level > 0.7) { this.level -= 0.05; this.apply(); }
+                },
+                reset() {
+                    this.level = 1; this.apply();
+                },
+                apply() {
+                    localStorage.setItem('zoom_level', this.level);
+                    document.documentElement.style.fontSize = (this.level * 16) + 'px';
                 }
             });
         });

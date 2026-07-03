@@ -3,7 +3,7 @@
 
 
 
-    <div class="h-24 flex items-center justify-between px-6 overflow-hidden relative">
+    <div class="h-24 flex items-center justify-between px-6 overflow-visible relative">
         <a href="{{ route('dashboard') }}"
             class="flex items-center gap-4 shrink-0 transition-transform active:scale-95">
             <span class="text-3xl">⚖️</span>
@@ -26,7 +26,7 @@
     </div>
 
     <nav :class="isSidebarOpen ? 'overflow-y-auto' : 'overflow-visible'"
-         class="flex-1 px-4 py-8 flex flex-col gap-10 scrollbar-hide">
+         class="flex-1 px-3 py-2 flex flex-col gap-2 scrollbar-hide">
         @php
             $sections = [
                 [
@@ -85,7 +85,7 @@
                 <div x-data="{ expanded: {{ $isAnyItemActive ? 'true' : 'false' }} }" class="flex flex-col gap-1 focus:outline-none">
                     @if ($section['label'])
                         <button @click="expanded = !expanded"
-                            class="mt-6 mb-2 px-4 flex items-center gap-3 w-full text-left outline-none group/section">
+                            class="mt-2 mb-1 px-3 flex items-center gap-3 w-full text-left outline-none group/section">
                             <span x-show="isSidebarOpen" class="text-[9px] font-black text-slate-400 dark:text-zinc-600 uppercase tracking-[0.3em] font-sans whitespace-nowrap group-hover/section:text-slate-600">
                                 {{ $section['label'] }}
                             </span>
@@ -116,7 +116,7 @@
                                 <div x-data="{ open: @json($isActive) }" class="flex flex-col gap-0.5 w-full relative px-1">
                                     {{-- Parent Toggle Button --}}
                                     <button @click="open = !open"
-                                        class="group/item flex items-center justify-between w-full px-3 py-2 text-sm font-bold rounded-xl transition-all border outline-none {{ $isActive ? 'text-primary-600 dark:text-primary-400 bg-primary-50/50 dark:bg-primary-900/10 border-primary-100/50 dark:border-primary-800/20' : 'text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-100 hover:bg-slate-50 dark:hover:bg-zinc-800 border-transparent hover:border-slate-100 dark:hover:border-zinc-700' }}">
+                                        class="group/item flex items-center justify-between w-full px-3 py-1.5 text-sm font-bold rounded-xl transition-all border outline-none {{ $isActive ? 'text-primary-600 dark:text-primary-400 bg-primary-50/50 dark:bg-primary-900/10 border-primary-100/50 dark:border-primary-800/20' : 'text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-100 hover:bg-slate-50 dark:hover:bg-zinc-800 border-transparent hover:border-slate-100 dark:hover:border-zinc-700' }}">
                                         <div class="flex items-center">
                                             <x-dynamic-component :component="$item['icon']"
                                                 class="w-5 h-5 shrink-0 transition-colors {{ $isActive ? 'text-primary-600 dark:text-primary-400' : 'text-slate-400 dark:text-zinc-600 group-hover/item:text-slate-900 dark:group-hover/item:text-zinc-100' }}" />
@@ -149,7 +149,7 @@
                             @else
                                 <div class="relative px-1">
                                     <a href="{{ route($item['route']) }}" wire:navigate
-                                        class="group/item flex items-center justify-center lg:justify-start px-3 py-2 text-sm font-bold rounded-xl transition-all border {{ $isActive ? 'text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20 border-primary-100 dark:border-primary-800/40' : 'text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-100 hover:bg-slate-50 dark:hover:bg-zinc-800 border-transparent hover:border-slate-100 dark:hover:border-zinc-700' }}">
+                                        class="group/item flex items-center justify-center lg:justify-start px-3 py-1.5 text-sm font-bold rounded-xl transition-all border {{ $isActive ? 'text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20 border-primary-100 dark:border-primary-800/40' : 'text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-zinc-100 hover:bg-slate-50 dark:hover:bg-zinc-800 border-transparent hover:border-slate-100 dark:hover:border-zinc-700' }}">
 
                                         <x-dynamic-component :component="$item['icon']"
                                             class="w-5 h-5 shrink-0 transition-colors {{ $isActive ? 'text-primary-600 dark:text-primary-400' : 'text-slate-400 dark:text-zinc-600 group-hover/item:text-slate-900 dark:group-hover/item:text-zinc-100' }}" />

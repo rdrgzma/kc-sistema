@@ -11,18 +11,17 @@ class ProcedimentoSeeder extends Seeder
     {
         $procedimentos = [
             'Ordinário',
-            'Sumaríssimo',
             'Sumário',
-            'Especial',
-            'Mandado de Segurança',
-            'Ação Civil Pública',
-            'Ação Popular',
-            'Habeas Corpus',
+            'Execução Extra Judicial',
+            'Juizados Especiais',
             'Recurso Administrativo',
+            'Habeas Corpus',
+            'Mandado de Segurança',
+            'Outro',
         ];
 
-        foreach ($procedimentos as $nome) {
-            Procedimento::firstOrCreate(['nome' => $nome]);
+        foreach ($procedimentos as $procedimento) {
+            Procedimento::firstOrCreate(['nome' => $procedimento]);
         }
     }
 }
