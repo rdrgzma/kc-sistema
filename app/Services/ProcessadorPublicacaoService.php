@@ -4,8 +4,8 @@ namespace App\Services;
 
 use App\DTOs\PublicacaoDTO;
 use App\Models\Bucket;
+use App\Models\Planner;
 use App\Models\Processo;
-use App\Models\TimelineEvent;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -19,15 +19,15 @@ class ProcessadorPublicacaoService
             // 1. Registra o andamento na Timeline do Processo
             $processo->timelineEvents()->create([
                 'tipo' => 'J', // Judicial (publicação oficial)
-                'descricao' => 'Publicação Oficial: ' . $dto->textoPublicacao,
+                'descricao' => 'Publicação Oficial: '.$dto->textoPublicacao,
                 'data_evento' => $dto->dataPublicacao,
                 'user_id' => null, // Ou o ID de um robô/sistema
             ]);
 
             // 2. Injeta no Kanban (Criação de Tarefa)
             // Tenta pegar o bucket 'Backlog' ou o primeiro disponível
-            $planner = \App\Models\Planner::firstOrCreate(['name' => 'Quadro Geral']);
-            
+            $planner = Planner::firstOrCreate(['name' => 'Quadro Geral']);
+
             $bucket = Bucket::firstOrCreate(
                 ['name' => 'Backlog'],
                 ['sort' => 0, 'color' => 'gray', 'planner_id' => $planner->id]

@@ -3,8 +3,10 @@
 namespace App\Livewire;
 
 use App\Enums\ClassificacaoDecisao;
+use App\Enums\ModalidadeAtividade;
 use App\Models\ApontamentoTempo;
 use App\Models\Sentenca;
+use App\Models\Task;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Concerns\InteractsWithForms;
@@ -48,31 +50,64 @@ class DashboardProdutividade extends Component implements HasActions, HasForms
      */
     public function getStatsProperty(): array
     {
-        // 1. Total de Decisões Favoráveis vs Desfavoráveis no mês atual
-        $startOfMonth = now()->startOfMonth();
-        $endOfMonth = now()->endOfMonth();
+        $start = $this->dataInicio;
+        $end = $this->dataFim;
 
-        $favoraveisMes = Sentenca::where('classificacao', ClassificacaoDecisao::FAVORAVEL)
-            ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
-            ->count();
+        // 1. Total de Decisões Favoráveis vs Desfavoráveis no período
+        $decisoesQuery = Sentenca::query();
+        if ($start) {
+            $decisoesQuery->whereDate('created_at', '>=', $start);
+        }
+        if ($end) {
+            $decisoesQuery->whereDate('created_at', '<=', $end);
+        }
 
-        $desfavoraveisMes = Sentenca::where('classificacao', ClassificacaoDecisao::DESFAVORAVEL)
-            ->whereBetween('created_at', [$startOfMonth, $endOfMonth])
-            ->count();
+        $favoraveisMes = (clone $decisoesQuery)->where('classificacao', ClassificacaoDecisao::FAVORAVEL)->count();
+        $desfavoraveisMes = (clone $decisoesQuery)->where('classificacao', ClassificacaoDecisao::DESFAVORAVEL)->count();
 
-        // 2. Soma total do valor_economia (Economia Gerada)
-        $totalEconomia = Sentenca::sum('valor_economia');
+        // 2. Soma total do valor_economia (Economia Gerada) no período
+        $totalEconomia = (clone $decisoesQuery)->sum('valor_economia');
 
-        // 3. Tempo total de deslocamento da equipe (em horas)
-        $apontamentos = ApontamentoTempo::select('hora_inicio', 'hora_fim')->get();
-        $totalMinutos = $apontamentos->sum(fn ($apontamento) => $apontamento->tempo_deslocamento);
+        // 3. Tempo total de deslocamento da equipe (em horas) no período
+        $apontamentosQuery = ApontamentoTempo::select('hora_inicio', 'hora_fim', 'data_atividade')
+            ->where('modalidade', ModalidadeAtividade::PRESENCIAL);
+        if ($start) {
+            $apontamentosQuery->whereDate('data_atividade', '>=', $start);
+        }
+        if ($end) {
+            $apontamentosQuery->whereDate('data_atividade', '<=', $end);
+        }
+        $totalMinutos = $apontamentosQuery->get()->sum(fn ($apontamento) => $apontamento->tempo_deslocamento);
         $totalHoras = round($totalMinutos / 60, 1);
+
+        // 4. Métricas de Tarefas no período
+        $tasksQuery = Task::query();
+        if ($start) {
+            $tasksQuery->whereDate('created_at', '>=', $start);
+        }
+        if ($end) {
+            $tasksQuery->whereDate('created_at', '<=', $end);
+        }
+
+        $totalTarefas = (clone $tasksQuery)->count();
+
+        $concluidasQuery = (clone $tasksQuery)->whereHas('bucket', function ($q) {
+            $q->where('name', 'like', '%completed%')
+                ->orWhere('name', 'like', '%done%')
+                ->orWhere('name', 'like', '%conclu%');
+        });
+        $concluidas = $concluidasQuery->count();
+        $somaConclusoes = (clone $tasksQuery)->sum('conclusoes_count');
+        $repeticoes = max(0, $somaConclusoes - $concluidas);
 
         return [
             'favoraveis_mes' => $favoraveisMes,
             'desfavoraveis_mes' => $desfavoraveisMes,
             'total_economia' => $totalEconomia,
             'total_horas_deslocamento' => $totalHoras,
+            'total_tarefas' => $totalTarefas,
+            'tarefas_concluidas' => $concluidas,
+            'tarefas_repeticoes' => $repeticoes,
         ];
     }
 

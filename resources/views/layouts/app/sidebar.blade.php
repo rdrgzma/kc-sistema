@@ -43,7 +43,9 @@
                     'label' => 'Produtividade',
                     'items' => [
                         ['route' => 'dashboard.produtividade', 'icon' => 'heroicon-o-presentation-chart-line', 'label' => 'Painel Geral'],
-                        ['route' => 'dashboard.produtividade-equipe', 'icon' => 'heroicon-o-users', 'label' => 'Ranking da Equipe'],
+                        ['route' => 'dashboard.produtividade-equipe', 'icon' => 'heroicon-o-users', 'label' => 'Peças'],
+                        ['route' => 'dashboard.produtividade-usuarios', 'icon' => 'heroicon-o-user-circle', 'label' => 'Tarefas'],
+                        ['route' => 'dashboard.produtividade-deslocamentos', 'icon' => 'heroicon-o-map-pin', 'label' => 'Deslocamentos'],
                     ]
                 ],
                 [
@@ -106,9 +108,13 @@
                                 if ($hasSubitems) {
                                     $isActive = collect($item['subitems'])->contains(fn($sub) => request()->routeIs($sub['route'] . '*'));
                                 } else {
-                                    $isActive = $item['route'] === 'dashboard'
-                                        ? request()->routeIs('dashboard')
-                                        : request()->routeIs($item['route'] . '*');
+                                    if ($item['route'] === 'dashboard') {
+                                        $isActive = request()->routeIs('dashboard');
+                                    } elseif ($item['route'] === 'dashboard.produtividade') {
+                                        $isActive = request()->routeIs('dashboard.produtividade');
+                                    } else {
+                                        $isActive = request()->routeIs($item['route'] . '*');
+                                    }
                                 }
                             @endphp
                             

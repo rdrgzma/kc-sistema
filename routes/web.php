@@ -4,11 +4,13 @@ use App\Http\Controllers\FinanceiroReportController;
 use App\Http\Controllers\ProdutividadeReportController;
 use App\Livewire\Admin\ApontamentosManager;
 use App\Livewire\Admin\AssistentesTecnicosManager;
+use App\Livewire\Admin\DeslocamentosManager;
 use App\Livewire\Admin\EquipesManager;
 use App\Livewire\Admin\EscritoriosManager;
 use App\Livewire\Admin\EspecialidadesManager;
 use App\Livewire\Admin\FasesManager;
 use App\Livewire\Admin\PeritosManager;
+use App\Livewire\Admin\ProdutividadeUsuarioManager;
 use App\Livewire\Admin\UsersManager;
 use App\Livewire\CalculoManager;
 use App\Livewire\Dashboard;
@@ -32,6 +34,8 @@ Route::middleware(['auth'])->group(function () {
     Route::livewire('/dashboard', Dashboard::class)->name('dashboard');
     Route::get('/dashboard/produtividade', DashboardProdutividade::class)->name('dashboard.produtividade');
     Route::get('/dashboard/produtividade/equipe', DashboardProdutividadeEquipe::class)->name('dashboard.produtividade-equipe');
+    Route::get('/dashboard/produtividade/usuarios', ProdutividadeUsuarioManager::class)->name('dashboard.produtividade-usuarios');
+    Route::get('/dashboard/produtividade/deslocamentos', DeslocamentosManager::class)->name('dashboard.produtividade-deslocamentos');
     Route::get('/dashboard/produtividade/exportar-decisoes', [ProdutividadeReportController::class, 'exportDecisoes'])->name('produtividade.exportar-decisoes');
     Route::get('/dashboard/produtividade/exportar-apontamentos', [ProdutividadeReportController::class, 'exportApontamentos'])->name('produtividade.exportar-apontamentos');
 

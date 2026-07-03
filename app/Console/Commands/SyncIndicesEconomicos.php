@@ -45,16 +45,16 @@ class SyncIndicesEconomicos extends Command
 
             $now = now();
             $upsertData = [];
-            
+
             // Build the accumulated index for division calculation
             // BCB SGS API returns percentages (e.g. 0.98 means 0.98%)
             $acumulado = 1.0000000000;
-            
+
             foreach ($cotacoesData as $item) {
                 // To avoid 0 which would break division, first element or base
                 $taxa = ((float) $item['valor']) / 100.0;
                 $acumulado = $acumulado * (1 + $taxa);
-                
+
                 $upsertData[] = [
                     'indexador_id' => $indexador->id,
                     'data_referencia' => $item['data_referencia'],

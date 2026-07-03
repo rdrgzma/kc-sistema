@@ -27,7 +27,7 @@ class OrganizacaoSeeder extends Seeder
             'uf' => 'RJ',
         ]);
 
-        //2. Equipes SP
+        // 2. Equipes SP
         $equipeSP = Equipe::firstOrCreate([
             'escritorio_id' => $sp->id,
             'nome' => 'Departamento SP',

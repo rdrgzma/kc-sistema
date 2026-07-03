@@ -58,7 +58,7 @@ class CalculoManager extends Component implements HasActions, HasForms, HasTable
             Select::make('processo_id')
                 ->label('Vincular a um Processo (Opcional)')
                 ->options(function () {
-                    return \App\Models\Processo::all()->mapWithKeys(function ($p) {
+                    return Processo::all()->mapWithKeys(function ($p) {
                         return [$p->id => $p->numero_processo ? "{$p->numero_processo} (ID: {$p->id})" : "Processo #{$p->id}"];
                     });
                 })

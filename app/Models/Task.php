@@ -24,7 +24,7 @@ class Task extends Model
         'bucket_id', 'taskable_id', 'taskable_type',
         'title', 'description', 'assigned_to',
         'due_date', 'duration_value', 'duration_unit', 'urgency', 'sort',
-        'pessoa_id', 'processo_id',
+        'pessoa_id', 'processo_id', 'inicios_count', 'conclusoes_count',
     ];
 
     protected function casts(): array

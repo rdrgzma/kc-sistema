@@ -2,8 +2,6 @@
 
 use App\DTOs\PublicacaoDTO;
 use App\Jobs\ProcessarPublicacaoJob;
-use App\Models\Bucket;
-use App\Models\Planner;
 use App\Models\Processo;
 use Carbon\Carbon;
 
@@ -11,7 +9,7 @@ it('processa publicação criando andamento e tarefa no kanban', function () {
     // Arrange
     $this->artisan('db:seed');
     $processo = Processo::first();
-    
+
     $dataPublicacao = Carbon::parse('2023-10-10 10:00:00');
     $dto = new PublicacaoDTO(
         processoId: $processo->id,

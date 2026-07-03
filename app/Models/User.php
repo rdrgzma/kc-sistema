@@ -75,4 +75,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(PecaProcessual::class, 'autor_id');
     }
+
+    public function tasks(): HasMany
+    {
+        return $this->hasMany(Task::class, 'assigned_to');
+    }
 }

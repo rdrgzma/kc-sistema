@@ -6,7 +6,7 @@ use App\DTOs\PublicacaoDTO;
 use App\Enums\TaskUrgency;
 use App\Jobs\ProcessarPublicacaoJob;
 use App\Models\Bucket;
-use App\Models\Task;
+use App\Models\Planner;
 use App\Models\TimelineEvent;
 use App\Models\User;
 use Carbon\Carbon;
@@ -14,7 +14,6 @@ use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
@@ -131,12 +130,12 @@ class TimelineFeed extends Component implements HasActions, HasForms
                         ->default($event ? $event->descricao : ''),
                     Select::make('planner_id')
                         ->label('Quadro (Planner)')
-                        ->options(\App\Models\Planner::pluck('name', 'id'))
+                        ->options(Planner::pluck('name', 'id'))
                         ->live()
                         ->required(),
                     Select::make('bucket_id')
                         ->label('Coluna (Bucket)')
-                        ->options(fn($get) => \App\Models\Bucket::where('planner_id', $get('planner_id'))->pluck('name', 'id'))
+                        ->options(fn ($get) => Bucket::where('planner_id', $get('planner_id'))->pluck('name', 'id'))
                         ->required(),
                     DatePicker::make('due_date')
                         ->label('Data de Vencimento')

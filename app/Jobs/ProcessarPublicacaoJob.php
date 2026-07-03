@@ -16,8 +16,7 @@ class ProcessarPublicacaoJob implements ShouldQueue
 
     public function __construct(
         public readonly PublicacaoDTO $dto
-    ) {
-    }
+    ) {}
 
     public function handle(ProcessadorPublicacaoService $service): void
     {

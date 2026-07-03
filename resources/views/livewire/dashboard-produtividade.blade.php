@@ -34,10 +34,11 @@
     @php
         $stats = $this->stats;
     @endphp
-    <div class="flex flex-row gap-4 md:gap-6">
-        <div class="flex-1 bg-white dark:bg-zinc-900 p-4 md:p-6 rounded-2xl border border-slate-300 dark:border-zinc-800 shadow-sm hover:shadow-md transition-all">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+        {{-- Card 1: Decisões --}}
+        <div class="bg-white dark:bg-zinc-900 p-4 md:p-6 rounded-2xl border border-slate-300 dark:border-zinc-800 shadow-sm hover:shadow-md transition-all">
             <div class="flex items-center justify-between mb-4">
-                <p class="text-[9px] md:text-[10px] font-black text-slate-500 dark:text-zinc-500 uppercase tracking-[0.15em]">Decisões (Mês)</p>
+                <p class="text-[9px] md:text-[10px] font-black text-slate-500 dark:text-zinc-500 uppercase tracking-[0.15em]">Decisões</p>
                 <x-heroicon-o-scale class="w-4 h-4 md:w-5 md:h-5 text-primary-500 shrink-0" />
             </div>
             <div class="flex gap-2 md:gap-4 mt-2">
@@ -52,15 +53,35 @@
             </div>
         </div>
 
-        <div class="flex-1 bg-white dark:bg-zinc-900 p-4 md:p-6 rounded-2xl border border-slate-300 dark:border-zinc-800 shadow-sm hover:shadow-md transition-all">
+        {{-- Card 2: Economia Gerada --}}
+        <div class="bg-white dark:bg-zinc-900 p-4 md:p-6 rounded-2xl border border-slate-300 dark:border-zinc-800 shadow-sm hover:shadow-md transition-all">
             <div class="flex items-center justify-between mb-4">
-                <p class="text-[9px] md:text-[10px] font-black text-slate-500 dark:text-zinc-500 uppercase tracking-[0.15em]">Economia Total</p>
+                <p class="text-[9px] md:text-[10px] font-black text-slate-500 dark:text-zinc-500 uppercase tracking-[0.15em]">Economia Gerada</p>
                 <x-heroicon-o-banknotes class="w-4 h-4 md:w-5 md:h-5 text-emerald-500 shrink-0" />
             </div>
             <p class="text-lg sm:text-2xl md:text-3xl font-black text-emerald-600 dark:text-emerald-400 mt-2 tracking-tight truncate" title="R$ {{ number_format($stats['total_economia'], 2, ',', '.') }}">R$ {{ number_format($stats['total_economia'], 0, ',', '.') }}</p>
         </div>
 
-        <div class="flex-1 bg-white dark:bg-zinc-900 p-4 md:p-6 rounded-2xl border border-slate-300 dark:border-zinc-800 shadow-sm hover:shadow-md transition-all">
+        {{-- Card 3: Controle de Tarefas --}}
+        <div class="bg-white dark:bg-zinc-900 p-4 md:p-6 rounded-2xl border border-slate-300 dark:border-zinc-800 shadow-sm hover:shadow-md transition-all">
+            <div class="flex items-center justify-between mb-4">
+                <p class="text-[9px] md:text-[10px] font-black text-slate-500 dark:text-zinc-500 uppercase tracking-[0.15em]">Tarefas Concluídas</p>
+                <x-heroicon-o-check-circle class="w-4 h-4 md:w-5 md:h-5 text-emerald-500 shrink-0" />
+            </div>
+            <div class="flex gap-2 md:gap-4 mt-2">
+                <div>
+                    <span class="text-xl md:text-2xl font-black text-slate-800 dark:text-zinc-100">{{ $stats['tarefas_concluidas'] }}<span class="text-xs text-slate-400 font-normal">/{{ $stats['total_tarefas'] }}</span></span>
+                    <p class="text-[8px] md:text-[9px] font-black text-slate-400 uppercase tracking-wider mt-1">Concl.</p>
+                </div>
+                <div class="border-l border-slate-200 dark:border-zinc-800 pl-2 md:pl-4">
+                    <span class="text-xl md:text-2xl font-black {{ $stats['tarefas_repeticoes'] > 0 ? 'text-amber-500' : 'text-slate-400' }}">{{ $stats['tarefas_repeticoes'] }}</span>
+                    <p class="text-[8px] md:text-[9px] font-black text-slate-400 uppercase tracking-wider mt-1">Repetições</p>
+                </div>
+            </div>
+        </div>
+
+        {{-- Card 4: Deslocamento --}}
+        <div class="bg-white dark:bg-zinc-900 p-4 md:p-6 rounded-2xl border border-slate-300 dark:border-zinc-800 shadow-sm hover:shadow-md transition-all">
             <div class="flex items-center justify-between mb-4">
                 <p class="text-[9px] md:text-[10px] font-black text-slate-500 dark:text-zinc-500 uppercase tracking-[0.15em]">Deslocamento</p>
                 <x-heroicon-o-truck class="w-4 h-4 md:w-5 md:h-5 text-blue-500 shrink-0" />
@@ -69,59 +90,13 @@
         </div>
     </div>
 
-    {{-- Gráficos & Ranking --}}
+    {{-- Rankings de Produtividade --}}
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {{-- Comparativo Mensal (Gráfico) --}}
-        <div class="lg:col-span-2 bg-white dark:bg-zinc-900 p-8 rounded-[2rem] border border-slate-300 dark:border-zinc-800 shadow-sm">
-            <h2 class="text-xs font-black text-slate-900 dark:text-zinc-50 mb-8 uppercase tracking-widest italic">Comparativo Financeiro das Decisões (Últimos 6 Meses)</h2>
-            
-            @php
-                $chartData = $this->chartData;
-                $maxVal = max($chartData->pluck('economia')->max() ?: 1, $chartData->pluck('perda')->max() ?: 1);
-            @endphp
-            
-            <div class="h-80 flex flex-col justify-end space-y-4">
-                <div class="flex items-end justify-between h-full px-4 gap-4">
-                    @foreach ($chartData as $mes => $values)
-                        @php
-                            $economiaPct = ($values['economia'] / $maxVal) * 100;
-                            $perdaPct = ($values['perda'] / $maxVal) * 100;
-                        @endphp
-                        <div class="flex flex-col items-center flex-1 h-full justify-end">
-                            <div class="flex items-end gap-1 w-full h-full justify-center">
-                                {{-- Barra Economia --}}
-                                <div class="w-4 bg-emerald-500 dark:bg-emerald-600 rounded-t-sm transition-all duration-500" 
-                                     style="height: {{ max($economiaPct, 2) }}%;"
-                                     title="Economia: R$ {{ number_format($values['economia'], 2, ',', '.') }}"></div>
-                                {{-- Barra Perda --}}
-                                <div class="w-4 bg-rose-500 dark:bg-rose-600 rounded-t-sm transition-all duration-500" 
-                                     style="height: {{ max($perdaPct, 2) }}%;"
-                                     title="Perda: R$ {{ number_format($values['perda'], 2, ',', '.') }}"></div>
-                            </div>
-                            <span class="text-[9px] font-black text-slate-400 uppercase mt-2 tracking-wider">{{ $mes }}</span>
-                        </div>
-                    @endforeach
-                </div>
-                
-                {{-- Legendas --}}
-                <div class="flex items-center justify-center gap-6 pt-4 border-t border-slate-100 dark:border-zinc-800/50">
-                    <div class="flex items-center gap-2">
-                        <div class="w-3 h-3 bg-emerald-500 dark:bg-emerald-600 rounded-sm"></div>
-                        <span class="text-[9px] font-black text-slate-500 dark:text-zinc-400 uppercase tracking-widest">Economia Gerada</span>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <div class="w-3 h-3 bg-rose-500 dark:bg-rose-600 rounded-sm"></div>
-                        <span class="text-[9px] font-black text-slate-500 dark:text-zinc-400 uppercase tracking-widest">Perda Estimada</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        {{-- Ranking de Produção --}}
+        {{-- Ranking de Peças --}}
         <div class="bg-white dark:bg-zinc-900 p-8 rounded-[2rem] border border-slate-300 dark:border-zinc-800 shadow-sm flex flex-col justify-between">
             <div>
                 <div class="flex items-center justify-between mb-6 gap-2">
-                    <h2 class="text-xs font-black text-slate-900 dark:text-zinc-50 uppercase tracking-widest italic">Ranking de Produção</h2>
+                    <h2 class="text-xs font-black text-slate-900 dark:text-zinc-50 uppercase tracking-widest italic">Ranking de Peças</h2>
                     <a href="{{ route('dashboard.produtividade-equipe', ['dataInicio' => $dataInicio, 'dataFim' => $dataFim]) }}" wire:navigate
                        class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-slate-100 dark:bg-zinc-800/40 dark:hover:bg-zinc-800 text-slate-700 dark:text-zinc-300 text-xs font-bold rounded-lg transition-colors border border-slate-200 dark:border-zinc-800 shrink-0">
                         <x-heroicon-o-presentation-chart-line class="w-4 h-4 text-primary-500" />
@@ -131,6 +106,42 @@
                 
                 <div class="overflow-x-auto">
                     @livewire('dashboard.produtividade-ranking-table', ['dataInicio' => $dataInicio, 'dataFim' => $dataFim])
+                </div>
+            </div>
+        </div>
+
+        {{-- Ranking de Tarefas --}}
+        <div class="bg-white dark:bg-zinc-900 p-8 rounded-[2rem] border border-slate-300 dark:border-zinc-800 shadow-sm flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between mb-6 gap-2">
+                    <h2 class="text-xs font-black text-slate-900 dark:text-zinc-50 uppercase tracking-widest italic">Ranking de Tarefas</h2>
+                    <a href="{{ route('dashboard.produtividade-usuarios') }}" wire:navigate
+                       class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-slate-100 dark:bg-zinc-800/40 dark:hover:bg-zinc-800 text-slate-700 dark:text-zinc-300 text-xs font-bold rounded-lg transition-colors border border-slate-200 dark:border-zinc-800 shrink-0">
+                        <x-heroicon-o-presentation-chart-line class="w-4 h-4 text-emerald-500" />
+                        Ver Completo
+                    </a>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    @livewire('dashboard.produtividade-tarefas-ranking-table', ['dataInicio' => $dataInicio, 'dataFim' => $dataFim])
+                </div>
+            </div>
+        </div>
+
+        {{-- Ranking de Deslocamentos --}}
+        <div class="bg-white dark:bg-zinc-900 p-8 rounded-[2rem] border border-slate-300 dark:border-zinc-800 shadow-sm flex flex-col justify-between">
+            <div>
+                <div class="flex items-center justify-between mb-6 gap-2">
+                    <h2 class="text-xs font-black text-slate-900 dark:text-zinc-50 uppercase tracking-widest italic">Ranking de Deslocamentos</h2>
+                    <a href="{{ route('dashboard.produtividade-deslocamentos') }}" wire:navigate
+                       class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-slate-100 dark:bg-zinc-800/40 dark:hover:bg-zinc-800 text-slate-700 dark:text-zinc-300 text-xs font-bold rounded-lg transition-colors border border-slate-200 dark:border-zinc-800 shrink-0">
+                        <x-heroicon-o-presentation-chart-line class="w-4 h-4 text-blue-500" />
+                        Ver Completo
+                    </a>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    @livewire('dashboard.produtividade-deslocamentos-ranking-table', ['dataInicio' => $dataInicio, 'dataFim' => $dataFim])
                 </div>
             </div>
         </div>

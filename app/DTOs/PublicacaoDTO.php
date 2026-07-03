@@ -10,6 +10,5 @@ class PublicacaoDTO
         public readonly int $processoId,
         public readonly string $textoPublicacao,
         public readonly DateTimeInterface $dataPublicacao,
-    ) {
-    }
+    ) {}
 }

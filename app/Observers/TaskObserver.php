@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Models\Bucket;
 use App\Models\Pessoa;
 use App\Models\Processo;
 use App\Models\Task;
@@ -23,6 +24,24 @@ class TaskObserver
 
             // Propagate documents and pieces on creation
             $this->propagateToProcess($task);
+        }
+    }
+
+    public function updating(Task $task): void
+    {
+        if ($task->isDirty('bucket_id') && $task->bucket_id) {
+            $bucket = Bucket::find($task->bucket_id);
+            if ($bucket) {
+                $statusName = strtolower(trim($bucket->name));
+                // Incrementa inícios se for uma coluna de "fazendo"
+                if (in_array($statusName, ['in_progress', 'in progress', 'doing', 'em andamento', 'fazendo'])) {
+                    $task->inicios_count++;
+                }
+                // Incrementa conclusões se for uma coluna de "concluído"
+                elseif (in_array($statusName, ['completed', 'done', 'concluido', 'concluído', 'finalizado'])) {
+                    $task->conclusoes_count++;
+                }
+            }
         }
     }
 
