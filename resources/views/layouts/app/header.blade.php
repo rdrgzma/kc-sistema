@@ -10,6 +10,13 @@
     </div>
 
     <div class="flex items-center gap-10">
+        {{-- Link para a agenda do usuário --}}
+        <a href="{{ route('agenda.index', ['user_id' => auth()->id()]) }}" wire:navigate
+           class="flex items-center gap-2 text-xs font-black text-slate-500 hover:text-primary-600 dark:text-zinc-400 dark:hover:text-primary-400 transition-colors uppercase tracking-[0.2em] whitespace-nowrap">
+            <x-heroicon-o-calendar class="w-4 h-4" />
+            Minha Agenda
+        </a>
+
         {{-- Barra de Busca Global --}}
         <livewire:global-search />
 

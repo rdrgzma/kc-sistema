@@ -64,6 +64,14 @@
                 Documentos
             </button>
             <button 
+                @click="tab = 'processos'" 
+                :class="tab === 'processos' ? 'bg-white dark:bg-zinc-700 shadow-lg text-primary-600 dark:text-primary-400 scale-[1.02]' : 'text-slate-500 dark:text-gray-400 hover:text-slate-700'"
+                class="flex items-center gap-3 px-8 py-3 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all duration-400 scale-100 hover:scale-[1.01]"
+            >
+                <x-heroicon-o-scale class="w-5 h-5"/>
+                Processos
+            </button>
+            <button 
                 @click="tab = 'financeiro'" 
                 :class="tab === 'financeiro' ? 'bg-white dark:bg-zinc-700 shadow-lg text-primary-600 dark:text-primary-400 scale-[1.02]' : 'text-slate-500 dark:text-gray-400 hover:text-slate-700'"
                 class="flex items-center gap-3 px-8 py-3 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all duration-400 scale-100 hover:scale-[1.01]"
@@ -79,12 +87,26 @@
                 <x-heroicon-o-chat-bubble-left-right class="w-5 h-5"/>
                 Atendimentos
             </button>
+            <button 
+                @click="tab = 'vinculos'" 
+                :class="tab === 'vinculos' ? 'bg-white dark:bg-zinc-700 shadow-lg text-primary-600 dark:text-primary-400 scale-[1.02]' : 'text-slate-500 dark:text-gray-400 hover:text-slate-700'"
+                class="flex items-center gap-3 px-8 py-3 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all duration-400 scale-100 hover:scale-[1.01]"
+            >
+                <x-heroicon-o-link class="w-5 h-5"/>
+                Vínculos
+            </button>
         </div>
 
         {{-- Tab Panels --}}
         <div x-show="tab === 'documentos'" x-transition:enter="transition-all ease-out duration-500" x-transition:enter-start="opacity-0 translate-y-8" x-transition:enter-end="opacity-100 translate-y-0">
             <div class="overflow-hidden bg-slate-50/30 dark:bg-zinc-900/30">
                 <livewire:document-manager :model="$pessoa" />
+            </div>
+        </div>
+
+        <div x-show="tab === 'processos'" x-cloak x-transition:enter="transition-all ease-out duration-500" x-transition:enter-start="opacity-0 translate-y-8" x-transition:enter-end="opacity-100 translate-y-0">
+            <div class="overflow-hidden bg-slate-50/30 dark:bg-zinc-900/30">
+                <livewire:processos-table :pessoaId="$pessoa->id" />
             </div>
         </div>
 
@@ -97,6 +119,12 @@
         <div x-show="tab === 'atendimentos'" x-cloak x-transition:enter="transition-all ease-out duration-500" x-transition:enter-start="opacity-0 translate-y-8" x-transition:enter-end="opacity-100 translate-y-0">
             <div class="overflow-hidden bg-slate-50/30 dark:bg-zinc-900/30">
                 <livewire:interacao-manager :model="$pessoa" />
+            </div>
+        </div>
+
+        <div x-show="tab === 'vinculos'" x-cloak x-transition:enter="transition-all ease-out duration-500" x-transition:enter-start="opacity-0 translate-y-8" x-transition:enter-end="opacity-100 translate-y-0">
+            <div class="overflow-hidden bg-slate-50/30 dark:bg-zinc-900/30">
+                <livewire:pessoa-vinculos-manager :pessoa="$pessoa" />
             </div>
         </div>
     </div>

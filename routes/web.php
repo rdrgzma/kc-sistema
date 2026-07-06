@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\AnalyticsReportController;
 use App\Http\Controllers\FinanceiroReportController;
 use App\Http\Controllers\ProdutividadeReportController;
+use App\Livewire\Admin\AnalyticsManager;
 use App\Livewire\Admin\ApontamentosManager;
 use App\Livewire\Admin\AssistentesTecnicosManager;
 use App\Livewire\Admin\DeslocamentosManager;
@@ -12,6 +14,7 @@ use App\Livewire\Admin\FasesManager;
 use App\Livewire\Admin\PeritosManager;
 use App\Livewire\Admin\ProdutividadeUsuarioManager;
 use App\Livewire\Admin\UsersManager;
+use App\Livewire\AgendaManager;
 use App\Livewire\CalculoManager;
 use App\Livewire\Dashboard;
 use App\Livewire\DashboardProdutividade;
@@ -46,6 +49,7 @@ Route::middleware(['auth'])->group(function () {
     Route::livewire('/pessoas/{pessoa}', PessoaDetalhe::class)->name('pessoas.show');
     Route::get('/apontamentos', ApontamentosManager::class)->name('apontamentos.index');
     Route::get('/calculos', CalculoManager::class)->name('calculos.index');
+    Route::get('/operacional/agenda', AgendaManager::class)->name('agenda.index');
 
     // Rota do Onboarding (Fluxo)
     Route::livewire('/onboarding', OnboardingWizard::class)->name('onboarding');
@@ -64,6 +68,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/admin/equipes', EquipesManager::class)->name('admin.equipes');
         Route::get('/admin/peritos', PeritosManager::class)->name('admin.peritos');
         Route::get('/admin/assistentes', AssistentesTecnicosManager::class)->name('admin.assistentes');
+        Route::get('/admin/analytics', AnalyticsManager::class)->name('admin.analytics');
+        Route::get('/admin/analytics/export/csv', [AnalyticsReportController::class, 'exportCsv'])->name('admin.analytics.export.csv');
+        Route::get('/admin/analytics/export/pdf', [AnalyticsReportController::class, 'exportPdf'])->name('admin.analytics.export.pdf');
     });
 });
 

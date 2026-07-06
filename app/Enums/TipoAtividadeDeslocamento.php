@@ -2,14 +2,16 @@
 
 namespace App\Enums;
 
-enum TipoAtividadeDeslocamento: string
+use Filament\Support\Contracts\HasLabel;
+
+enum TipoAtividadeDeslocamento: string implements HasLabel
 {
     case AUDIENCIA = 'audiencia';
     case DILIGENCIA = 'diligencia';
     case PECA_RELATORIO = 'peca_relatorio';
     case REUNIAO = 'reuniao';
 
-    public function getLabel(): string
+    public function getLabel(): ?string
     {
         return match ($this) {
             self::AUDIENCIA => 'Audiência',

@@ -8,10 +8,12 @@
             class="flex items-center gap-4 shrink-0 transition-transform active:scale-95">
             <span class="text-3xl">⚖️</span>
             <div x-show="isSidebarOpen" class="flex flex-col">
-                <span class="text-xl font-black text-slate-900 dark:text-white leading-none tracking-tighter uppercase font-sans">
+                <span
+                    class="text-xl font-black text-slate-900 dark:text-white leading-none tracking-tighter uppercase font-sans">
                     {{ explode(' ', config('app.name'), 2)[0] }}
                 </span>
-                <span class="text-[10px] font-black text-amber-600 dark:text-amber-500 uppercase tracking-[0.25em] mt-1.5 whitespace-nowrap opacity-90 font-sans">
+                <span
+                    class="text-[10px] font-black text-amber-600 dark:text-amber-500 uppercase tracking-[0.25em] mt-1.5 whitespace-nowrap opacity-90 font-sans">
                     {{ explode(' ', config('app.name'), 2)[1] ?? '' }}
                 </span>
             </div>
@@ -26,7 +28,7 @@
     </div>
 
     <nav :class="isSidebarOpen ? 'overflow-y-auto' : 'overflow-visible'"
-         class="flex-1 px-3 py-2 flex flex-col gap-2 scrollbar-hide">
+        class="flex-1 px-3 py-2 flex flex-col gap-2 scrollbar-hide">
         @php
             $sections = [
                 [
@@ -37,6 +39,7 @@
                         ['route' => 'pessoas.index', 'icon' => 'heroicon-o-user-circle', 'label' => 'Clientes'],
                         ['route' => 'calculos.index', 'icon' => 'heroicon-o-calculator', 'label' => 'Cálculos'],
                         ['route' => 'financeiro.index', 'icon' => 'heroicon-o-banknotes', 'label' => 'Financeiro'],
+                        ['route' => 'agenda.index', 'icon' => 'heroicon-o-calendar', 'label' => 'Agenda'],
                     ]
                 ],
                 [
@@ -62,10 +65,12 @@
                         ['route' => 'admin.users', 'icon' => 'heroicon-o-user-group', 'label' => 'Usuários'],
                         ['route' => 'admin.escritorios', 'icon' => 'heroicon-o-building-office-2', 'label' => 'Escritórios'],
                         ['route' => 'admin.equipes', 'icon' => 'heroicon-o-rectangle-group', 'label' => 'Equipes'],
+                        ['route' => 'admin.analytics', 'icon' => 'heroicon-o-chart-bar', 'label' => 'Analytics'],
                         ['route' => 'admin.peritos', 'icon' => 'heroicon-o-academic-cap', 'label' => 'Peritos'],
                         ['route' => 'admin.assistentes', 'icon' => 'heroicon-o-briefcase', 'label' => 'Assistentes'],
                         ['route' => 'admin.especialidades', 'icon' => 'heroicon-o-tag', 'label' => 'Especialidades'],
                         ['route' => 'admin.fases', 'icon' => 'heroicon-o-adjustments-horizontal', 'label' => 'Fases'],
+
                     ]
                 ]
             ];
@@ -74,7 +79,7 @@
         @foreach ($sections as $section)
             @if (!isset($section['roles']) || auth()->user()?->hasAnyRole($section['roles']))
                 @php
-                    $isAnyItemActive = collect($section['items'])->contains(function($item) {
+                    $isAnyItemActive = collect($section['items'])->contains(function ($item) {
                         if (isset($item['subitems'])) {
                             return collect($item['subitems'])->contains(fn($sub) => request()->routeIs($sub['route'] . '*'));
                         }
@@ -84,11 +89,13 @@
                     });
                 @endphp
 
-                <div x-data="{ expanded: {{ $isAnyItemActive ? 'true' : 'false' }} }" class="flex flex-col gap-1 focus:outline-none">
+                <div x-data="{ expanded: {{ $isAnyItemActive ? 'true' : 'false' }} }"
+                    class="flex flex-col gap-1 focus:outline-none">
                     @if ($section['label'])
                         <button @click="expanded = !expanded"
                             class="mt-2 mb-1 px-3 flex items-center gap-3 w-full text-left outline-none group/section">
-                            <span x-show="isSidebarOpen" class="text-[9px] font-black text-slate-400 dark:text-zinc-600 uppercase tracking-[0.3em] font-sans whitespace-nowrap group-hover/section:text-slate-600">
+                            <span x-show="isSidebarOpen"
+                                class="text-[9px] font-black text-slate-400 dark:text-zinc-600 uppercase tracking-[0.3em] font-sans whitespace-nowrap group-hover/section:text-slate-600">
                                 {{ $section['label'] }}
                             </span>
                             <div class="h-px bg-slate-100 dark:bg-zinc-800/60 flex-1"></div>
@@ -98,8 +105,7 @@
                         </button>
                     @endif
 
-                    <div x-show="!isSidebarOpen || expanded"
-                        :class="isSidebarOpen ? 'overflow-hidden' : ''"
+                    <div x-show="!isSidebarOpen || expanded" :class="isSidebarOpen ? 'overflow-hidden' : ''"
                         class="flex flex-col gap-0.5 transition-all duration-300">
                         @foreach ($section['items'] as $item)
                             @php
@@ -117,7 +123,7 @@
                                     }
                                 }
                             @endphp
-                            
+
                             @if ($hasSubitems)
                                 <div x-data="{ open: @json($isActive) }" class="flex flex-col gap-0.5 w-full relative px-1">
                                     {{-- Parent Toggle Button --}}
@@ -127,7 +133,8 @@
                                             <x-dynamic-component :component="$item['icon']"
                                                 class="w-5 h-5 shrink-0 transition-colors {{ $isActive ? 'text-primary-600 dark:text-primary-400' : 'text-slate-400 dark:text-zinc-600 group-hover/item:text-slate-900 dark:group-hover/item:text-zinc-100' }}" />
 
-                                            <span x-show="isSidebarOpen" class="ml-3.5 overflow-hidden whitespace-nowrap tracking-tight">
+                                            <span x-show="isSidebarOpen"
+                                                class="ml-3.5 overflow-hidden whitespace-nowrap tracking-tight">
                                                 {{ $item['label'] }}
                                             </span>
                                         </div>
@@ -168,7 +175,9 @@
                                         <div x-show="!isSidebarOpen"
                                             class="absolute left-full ml-4 top-1/2 -translate-y-1/2 px-3 py-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-[10px] font-black uppercase tracking-widest rounded-lg shadow-2xl opacity-0 invisible group-hover/item:opacity-100 group-hover/item:visible transition-all pointer-events-none z-50 whitespace-nowrap">
                                             {{ $item['label'] }}
-                                            <div class="absolute w-2 h-2 bg-slate-900 dark:bg-white transform rotate-45 -left-1 top-1/2 -translate-y-1/2"></div>
+                                            <div
+                                                class="absolute w-2 h-2 bg-slate-900 dark:bg-white transform rotate-45 -left-1 top-1/2 -translate-y-1/2">
+                                            </div>
                                         </div>
                                     </a>
                                 </div>

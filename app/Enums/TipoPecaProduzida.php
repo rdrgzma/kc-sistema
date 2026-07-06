@@ -2,7 +2,9 @@
 
 namespace App\Enums;
 
-enum TipoPecaProduzida: string
+use Filament\Support\Contracts\HasLabel;
+
+enum TipoPecaProduzida: string implements HasLabel
 {
     case PETICOES_EXPEDIENTE = 'peticoes_expediente';
     case CONTESTACAO = 'contestacao';
@@ -10,7 +12,7 @@ enum TipoPecaProduzida: string
     case CRM_CRO_COREN = 'crm_cro_coren';
     case OUTROS = 'outros';
 
-    public function getLabel(): string
+    public function getLabel(): ?string
     {
         return match ($this) {
             self::PETICOES_EXPEDIENTE => 'Petições de Expediente',

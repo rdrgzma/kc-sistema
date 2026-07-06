@@ -2,13 +2,15 @@
 
 namespace App\Enums;
 
-enum ClassificacaoDecisao: string
+use Filament\Support\Contracts\HasLabel;
+
+enum ClassificacaoDecisao: string implements HasLabel
 {
     case FAVORAVEL = 'favoravel';
     case DESFAVORAVEL = 'desfavoravel';
     case PARCIAL = 'parcial';
 
-    public function getLabel(): string
+    public function getLabel(): ?string
     {
         return match ($this) {
             self::FAVORAVEL => 'Favorável',

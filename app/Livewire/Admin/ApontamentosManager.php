@@ -155,7 +155,11 @@ class ApontamentosManager extends Component implements HasActions, HasForms, Has
 
                     Select::make('processo_id')
                         ->label('Processo')
-                        ->relationship('processo', 'numero_processo')
+                        ->relationship(
+                            name: 'processo',
+                            titleAttribute: 'numero_processo',
+                            modifyQueryUsing: fn (Builder $query) => $query->whereNotNull('numero_processo'),
+                        )
                         ->searchable()
                         ->preload()
                         ->nullable(),

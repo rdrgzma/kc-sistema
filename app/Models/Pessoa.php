@@ -9,6 +9,7 @@ use App\Traits\StratifiesData;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
@@ -75,5 +76,20 @@ class Pessoa extends Model
     public function interacoes(): MorphMany
     {
         return $this->morphMany(Interacao::class, 'interactable');
+    }
+
+    public function pessoasJuridicas(): BelongsToMany
+    {
+        return $this->belongsToMany(Pessoa::class, 'pessoa_vinculos', 'pessoa_fisica_id', 'pessoa_juridica_id');
+    }
+
+    public function pessoasFisicas(): BelongsToMany
+    {
+        return $this->belongsToMany(Pessoa::class, 'pessoa_vinculos', 'pessoa_juridica_id', 'pessoa_fisica_id');
+    }
+
+    public function vinculos(): BelongsToMany
+    {
+        return $this->tipo === 'PJ' ? $this->pessoasFisicas() : $this->pessoasJuridicas();
     }
 }

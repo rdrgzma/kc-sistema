@@ -2,12 +2,14 @@
 
 namespace App\Enums;
 
-enum DurationUnit: string
+use Filament\Support\Contracts\HasLabel;
+
+enum DurationUnit: string implements HasLabel
 {
     case HORAS = 'horas';
     case DIAS = 'dias';
 
-    public function getLabel(): string
+    public function getLabel(): ?string
     {
         return match ($this) {
             self::HORAS => 'Hora(s)',
