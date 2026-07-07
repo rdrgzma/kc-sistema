@@ -13,6 +13,7 @@ use App\Livewire\Admin\EspecialidadesManager;
 use App\Livewire\Admin\FasesManager;
 use App\Livewire\Admin\PeritosManager;
 use App\Livewire\Admin\ProdutividadeUsuarioManager;
+use App\Livewire\Admin\UserPermissionsMatrixManager;
 use App\Livewire\Admin\UsersManager;
 use App\Livewire\AgendaManager;
 use App\Livewire\CalculoManager;
@@ -64,6 +65,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/admin/fases', FasesManager::class)->name('admin.fases');
         Route::get('/admin/especialidades', EspecialidadesManager::class)->name('admin.especialidades');
         Route::get('/admin/usuarios', UsersManager::class)->name('admin.users');
+        Route::get('/admin/matriz-permissoes', UserPermissionsMatrixManager::class)->name('admin.matriz-permissoes');
         Route::get('/admin/escritorios', EscritoriosManager::class)->name('admin.escritorios');
         Route::get('/admin/equipes', EquipesManager::class)->name('admin.equipes');
         Route::get('/admin/peritos', PeritosManager::class)->name('admin.peritos');
@@ -72,6 +74,16 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/admin/analytics/export/csv', [AnalyticsReportController::class, 'exportCsv'])->name('admin.analytics.export.csv');
         Route::get('/admin/analytics/export/pdf', [AnalyticsReportController::class, 'exportPdf'])->name('admin.analytics.export.pdf');
     });
+
+    // Endpoint Headless para Utilizador Autenticado e Permissões (Spatie)
+    Route::get('/api/user', function (\Illuminate\Http\Request $request) {
+        $user = $request->user();
+        
+        return response()->json(array_merge(
+            $user->toArray(),
+            ['permissions' => $user->getAllPermissions()->pluck('name')]
+        ));
+    })->name('api.user');
 });
 
 require __DIR__.'/settings.php';

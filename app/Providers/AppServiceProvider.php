@@ -27,6 +27,22 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->configureDefaults();
         Task::observe(TaskObserver::class);
+
+        \Illuminate\Support\Facades\Gate::before(function ($user, $ability) {
+            // O Administrador tem acesso total a tudo
+            if ($user->hasRole('Administrador')) {
+                return true;
+            }
+
+            // O Sócio tem permissão total para qualquer ação de exclusão/restauração por padrão
+            if (in_array($ability, ['delete', 'forceDelete', 'deleteAny', 'forceDeleteAny', 'restore', 'restoreAny'])) {
+                if ($user->hasRole('Sócio')) {
+                    return true;
+                }
+            }
+            
+            return null; // Delega para as Policies ou permissões específicas
+        });
     }
 
     /**

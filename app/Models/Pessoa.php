@@ -4,6 +4,8 @@
 
 namespace App\Models;
 
+use App\Traits\LogsSystemActivity;
+
 use App\Traits\HasLegacyData;
 use App\Traits\StratifiesData;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -17,6 +19,8 @@ use Spatie\Activitylog\Support\LogOptions;
 
 class Pessoa extends Model
 {
+    use LogsSystemActivity;
+
     use HasFactory, HasLegacyData, LogsActivity, StratifiesData;
 
     public function getActivitylogOptions(): LogOptions

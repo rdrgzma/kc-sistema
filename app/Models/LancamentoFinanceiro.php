@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Traits\LogsSystemActivity;
+
 use App\Observers\LancamentoFinanceiroObserver;
 use App\Traits\StratifiesData;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
@@ -14,6 +16,8 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 #[ObservedBy(LancamentoFinanceiroObserver::class)]
 class LancamentoFinanceiro extends Model
 {
+    use LogsSystemActivity;
+
     use HasFactory, StratifiesData;
 
     // Forçamos o nome da tabela caso a migration use o plural padrão

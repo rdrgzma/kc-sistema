@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Traits\LogsSystemActivity;
+
 use App\Enums\DurationUnit;
 use App\Enums\TaskUrgency;
 use App\Observers\TaskObserver;
@@ -14,10 +16,13 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Builder;
 
 #[ObservedBy(TaskObserver::class)]
 class Task extends Model
 {
+    use LogsSystemActivity;
+
     use SoftDeletes;
 
     protected $fillable = [
@@ -109,5 +114,30 @@ class Task extends Model
     public function processo(): BelongsTo
     {
         return $this->belongsTo(Processo::class);
+    }
+
+    public function scopeEstratificado(Builder $query): Builder
+    {
+        $user = auth()->user();
+
+        if (! $user || ! method_exists($user, 'hasPermissionTo')) {
+            return $query;
+        }
+
+        if ($user->hasPermissionTo('visualizar todas tarefas') || $user->hasRole('Administrador')) {
+            return $query;
+        }
+
+        $equipesIds = $user->equipes ? $user->equipes->pluck('id') : collect([]);
+
+        return $query->where(function ($q) use ($user, $equipesIds) {
+            $q->where('assigned_to', $user->id)
+              ->orWhereHas('bucket.planner', function ($qPlanner) use ($user) {
+                  $qPlanner->where('user_id', $user->id);
+              })
+              ->orWhereHas('processo', function ($qProcesso) use ($equipesIds) {
+                  $qProcesso->whereIn('equipe_id', $equipesIds);
+              });
+        });
     }
 }

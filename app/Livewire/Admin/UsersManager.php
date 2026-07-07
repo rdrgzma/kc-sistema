@@ -106,7 +106,12 @@ class UsersManager extends Component implements HasActions, HasForms, HasTable
                 ->relationship('roles', 'name')
                 ->multiple()
                 ->preload()
-                ->label('Permissões / Papéis'),
+                ->label('Papéis (Roles)'),
+            Select::make('permissions')
+                ->relationship('permissions', 'name')
+                ->multiple()
+                ->preload()
+                ->label('Permissões Diretas'),
             Select::make('escritorio_id')
                 ->relationship('escritorio', 'nome')
                 ->searchable()

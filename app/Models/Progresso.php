@@ -2,11 +2,15 @@
 
 namespace App\Models;
 
+use App\Traits\LogsSystemActivity;
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Progresso extends Model
 {
+    use LogsSystemActivity;
+
     protected $fillable = ['task_id', 'user_id', 'content', 'type', 'is_completed'];
 
     protected function casts(): array

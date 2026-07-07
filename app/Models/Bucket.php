@@ -2,12 +2,16 @@
 
 namespace App\Models;
 
+use App\Traits\LogsSystemActivity;
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Bucket extends Model
 {
+    use LogsSystemActivity;
+
     protected $fillable = ['planner_id', 'name', 'color', 'sort'];
 
     public function planner(): BelongsTo

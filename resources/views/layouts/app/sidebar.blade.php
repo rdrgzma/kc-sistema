@@ -63,6 +63,7 @@
                     'roles' => ['Administrador', 'Sócio'],
                     'items' => [
                         ['route' => 'admin.users', 'icon' => 'heroicon-o-user-group', 'label' => 'Usuários'],
+                        ['route' => 'admin.matriz-permissoes', 'icon' => 'heroicon-o-shield-check', 'label' => 'Permissões'],
                         ['route' => 'admin.escritorios', 'icon' => 'heroicon-o-building-office-2', 'label' => 'Escritórios'],
                         ['route' => 'admin.equipes', 'icon' => 'heroicon-o-rectangle-group', 'label' => 'Equipes'],
                         ['route' => 'admin.analytics', 'icon' => 'heroicon-o-chart-bar', 'label' => 'Analytics'],

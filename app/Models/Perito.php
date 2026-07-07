@@ -2,12 +2,16 @@
 
 namespace App\Models;
 
+use App\Traits\LogsSystemActivity;
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Perito extends Model
 {
+    use LogsSystemActivity;
+
     protected $fillable = ['nome', 'especialidade_id', 'user_id', 'legacy_id'];
 
     public function especialidade(): BelongsTo

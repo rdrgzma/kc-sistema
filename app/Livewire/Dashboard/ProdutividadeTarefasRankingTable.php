@@ -34,7 +34,7 @@ class ProdutividadeTarefasRankingTable extends Component implements HasActions, 
                 User::query()
                     ->select('users.*')
                     ->selectSub(
-                        Task::query()
+                        Task::query()->estratificado()
                             ->selectRaw('count(*)')
                             ->whereColumn('tasks.assigned_to', 'users.id')
                             ->whereHas('bucket', function ($q) {

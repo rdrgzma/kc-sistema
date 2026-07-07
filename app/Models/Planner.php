@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Traits\LogsSystemActivity;
+
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -10,6 +12,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Planner extends Model
 {
+    use LogsSystemActivity;
+
     use SoftDeletes;
 
     protected $fillable = ['name', 'description', 'plannable_id', 'plannable_type', 'user_id'];

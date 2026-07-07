@@ -2,11 +2,15 @@
 
 namespace App\Models;
 
+use App\Traits\LogsSystemActivity;
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Fase extends Model
 {
+    use LogsSystemActivity;
+
     use HasFactory;
 
     protected $fillable = [

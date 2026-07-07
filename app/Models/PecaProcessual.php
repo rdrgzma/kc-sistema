@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Traits\LogsSystemActivity;
+
 use App\Enums\TipoPecaProduzida;
 use App\Observers\PecaProcessualObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
@@ -13,6 +15,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 #[ObservedBy(PecaProcessualObserver::class)]
 class PecaProcessual extends Model
 {
+    use LogsSystemActivity;
+
     use HasFactory;
 
     protected $fillable = [

@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Traits\LogsSystemActivity;
+
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Traits\HasLegacyData;
 use Database\Factories\UserFactory;
@@ -22,6 +24,8 @@ use Spatie\Permission\Traits\HasRoles;
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
 class User extends Authenticatable
 {
+    use LogsSystemActivity;
+
     /** @use HasFactory<UserFactory> */
     use HasFactory, HasLegacyData, HasRoles, Notifiable, SoftDeletes, TwoFactorAuthenticatable;
 

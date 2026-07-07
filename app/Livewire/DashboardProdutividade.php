@@ -81,7 +81,7 @@ class DashboardProdutividade extends Component implements HasActions, HasForms
         $totalHoras = round($totalMinutos / 60, 1);
 
         // 4. Métricas de Tarefas no período
-        $tasksQuery = Task::query();
+        $tasksQuery = Task::query()->estratificado();
         if ($start) {
             $tasksQuery->whereDate('created_at', '>=', $start);
         }

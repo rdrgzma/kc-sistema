@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Traits\LogsSystemActivity;
+
 use App\Enums\ModalidadeAtividade;
 use App\Enums\TipoAtividadeDeslocamento;
 use Carbon\Carbon;
@@ -11,6 +13,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ApontamentoTempo extends Model
 {
+    use LogsSystemActivity;
+
     use HasFactory;
 
     protected $fillable = [

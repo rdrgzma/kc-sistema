@@ -2,10 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\LogsSystemActivity;
+
 use Illuminate\Database\Eloquent\Model;
 
 class Pasta extends Model
 {
+    use LogsSystemActivity;
+
     protected $fillable = ['nome', 'parent_id', 'pastable_id', 'pastable_type', 'escritorio_id'];
 
     public function pastable()

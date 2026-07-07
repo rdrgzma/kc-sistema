@@ -76,8 +76,11 @@ class AnalyticsManager extends Component implements HasActions, HasForms, HasTab
                             $name = $record->subject->numero_processo;
                         } else {
                             $name = $record->subject->nome
+                                ?? $record->subject->name
                                 ?? $record->subject->titulo
                                 ?? $record->subject->title
+                                ?? $record->subject->descricao
+                                ?? $record->subject->tipo
                                 ?? '#'.$record->subject_id;
                         }
 
@@ -88,12 +91,34 @@ class AnalyticsManager extends Component implements HasActions, HasForms, HasTab
                             return null;
                         }
 
-                        if ($record->subject instanceof Pessoa) {
+                        if ($record->subject instanceof \App\Models\Pessoa) {
                             return route('pessoas.show', $record->subject_id);
                         }
 
-                        if ($record->subject instanceof Processo) {
+                        if ($record->subject instanceof \App\Models\Processo) {
                             return route('processos.show', $record->subject_id);
+                        }
+
+                        if ($record->subject instanceof \App\Models\User) {
+                            return route('admin.users');
+                        }
+
+                        if ($record->subject instanceof \App\Models\Equipe) {
+                            return route('admin.equipes');
+                        }
+
+                        if ($record->subject instanceof \App\Models\Task) {
+                            return route('agenda.index');
+                        }
+
+                        if ($record->subject instanceof \App\Models\TimelineEvent) {
+                            $parent = $record->subject->timelineable;
+                            if ($parent instanceof \App\Models\Processo) {
+                                return route('processos.show', $parent->id);
+                            }
+                            if ($parent instanceof \App\Models\Pessoa) {
+                                return route('pessoas.show', $parent->id);
+                            }
                         }
 
                         return null;

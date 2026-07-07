@@ -2,12 +2,16 @@
 
 namespace App\Models;
 
+use App\Traits\LogsSystemActivity;
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class TabelaPraticaRegra extends Model
 {
+    use LogsSystemActivity;
+
     use HasFactory;
 
     protected $table = 'tabela_pratica_regras';

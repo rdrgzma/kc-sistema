@@ -72,7 +72,9 @@ class PlannerBoard extends Component implements HasActions, HasForms
     public function loadPlanners()
     {
         if ($this->selectedPlannerId) {
-            $this->plannersData = Planner::with(['buckets.tasks.assignee', 'plannable'])
+            $this->plannersData = Planner::with(['buckets.tasks' => function ($query) {
+                $query->estratificado();
+            }, 'buckets.tasks.assignee', 'plannable'])
                 ->find($this->selectedPlannerId);
 
             // Se não encontrar, volta para o index
@@ -89,7 +91,7 @@ class PlannerBoard extends Component implements HasActions, HasForms
             ->with(['user', 'plannable'])
             ->where('user_id', auth()->id())
             ->orWhereHas('tasks', function ($query) {
-                $query->where('assigned_to', auth()->id());
+                $query->estratificado();
             })
             ->latest()
             ->get();

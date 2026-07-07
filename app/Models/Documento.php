@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Traits\LogsSystemActivity;
+
 use App\Observers\DocumentoObserver;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
@@ -12,6 +14,8 @@ use Illuminate\Support\Facades\Storage;
 #[ObservedBy(DocumentoObserver::class)]
 class Documento extends Model
 {
+    use LogsSystemActivity;
+
     protected $fillable = [
         'documentable_type',
         'documentable_id',
