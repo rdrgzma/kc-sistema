@@ -29,9 +29,10 @@ class GenerateModelPermissions extends Command
     public function handle()
     {
         $modelsPath = app_path('Models');
-        
-        if (!File::exists($modelsPath)) {
+
+        if (! File::exists($modelsPath)) {
             $this->error('Directory app/Models does not exist.');
+
             return;
         }
 
@@ -45,10 +46,10 @@ class GenerateModelPermissions extends Command
             // Evitar criar permissões para models pivot ou outros ignorados, se necessário.
             // Converte para snake case (ex: User -> user, Task -> task)
             $modelSnake = Str::snake($modelName);
-            
+
             foreach ($actions as $action) {
                 $permissionName = "{$action}_{$modelSnake}";
-                
+
                 $permission = Permission::firstOrCreate(['name' => $permissionName, 'guard_name' => 'web']);
                 if ($permission->wasRecentlyCreated) {
                     $this->info("Created permission: {$permissionName}");

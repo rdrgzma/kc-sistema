@@ -2,11 +2,10 @@
 
 namespace App\Models;
 
-use App\Traits\LogsSystemActivity;
-
 use App\Observers\ProcessoObserver;
 use App\Traits\HasLegacyData;
 use App\Traits\HasTasks;
+use App\Traits\LogsSystemActivity;
 use App\Traits\StratifiesData;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -21,9 +20,8 @@ use Spatie\Activitylog\Support\LogOptions;
 #[ObservedBy(ProcessoObserver::class)]
 class Processo extends Model
 {
-    use LogsSystemActivity;
-
     use HasFactory, HasLegacyData, HasTasks, LogsActivity, StratifiesData;
+    use LogsSystemActivity;
 
     public function getActivitylogOptions(): LogOptions
     {

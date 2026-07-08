@@ -7,6 +7,7 @@ use App\Observers\TaskObserver;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
 
@@ -28,7 +29,7 @@ class AppServiceProvider extends ServiceProvider
         $this->configureDefaults();
         Task::observe(TaskObserver::class);
 
-        \Illuminate\Support\Facades\Gate::before(function ($user, $ability) {
+        Gate::before(function ($user, $ability) {
             // O Administrador tem acesso total a tudo
             if ($user->hasRole('Administrador')) {
                 return true;
@@ -40,7 +41,7 @@ class AppServiceProvider extends ServiceProvider
                     return true;
                 }
             }
-            
+
             return null; // Delega para as Policies ou permissões específicas
         });
     }

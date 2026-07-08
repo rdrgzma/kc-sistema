@@ -3,14 +3,13 @@
 namespace App\Livewire\Admin;
 
 use App\Models\User;
+use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Components\CheckboxList;
-use Filament\Schemas\Components\Section;
-use Filament\Schemas\Components\Tabs;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Actions\Action;
+use Filament\Schemas\Components\Tabs;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
@@ -52,16 +51,17 @@ class UserPermissionsMatrixManager extends Component implements HasActions, HasF
                 Action::make('manage_permissions')
                     ->label('Gerir Permissões')
                     ->icon('heroicon-o-shield-check')
-                    ->modalHeading(fn (User $record) => 'Permissões Diretas: ' . $record->name)
+                    ->modalHeading(fn (User $record) => 'Permissões Diretas: '.$record->name)
                     ->modalWidth('4xl')
                     ->modalDescription('As permissões selecionadas aqui são atribuídas DIRETAMENTE ao utilizador, sobrepondo-se às Equipes/Papéis.')
                     ->fillForm(function (User $record): array {
                         $data = [];
                         // Preenche os checkboxes com as permissões atuais
                         $userPerms = $record->permissions->pluck('name')->toArray();
-                        
+
                         $groupedPerms = Permission::all()->groupBy(function ($perm) {
                             $parts = explode('_', $perm->name);
+
                             return end($parts);
                         });
 
@@ -77,6 +77,7 @@ class UserPermissionsMatrixManager extends Component implements HasActions, HasF
                         $groupedPerms = Permission::orderBy('name')->get()->groupBy(function ($perm) {
                             // Extrai a última palavra (ex: view_any_task -> task)
                             $parts = explode('_', $perm->name);
+
                             return end($parts);
                         });
 
@@ -85,7 +86,7 @@ class UserPermissionsMatrixManager extends Component implements HasActions, HasF
                             $options = [];
                             foreach ($perms as $perm) {
                                 // Transforma 'view_any_task' para 'View Any'
-                                $label = str_replace('_' . $group, '', $perm->name);
+                                $label = str_replace('_'.$group, '', $perm->name);
                                 $label = Str::headline($label);
                                 $options[$perm->name] = $label;
                             }
@@ -105,12 +106,12 @@ class UserPermissionsMatrixManager extends Component implements HasActions, HasF
                             Tabs::make('Permissions Tabs')
                                 ->tabs($tabs)
                                 ->activeTab(1)
-                                ->contained(false)
+                                ->contained(false),
                         ];
                     })
                     ->action(function (User $record, array $data): void {
                         $allSelected = [];
-                        
+
                         foreach ($data as $key => $values) {
                             if (str_starts_with($key, 'group_') && is_array($values)) {
                                 $allSelected = array_merge($allSelected, $values);
@@ -127,7 +128,7 @@ class UserPermissionsMatrixManager extends Component implements HasActions, HasF
                             ->event('updated')
                             ->withProperties([
                                 'attributes' => ['permissoes_diretas' => implode(', ', $allSelected)],
-                                'old' => ['permissoes_diretas' => implode(', ', $oldPermissions)]
+                                'old' => ['permissoes_diretas' => implode(', ', $oldPermissions)],
                             ])
                             ->log('Permissões diretas do utilizador atualizadas');
                     })

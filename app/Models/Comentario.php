@@ -2,9 +2,8 @@
 
 namespace App\Models;
 
-use App\Traits\LogsSystemActivity;
-
 use App\Observers\ComentarioObserver;
+use App\Traits\LogsSystemActivity;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
 

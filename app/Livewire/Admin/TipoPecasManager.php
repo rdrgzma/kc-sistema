@@ -41,7 +41,7 @@ class TipoPecasManager extends Component implements HasActions, HasForms, HasTab
             ])
             ->headerActions([
                 CreateAction::make()
-                    ->label('Novo Tipo de Peça')
+                    ->label('Novo Tipo de Documento / Peça')
                     ->icon('heroicon-o-plus')
                     ->form($this->getFormSchema()),
             ])
@@ -53,8 +53,8 @@ class TipoPecasManager extends Component implements HasActions, HasForms, HasTab
                     ->before(function (DeleteAction $action, TipoPeca $record) {
                         if ($record->pecasProcessuais()->exists()) {
                             Notification::make()
-                                ->title('Não é possível excluir este tipo de peça')
-                                ->body('Existem peças processuais cadastradas com este tipo.')
+                                ->title('Não é possível excluir este tipo de documento / peça')
+                                ->body('Existem documentos / peças cadastrados com este tipo.')
                                 ->danger()
                                 ->send();
 
@@ -62,21 +62,21 @@ class TipoPecasManager extends Component implements HasActions, HasForms, HasTab
                         }
                     }),
             ])
-            ->emptyStateHeading('Sem tipos de peça cadastrados');
+            ->emptyStateHeading('Sem tipos de documento / peça cadastrados');
     }
 
     protected function getFormSchema(): array
     {
         return [
             TextInput::make('nome')
-                ->label('Nome do Tipo de Peça')
+                ->label('Nome do Tipo de Documento / Peça')
                 ->required()
                 ->maxLength(255)
                 ->placeholder('Ex: Contestação, Recurso...'),
             TextInput::make('descricao')
                 ->label('Descrição')
                 ->maxLength(255)
-                ->placeholder('Ex: Peça para contestar a ação...'),
+                ->placeholder('Ex: Documento / Peça para contestar a ação...'),
         ];
     }
 

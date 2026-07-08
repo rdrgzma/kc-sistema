@@ -2,15 +2,12 @@
 
 namespace App\Livewire\Admin;
 
-use App\Enums\ClassificacaoDecisao;
-use App\Enums\StatusFinanceiroDecisao;
 use App\Models\Sentenca;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
-use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -73,7 +70,7 @@ class SentencasManager extends Component implements HasActions, HasForms, HasTab
                 ->required()
                 ->maxLength(255)
                 ->placeholder('Ex: Julgado Procedente, Improcedente...'),
-           
+
         ];
     }
 

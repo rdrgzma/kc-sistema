@@ -151,9 +151,17 @@
                                         <div class="absolute left-0 top-0 bottom-0 w-2 bg-{{ $colorClass }}-500 opacity-25 group-hover:opacity-100 transition-opacity"></div>
 
                                         <div class="flex flex-col gap-5">
-                                            <h4 class="text-md font-black text-slate-900 dark:text-gray-100 leading-[1.5] group-hover:text-primary-600 transition-colors tracking-tight">
-                                                {{ $task->title }}
-                                            </h4>
+                                            <div>
+                                                <h4 class="text-md font-black text-slate-900 dark:text-gray-100 leading-[1.5] group-hover:text-primary-600 transition-colors tracking-tight">
+                                                    {{ $task->title }}
+                                                </h4>
+                                                @if($task->pessoa)
+                                                    <div class="flex items-center gap-1.5 text-xs text-slate-500 dark:text-zinc-400 mt-2 font-medium">
+                                                        <x-flux::icon.user class="w-4 h-4 text-slate-400 dark:text-zinc-500 shrink-0" />
+                                                        <span class="truncate">{{ $task->pessoa->nome_razao }}</span>
+                                                    </div>
+                                                @endif
+                                            </div>
                                             
                                             <div class="flex items-center justify-between pt-5 border-t border-slate-200 dark:border-zinc-700/50">
                                                 <div class="flex items-center gap-2.5 {{ $task->due_date && $task->due_date->isPast() ? 'text-red-600 font-black' : 'text-slate-500 dark:text-zinc-500' }}">

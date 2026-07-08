@@ -47,10 +47,10 @@ class ProdutividadeRankingTable extends Component implements HasActions, HasForm
                     ->color('primary'),
 
                 TextColumn::make('pecas_processuais_count')
-                    ->label('Peças Produzidas')
+                    ->label('Documentos / Peças Produzidos')
                     ->badge()
                     ->color('primary')
-                    ->suffix(' peças')
+                    ->suffix(' doc/peças')
                     ->sortable(),
             ])
             ->defaultSort('pecas_processuais_count', 'desc')
@@ -80,9 +80,9 @@ class ProdutividadeRankingTable extends Component implements HasActions, HasForm
                     ->modalCancelActionLabel('Fechar'),
 
                 Action::make('verIndividuais')
-                    ->label('Ver Peças')
+                    ->label('Ver Documentos / Peças')
                     ->icon('heroicon-o-list-bullet')
-                    ->modalHeading(fn (User $record) => "Peças Produzidas: {$record->name}")
+                    ->modalHeading(fn (User $record) => "Documentos / Peças Produzidos: {$record->name}")
                     ->modalContent(fn (User $record) => view('livewire.dashboard.pecas-individuais-modal', [
                         'userId' => $record->id,
                         'dataInicio' => $this->dataInicio,

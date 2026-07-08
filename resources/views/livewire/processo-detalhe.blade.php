@@ -103,7 +103,7 @@
                 class="flex items-center gap-3 px-8 py-3 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all duration-400 scale-100 hover:scale-[1.01]"
             >
                 <x-heroicon-o-document-text class="w-5 h-5"/>
-                Peças Produzidas
+                Documentos / Peças
             </button>
             <button 
                 @click="tab = 'calculos'" 

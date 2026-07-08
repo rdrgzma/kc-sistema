@@ -96,7 +96,7 @@
         <div class="bg-white dark:bg-zinc-900 p-8 rounded-[2rem] border border-slate-300 dark:border-zinc-800 shadow-sm flex flex-col justify-between">
             <div>
                 <div class="flex items-center justify-between mb-6 gap-2">
-                    <h2 class="text-xs font-black text-slate-900 dark:text-zinc-50 uppercase tracking-widest italic">Ranking de Peças</h2>
+                    <h2 class="text-xs font-black text-slate-900 dark:text-zinc-50 uppercase tracking-widest italic">Ranking de Documentos / Peças</h2>
                     <a href="{{ route('dashboard.produtividade-equipe', ['dataInicio' => $dataInicio, 'dataFim' => $dataFim]) }}" wire:navigate
                        class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-slate-100 dark:bg-zinc-800/40 dark:hover:bg-zinc-800 text-slate-700 dark:text-zinc-300 text-xs font-bold rounded-lg transition-colors border border-slate-200 dark:border-zinc-800 shrink-0">
                         <x-heroicon-o-presentation-chart-line class="w-4 h-4 text-primary-500" />

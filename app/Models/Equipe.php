@@ -2,21 +2,19 @@
 
 namespace App\Models;
 
+use App\Observers\EquipeObserver;
 use App\Traits\LogsSystemActivity;
-
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Attributes\ObservedBy;
-use App\Observers\EquipeObserver;
 
 #[ObservedBy(EquipeObserver::class)]
 class Equipe extends Model
 {
-    use LogsSystemActivity;
-
     use HasFactory;
+    use LogsSystemActivity;
 
     protected $fillable = ['nome', 'descricao', 'escritorio_id'];
 

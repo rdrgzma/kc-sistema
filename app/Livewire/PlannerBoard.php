@@ -72,10 +72,14 @@ class PlannerBoard extends Component implements HasActions, HasForms
     public function loadPlanners()
     {
         if ($this->selectedPlannerId) {
-            $this->plannersData = Planner::with(['buckets.tasks' => function ($query) {
-                $query->estratificado();
-            }, 'buckets.tasks.assignee', 'plannable'])
-                ->find($this->selectedPlannerId);
+            $this->plannersData = Planner::with([
+                'buckets.tasks' => function ($query) {
+                    $query->estratificado();
+                },
+                'buckets.tasks.assignee',
+                'buckets.tasks.pessoa',
+                'plannable',
+            ])->find($this->selectedPlannerId);
 
             // Se não encontrar, volta para o index
             if (! $this->plannersData) {
@@ -290,8 +294,8 @@ class PlannerBoard extends Component implements HasActions, HasForms
                                         ->viewData(['task' => $task]),
                                 ]),
 
-                            // ABA 5: Produção (Peça Processual)
-                            Tab::make('Produção (Peça)')
+                            // ABA 5: Produção (Documento / Peça)
+                            Tab::make('Produção (Documento / Peça)')
                                 ->icon('heroicon-o-document-text')
                                 ->badge($task->pecaProcessual ? 1 : null)
                                 ->schema([

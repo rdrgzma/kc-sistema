@@ -35,20 +35,21 @@
                     'label' => 'Operacional',
                     'items' => [
                         ['route' => 'dashboard', 'icon' => 'heroicon-o-chart-pie', 'label' => 'Início'],
-                        ['route' => 'processos.index', 'icon' => 'heroicon-o-scale', 'label' => 'Processos'],
+                        ['route' => 'processos.index', 'icon' => 'heroicon-o-scale', 'label' => 'Processos', 'except_roles' => ['equipe_gr']],
                         ['route' => 'pessoas.index', 'icon' => 'heroicon-o-user-circle', 'label' => 'Clientes'],
-                        ['route' => 'calculos.index', 'icon' => 'heroicon-o-calculator', 'label' => 'Cálculos'],
-                        ['route' => 'financeiro.index', 'icon' => 'heroicon-o-banknotes', 'label' => 'Financeiro'],
-                        ['route' => 'agenda.index', 'icon' => 'heroicon-o-calendar', 'label' => 'Agenda'],
+                        ['route' => 'calculos.index', 'icon' => 'heroicon-o-calculator', 'label' => 'Cálculos', 'except_roles' => ['equipe_gr']],
+                        ['route' => 'financeiro.index', 'icon' => 'heroicon-o-banknotes', 'label' => 'Financeiro', 'except_roles' => ['equipe_gr']],
+                        ['route' => 'agenda.index', 'icon' => 'heroicon-o-calendar', 'label' => 'Agenda', 'except_roles' => ['equipe_gr']],
                     ]
                 ],
                 [
                     'label' => 'Produtividade',
                     'items' => [
                         ['route' => 'dashboard.produtividade', 'icon' => 'heroicon-o-presentation-chart-line', 'label' => 'Painel Geral'],
-                        ['route' => 'dashboard.produtividade-equipe', 'icon' => 'heroicon-o-users', 'label' => 'Peças'],
+                        ['route' => 'dashboard.produtividade-equipe', 'icon' => 'heroicon-o-users', 'label' => 'Documentos / Peças'],
+                        ['route' => 'dashboard.produtividade-gr', 'icon' => 'heroicon-o-shield-check', 'label' => 'Produtividade GR', 'roles' => ['equipe_gr', 'Administrador', 'Sócio']],
                         ['route' => 'dashboard.produtividade-usuarios', 'icon' => 'heroicon-o-user-circle', 'label' => 'Tarefas'],
-                        ['route' => 'dashboard.produtividade-deslocamentos', 'icon' => 'heroicon-o-map-pin', 'label' => 'Deslocamentos'],
+                        ['route' => 'dashboard.produtividade-deslocamentos', 'icon' => 'heroicon-o-map-pin', 'label' => 'Deslocamentos', 'except_roles' => ['equipe_gr']],
                     ]
                 ],
                 [
@@ -82,8 +83,6 @@
                         ['route' => 'admin.peritos', 'icon' => 'heroicon-o-academic-cap', 'label' => 'Peritos'],
                         ['route' => 'admin.assistentes', 'icon' => 'heroicon-o-briefcase', 'label' => 'Assistentes'],
                         ['route' => 'admin.especialidades', 'icon' => 'heroicon-o-tag', 'label' => 'Especialidades'],
-
-
                     ]
                 ]
             ];
@@ -92,7 +91,17 @@
         @foreach ($sections as $section)
             @if (!isset($section['roles']) || auth()->user()?->hasAnyRole($section['roles']))
                 @php
-                    $isAnyItemActive = collect($section['items'])->contains(function ($item) {
+                    $filteredItems = collect($section['items'])->filter(function ($item) {
+                        if (isset($item['except_roles']) && auth()->user()?->hasAnyRole($item['except_roles'])) {
+                            return false;
+                        }
+                        if (isset($item['roles']) && !auth()->user()?->hasAnyRole($item['roles'])) {
+                            return false;
+                        }
+                        return true;
+                    })->all();
+
+                    $isAnyItemActive = collect($filteredItems)->contains(function ($item) {
                         if (isset($item['subitems'])) {
                             return collect($item['subitems'])->contains(fn($sub) => request()->routeIs($sub['route'] . '*'));
                         }
@@ -120,7 +129,7 @@
 
                     <div x-show="!isSidebarOpen || expanded" :class="isSidebarOpen ? 'overflow-hidden' : ''"
                         class="flex flex-col gap-0.5 transition-all duration-300">
-                        @foreach ($section['items'] as $item)
+                        @foreach ($filteredItems as $item)
                             @php
                                 $hasSubitems = isset($item['subitems']);
                                 $isActive = false;

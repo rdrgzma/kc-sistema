@@ -43,7 +43,7 @@ class PecasIndividuaisTable extends Component implements HasActions, HasForms, H
                     ->sortable(),
 
                 TextColumn::make('tipoPeca.nome')
-                    ->label('Tipo de Peça')
+                    ->label('Tipo de Documento / Peça')
                     ->badge()
                     ->color('info')
                     ->sortable(),
@@ -59,7 +59,7 @@ class PecasIndividuaisTable extends Component implements HasActions, HasForms, H
             ])
             ->paginated([5, 10, 25])
             ->defaultPaginationPageOption(5)
-            ->emptyStateHeading('Nenhuma peça registrada no período');
+            ->emptyStateHeading('Nenhum documento / peça registrado no período');
     }
 
     public function render()

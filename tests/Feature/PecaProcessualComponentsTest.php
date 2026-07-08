@@ -58,7 +58,7 @@ test('TaskPecaProcessual can render and register a piece processual', function (
     $tipoPeca = TipoPeca::create(['nome' => 'Contestação']);
 
     Livewire::test(TaskPecaProcessual::class, ['task' => $task])
-        ->assertSee('Nenhuma peça registrada')
+        ->assertSee('Nenhum documento / peça registrado')
         ->callAction('registrarPeca', data: [
             'tipo_peca_id' => $tipoPeca->id,
             'data_producao' => now()->toDateString(),
@@ -95,7 +95,7 @@ test('PecasRelationManager can render and register a piece processual', function
     $tipoPeca = TipoPeca::create(['nome' => 'Contestação']);
 
     Livewire::test(PecasRelationManager::class, ['processo' => $processo])
-        ->assertSee('Nenhuma peça processual registrada')
+        ->assertSee('Nenhum documento / peça registrado')
         ->callTableAction('create', data: [
             'tipo_peca_id' => $tipoPeca->id,
             'data_producao' => now()->toDateString(),

@@ -261,6 +261,8 @@ class DocumentManager extends Component implements HasActions, HasForms
                 ->where('pasta_id', $this->current_folder_id);
         }
 
+        $queryDocs->with(['pecaProcessual.tipoPeca']);
+
         $breadcrumb = [];
         if ($this->current_folder_id) {
             $folder = Pasta::find($this->current_folder_id);

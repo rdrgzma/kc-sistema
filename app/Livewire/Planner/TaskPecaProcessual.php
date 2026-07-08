@@ -35,7 +35,7 @@ class TaskPecaProcessual extends Component implements HasActions, HasForms
     public function registrarPecaAction(): Action
     {
         return Action::make('registrarPeca')
-            ->label('Registrar Peça Processual')
+            ->label('Registrar Documento / Peça Processual')
             ->icon('heroicon-o-document-plus')
             ->form($this->getFormSchema())
             ->action(function (array $data) {
@@ -57,7 +57,7 @@ class TaskPecaProcessual extends Component implements HasActions, HasForms
                 PecaProcessual::create($data);
 
                 Notification::make()
-                    ->title('Peça registrada com sucesso!')
+                    ->title('Documento / Peça registrado com sucesso!')
                     ->success()
                     ->send();
 
@@ -82,7 +82,7 @@ class TaskPecaProcessual extends Component implements HasActions, HasForms
                 $this->task->pecaProcessual->update($data);
 
                 Notification::make()
-                    ->title('Peça atualizada com sucesso!')
+                    ->title('Documento / Peça atualizado com sucesso!')
                     ->success()
                     ->send();
 
@@ -102,7 +102,7 @@ class TaskPecaProcessual extends Component implements HasActions, HasForms
                 $this->task->pecaProcessual->delete();
 
                 Notification::make()
-                    ->title('Peça excluída.')
+                    ->title('Documento / Peça excluído.')
                     ->success()
                     ->send();
 
@@ -118,7 +118,7 @@ class TaskPecaProcessual extends Component implements HasActions, HasForms
             Grid::make(2)
                 ->schema([
                     Select::make('tipo_peca_id')
-                        ->label('Tipo de Peça')
+                        ->label('Tipo de Documento / Peça')
                         ->options(fn () => TipoPeca::pluck('nome', 'id')->toArray())
                         ->required(),
 
@@ -128,7 +128,7 @@ class TaskPecaProcessual extends Component implements HasActions, HasForms
                         ->default(now()),
 
                     Select::make('autor_id')
-                        ->label('Autor da Peça')
+                        ->label('Autor do Documento / Peça')
                         ->options(fn () => User::orderBy('name')->pluck('name', 'id')->toArray())
                         ->searchable()
                         ->default(auth()->id())

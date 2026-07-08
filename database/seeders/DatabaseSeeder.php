@@ -24,6 +24,8 @@ class DatabaseSeeder extends Seeder
             ProcedimentoSeeder::class,
             SentencaSeeder::class,
             SeguradoraSeeder::class,
+            IndexadorSeeder::class,
+            TipoPecaSeeder::class,
             // Entidades principais
             PessoaSeeder::class,
             // Financeiro (Categorias e Lançamentos em Lote)

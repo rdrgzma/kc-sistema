@@ -110,7 +110,7 @@ test('admin users can access and manage tipo-pecas via TipoPecasManager componen
     $this->get(route('admin.tipo-pecas'))->assertOk();
 
     Livewire::test(TipoPecasManager::class)
-        ->assertSee('Sem tipos de peça cadastrados')
+        ->assertSee('Sem tipos de documento / peça cadastrados')
         ->callTableAction('create', data: [
             'nome' => 'Petição Inicial',
             'descricao' => 'Peça de introdução da ação',

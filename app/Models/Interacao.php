@@ -2,9 +2,8 @@
 
 namespace App\Models;
 
-use App\Traits\LogsSystemActivity;
-
 use App\Observers\InteracaoObserver;
+use App\Traits\LogsSystemActivity;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -15,9 +14,8 @@ use Spatie\Activitylog\Support\LogOptions;
 #[ObservedBy(InteracaoObserver::class)]
 class Interacao extends Model
 {
-    use LogsSystemActivity;
-
     use LogsActivity;
+    use LogsSystemActivity;
 
     public function getActivitylogOptions(): LogOptions
     {

@@ -4,8 +4,11 @@ namespace App\Livewire;
 
 namespace App\Livewire\Admin;
 
+use App\Models\Equipe;
 use App\Models\Pessoa;
 use App\Models\Processo;
+use App\Models\Task;
+use App\Models\TimelineEvent;
 use App\Models\User;
 use Carbon\Carbon;
 use Filament\Actions\Action;
@@ -91,32 +94,32 @@ class AnalyticsManager extends Component implements HasActions, HasForms, HasTab
                             return null;
                         }
 
-                        if ($record->subject instanceof \App\Models\Pessoa) {
+                        if ($record->subject instanceof Pessoa) {
                             return route('pessoas.show', $record->subject_id);
                         }
 
-                        if ($record->subject instanceof \App\Models\Processo) {
+                        if ($record->subject instanceof Processo) {
                             return route('processos.show', $record->subject_id);
                         }
 
-                        if ($record->subject instanceof \App\Models\User) {
+                        if ($record->subject instanceof User) {
                             return route('admin.users');
                         }
 
-                        if ($record->subject instanceof \App\Models\Equipe) {
+                        if ($record->subject instanceof Equipe) {
                             return route('admin.equipes');
                         }
 
-                        if ($record->subject instanceof \App\Models\Task) {
+                        if ($record->subject instanceof Task) {
                             return route('agenda.index');
                         }
 
-                        if ($record->subject instanceof \App\Models\TimelineEvent) {
+                        if ($record->subject instanceof TimelineEvent) {
                             $parent = $record->subject->timelineable;
-                            if ($parent instanceof \App\Models\Processo) {
+                            if ($parent instanceof Processo) {
                                 return route('processos.show', $parent->id);
                             }
-                            if ($parent instanceof \App\Models\Pessoa) {
+                            if ($parent instanceof Pessoa) {
                                 return route('pessoas.show', $parent->id);
                             }
                         }

@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Traits\LogsSystemActivity;
-
 use App\Traits\StratifiesData;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -11,9 +10,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class CategoriaFinanceira extends Model
 {
-    use LogsSystemActivity;
-
     use HasFactory, StratifiesData;
+    use LogsSystemActivity;
 
     protected $fillable = [
         'nome',

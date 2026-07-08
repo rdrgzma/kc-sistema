@@ -2,11 +2,10 @@
 
 namespace App\Models;
 
-use App\Traits\LogsSystemActivity;
-
 use App\Enums\ClassificacaoDecisao;
 use App\Enums\StatusFinanceiroDecisao;
 use App\Observers\SentencaObserver;
+use App\Traits\LogsSystemActivity;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -14,9 +13,8 @@ use Illuminate\Database\Eloquent\Model;
 #[ObservedBy(SentencaObserver::class)]
 class Sentenca extends Model
 {
-    use LogsSystemActivity;
-
     use HasFactory;
+    use LogsSystemActivity;
 
     protected $fillable = [
         'nome',

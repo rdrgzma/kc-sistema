@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Str;
 
 class SetupActivityLogs extends Command
 {
@@ -35,20 +34,21 @@ class SetupActivityLogs extends Command
 
         foreach ($files as $file) {
             $content = file_get_contents($file->getPathname());
-            
+
             // Se já tem a trait, ignora
-            if (str_contains($content, $traitUse) || str_contains($content, 'use ' . $traitName . ';')) {
+            if (str_contains($content, $traitUse) || str_contains($content, 'use '.$traitName.';')) {
                 $this->info("Modelo {$file->getFilename()} já possui a trait.");
+
                 continue;
             }
 
             // Ignorar modelos que não sejam classes normais, interfaces ou traits
-            if (!preg_match('/class\s+(\w+)\s+extends/is', $content, $matches)) {
+            if (! preg_match('/class\s+(\w+)\s+extends/is', $content, $matches)) {
                 continue;
             }
 
             // Encontrar o namespace ou declaração de classe para adicionar o import
-            if (!str_contains($content, 'use App\Traits\LogsSystemActivity;')) {
+            if (! str_contains($content, 'use App\Traits\LogsSystemActivity;')) {
                 // Adiciona depois do namespace
                 $content = preg_replace(
                     '/(namespace\s+App\\\Models;)/is',

@@ -25,6 +25,7 @@ use App\Livewire\CalculoManager;
 use App\Livewire\Dashboard;
 use App\Livewire\DashboardProdutividade;
 use App\Livewire\DashboardProdutividadeEquipe;
+use App\Livewire\DashboardProdutividadeGR;
 use App\Livewire\Financeiro\FinanceiroManager;
 use App\Livewire\OnboardingWizard;
 use App\Livewire\PessoaDetalhe;
@@ -44,6 +45,7 @@ Route::middleware(['auth'])->group(function () {
     Route::livewire('/dashboard', Dashboard::class)->name('dashboard');
     Route::get('/dashboard/produtividade', DashboardProdutividade::class)->name('dashboard.produtividade');
     Route::get('/dashboard/produtividade/equipe', DashboardProdutividadeEquipe::class)->name('dashboard.produtividade-equipe');
+    Route::get('/dashboard/produtividade/gr', DashboardProdutividadeGR::class)->middleware(['role:equipe_gr|Administrador|Sócio'])->name('dashboard.produtividade-gr');
     Route::get('/dashboard/produtividade/usuarios', ProdutividadeUsuarioManager::class)->name('dashboard.produtividade-usuarios');
     Route::get('/dashboard/produtividade/deslocamentos', DeslocamentosManager::class)->name('dashboard.produtividade-deslocamentos');
     Route::get('/dashboard/produtividade/exportar-decisoes', [ProdutividadeReportController::class, 'exportDecisoes'])->name('produtividade.exportar-decisoes');

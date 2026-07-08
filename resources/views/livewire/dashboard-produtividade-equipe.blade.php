@@ -27,7 +27,7 @@
     {{-- Tabela do Ranking --}}
     <div class="bg-white dark:bg-zinc-900 p-8 rounded-[2rem] border border-slate-300 dark:border-zinc-800 shadow-sm">
         <div class="flex items-center justify-between mb-6">
-            <h2 class="text-xs font-black text-slate-900 dark:text-zinc-50 uppercase tracking-widest italic">Ranking Completo de Peças Produzidas</h2>
+            <h2 class="text-xs font-black text-slate-900 dark:text-zinc-50 uppercase tracking-widest italic">Ranking Completo de Documentos / Peças Produzidos</h2>
         </div>
         
         <div class="overflow-x-auto">

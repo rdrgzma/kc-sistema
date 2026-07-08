@@ -46,7 +46,7 @@ class PecasRelationManager extends Component implements HasActions, HasForms, Ha
             )
             ->columns([
                 TextColumn::make('tipoPeca.nome')
-                    ->label('Tipo de Peça')
+                    ->label('Tipo de Documento / Peça')
                     ->badge()
                     ->color('info')
                     ->sortable(),
@@ -86,7 +86,7 @@ class PecasRelationManager extends Component implements HasActions, HasForms, Ha
             ])
             ->headerActions([
                 CreateAction::make()
-                    ->label('Registrar Peça')
+                    ->label('Registrar Documento / Peça')
                     ->form($this->getFormSchema())
                     ->slideOver()
                     ->mutateFormDataUsing(function (array $data): array {
@@ -100,7 +100,7 @@ class PecasRelationManager extends Component implements HasActions, HasForms, Ha
                         return $data;
                     }),
             ])
-            ->emptyStateHeading('Nenhuma peça processual registrada para este processo');
+            ->emptyStateHeading('Nenhum documento / peça registrado para este processo');
     }
 
     protected function getFormSchema(): array
@@ -111,7 +111,7 @@ class PecasRelationManager extends Component implements HasActions, HasForms, Ha
             Grid::make(2)
                 ->schema([
                     Select::make('tipo_peca_id')
-                        ->label('Tipo de Peça')
+                        ->label('Tipo de Documento / Peça')
                         ->relationship('tipoPeca', 'nome')
                         ->required(),
 
@@ -121,7 +121,7 @@ class PecasRelationManager extends Component implements HasActions, HasForms, Ha
                         ->default(now()),
 
                     Select::make('autor_id')
-                        ->label('Autor da Peça')
+                        ->label('Autor do Documento / Peça')
                         ->options(fn () => User::orderBy('name')->pluck('name', 'id')->toArray())
                         ->searchable()
                         ->default(auth()->id())

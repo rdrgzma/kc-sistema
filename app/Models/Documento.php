@@ -2,9 +2,8 @@
 
 namespace App\Models;
 
-use App\Traits\LogsSystemActivity;
-
 use App\Observers\DocumentoObserver;
+use App\Traits\LogsSystemActivity;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;

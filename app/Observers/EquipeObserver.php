@@ -12,7 +12,7 @@ class EquipeObserver
      */
     public function created(Equipe $equipe): void
     {
-        Role::firstOrCreate(['name' => 'equipe_' . $equipe->id]);
+        Role::firstOrCreate(['name' => 'equipe_'.$equipe->id]);
     }
 
     /**
@@ -20,7 +20,7 @@ class EquipeObserver
      */
     public function deleted(Equipe $equipe): void
     {
-        $role = Role::where('name', 'equipe_' . $equipe->id)->first();
+        $role = Role::where('name', 'equipe_'.$equipe->id)->first();
         if ($role) {
             $role->delete();
         }

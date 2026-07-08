@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\AcaoGR;
 use App\Enums\DurationUnit;
 use App\Enums\TaskUrgency;
 use App\Observers\TaskObserver;
@@ -29,6 +30,7 @@ class Task extends Model
         'title', 'description', 'assigned_to',
         'due_date', 'duration_value', 'duration_unit', 'urgency', 'sort',
         'pessoa_id', 'processo_id', 'inicios_count', 'conclusoes_count',
+        'acao_gr', 'data_solicitacao', 'data_envio', 'repeticoes',
     ];
 
     protected function casts(): array
@@ -38,6 +40,10 @@ class Task extends Model
             'duration_value' => 'integer',
             'duration_unit' => DurationUnit::class,
             'urgency' => TaskUrgency::class,
+            'acao_gr' => AcaoGR::class,
+            'data_solicitacao' => 'date',
+            'data_envio' => 'date',
+            'repeticoes' => 'integer',
         ];
     }
 

@@ -30,9 +30,10 @@ class GeneratePermissions extends Command
     public function handle()
     {
         $modelsPath = app_path('Models');
-        
-        if (!File::isDirectory($modelsPath)) {
+
+        if (! File::isDirectory($modelsPath)) {
             $this->error("Directory {$modelsPath} does not exist.");
+
             return;
         }
 
@@ -47,25 +48,25 @@ class GeneratePermissions extends Command
 
         $actions = ['view', 'create', 'update', 'delete', 'restore', 'force_delete'];
         $count = 0;
-        
+
         $roleName = $this->option('role');
         $role = null;
-        
+
         if ($roleName) {
             $role = Role::firstOrCreate(['name' => $roleName, 'guard_name' => 'web']);
         }
 
-        $this->info("Generating permissions for " . $models->count() . " models...");
+        $this->info('Generating permissions for '.$models->count().' models...');
 
         foreach ($models as $model) {
             $modelSnake = Str::snake(class_basename($model)); // e.g. user, processo, equipe
-            
+
             foreach ($actions as $action) {
                 $permissionName = "{$action}_{$modelSnake}";
-                
+
                 $permission = Permission::firstOrCreate([
                     'name' => $permissionName,
-                    'guard_name' => 'web' // default guard
+                    'guard_name' => 'web', // default guard
                 ]);
 
                 if ($permission->wasRecentlyCreated) {
@@ -80,7 +81,7 @@ class GeneratePermissions extends Command
         }
 
         $this->info("Successfully generated {$count} new permissions.");
-        
+
         if ($role) {
             $this->info("Assigned all permissions to role: {$roleName}");
         }

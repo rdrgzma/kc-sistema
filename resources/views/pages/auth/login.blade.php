@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ __('Entrar') }}</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @livewireStyles
 </head>
 
 <body
@@ -91,8 +92,13 @@
                     </a>
                 </div>
             @endif
+
+            @if (app()->environment('local'))
+                <livewire:auth.login />
+            @endif
         </div>
     </div>
+    @livewireScripts
 </body>
 
 </html>

@@ -165,7 +165,7 @@ class ProcessosTable extends Component implements HasActions, HasForms, HasTable
                     Select::make('area_id')
                         ->label('Área Jurídica')
                         ->relationship('area', 'nome')
-                        ->default("Direito Administrativo")
+                        ->default('Direito Administrativo')
                         ->searchable()
                         ->preload()
                         ->createOptionForm([

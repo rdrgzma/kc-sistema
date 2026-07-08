@@ -2,29 +2,29 @@
 
 namespace App\Livewire\Admin;
 
-use Filament\Forms\Components\CheckboxList;
-use Filament\Schemas\Components\Tabs;
-use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
-use Filament\Actions\Action;
-use Illuminate\Support\Str;
 use App\Models\Equipe;
+use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Schemas\Components\Tabs;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Tables\Table;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Livewire\Component;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class EquipesManager extends Component implements HasActions, HasForms, HasTable
 {
@@ -70,27 +70,32 @@ class EquipesManager extends Component implements HasActions, HasForms, HasTable
                     ->icon('heroicon-o-shield-check')
                     ->color('warning')
                     ->fillForm(function (Equipe $record) {
-                        $roleName = 'equipe_' . $record->id;
+                        $roleName = 'equipe_'.$record->id;
                         $role = Role::where('name', $roleName)->first();
-                        if (!$role) return [];
-                        
+                        if (! $role) {
+                            return [];
+                        }
+
                         $rolePerms = $role->permissions()->pluck('name')->toArray();
                         $groupedPerms = Permission::orderBy('name')->get()->groupBy(function ($perm) {
                             $parts = explode('_', $perm->name);
+
                             return end($parts);
                         });
-                        
+
                         $data = [];
                         foreach ($groupedPerms as $group => $perms) {
                             $data["group_{$group}"] = collect($perms)->filter(function ($p) use ($rolePerms) {
                                 return in_array($p->name, $rolePerms);
                             })->pluck('name')->toArray();
                         }
+
                         return $data;
                     })
                     ->form(function () {
                         $groupedPerms = Permission::orderBy('name')->get()->groupBy(function ($perm) {
                             $parts = explode('_', $perm->name);
+
                             return end($parts);
                         });
 
@@ -98,7 +103,7 @@ class EquipesManager extends Component implements HasActions, HasForms, HasTable
                         foreach ($groupedPerms as $group => $perms) {
                             $options = [];
                             foreach ($perms as $perm) {
-                                $label = str_replace('_' . $group, '', $perm->name);
+                                $label = str_replace('_'.$group, '', $perm->name);
                                 $label = Str::headline($label);
                                 $options[$perm->name] = $label;
                             }
@@ -118,22 +123,22 @@ class EquipesManager extends Component implements HasActions, HasForms, HasTable
                             Tabs::make('Permissions Tabs')
                                 ->tabs($tabs)
                                 ->activeTab(1)
-                                ->contained(false)
+                                ->contained(false),
                         ];
                     })
                     ->action(function (Equipe $record, array $data): void {
                         $allSelected = [];
-                        
+
                         foreach ($data as $key => $values) {
                             if (str_starts_with($key, 'group_') && is_array($values)) {
                                 $allSelected = array_merge($allSelected, $values);
                             }
                         }
-                        
-                        $roleName = 'equipe_' . $record->id;
+
+                        $roleName = 'equipe_'.$record->id;
                         $role = Role::firstOrCreate(['name' => $roleName, 'guard_name' => 'web']);
                         $oldPermissions = $role->permissions()->pluck('name')->toArray();
-                        
+
                         $role->syncPermissions($allSelected);
 
                         activity()
@@ -141,7 +146,7 @@ class EquipesManager extends Component implements HasActions, HasForms, HasTable
                             ->event('updated')
                             ->withProperties([
                                 'attributes' => ['permissoes' => implode(', ', $allSelected)],
-                                'old' => ['permissoes' => implode(', ', $oldPermissions)]
+                                'old' => ['permissoes' => implode(', ', $oldPermissions)],
                             ])
                             ->log('Permissões da equipa atualizadas');
                     })

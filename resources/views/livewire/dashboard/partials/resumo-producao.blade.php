@@ -17,7 +17,7 @@
             <table class="w-full text-left text-sm text-slate-600 dark:text-zinc-300">
                 <thead class="bg-slate-50 dark:bg-zinc-800 text-xs uppercase font-semibold text-slate-500 dark:text-zinc-400">
                     <tr>
-                        <th scope="col" class="px-6 py-3">Tipo de Peça</th>
+                        <th scope="col" class="px-6 py-3">Tipo de Documento / Peça</th>
                         <th scope="col" class="px-6 py-3 text-right">Total Produzido</th>
                     </tr>
                 </thead>

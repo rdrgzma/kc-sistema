@@ -177,7 +177,10 @@ class TimelineFeed extends Component implements HasActions, HasForms
         }
 
         return [
-            'events' => $this->model->timelineEvents()->latest('data_evento')->get(),
+            'events' => $this->model->timelineEvents()
+                ->with(['user'])
+                ->latest('data_evento')
+                ->get(),
         ];
     }
 

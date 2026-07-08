@@ -18,5 +18,8 @@ class RolesAndPermissionsSeeder extends Seeder
         Role::create(['name' => 'Sócio']);
         Role::create(['name' => 'Advogado Colaborador']);
         Role::create(['name' => 'Operacional']);
+        Role::create(['name' => 'Processos']);
+        Role::create(['name' => 'GR']);
+        Role::create(['name' => 'equipe_gr']);
     }
 }

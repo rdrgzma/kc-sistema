@@ -1,3 +1,3 @@
 <div class="py-4 min-h-[400px]">
-    @livewire('document-manager', ['model' => $task], key('docs-' . $task->id))
+    @livewire('document-manager', ['model' => $task], key('docs-' . $task->id), lazy: true)
 </div>

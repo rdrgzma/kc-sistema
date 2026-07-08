@@ -13,7 +13,7 @@
 
             <div class="grid grid-cols-2 gap-4">
                 <div>
-                    <span class="block text-xs font-medium text-slate-500 dark:text-zinc-400">Tipo de Peça</span>
+                    <span class="block text-xs font-medium text-slate-500 dark:text-zinc-400">Tipo de Documento / Peça</span>
                     <span class="block text-sm text-slate-900 dark:text-zinc-100 mt-1 font-medium">
                         {{ $task->pecaProcessual->tipoPeca?->nome ?? '—' }}
                     </span>
@@ -58,9 +58,9 @@
             <div class="mx-auto w-12 h-12 bg-white dark:bg-zinc-800 rounded-full flex items-center justify-center shadow-sm mb-4">
                 <x-heroicon-o-document-text class="w-6 h-6 text-slate-400 dark:text-zinc-500" />
             </div>
-            <h3 class="text-sm font-semibold text-slate-800 dark:text-zinc-200 mb-2">Nenhuma peça registrada</h3>
+            <h3 class="text-sm font-semibold text-slate-800 dark:text-zinc-200 mb-2">Nenhum documento / peça registrado</h3>
             <p class="text-xs text-slate-500 dark:text-zinc-400 mb-6 max-w-sm mx-auto">
-                Registre uma peça processual associada a esta tarefa para acompanhar a produtividade da equipe.
+                Registre um documento / peça associado a esta tarefa para acompanhar a produtividade da equipe.
             </p>
             {{ $this->registrarPecaAction }}
         </div>

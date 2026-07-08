@@ -10,6 +10,7 @@ use App\Models\Calculo;
 use App\Models\Indexador;
 use App\Models\IndexadorCotacao;
 use App\Models\Processo;
+use App\Services\BcbSgsService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use DateTimeImmutable;
 use Filament\Actions\Action;
@@ -293,6 +294,67 @@ class CalculoManager extends Component implements HasActions, HasForms, HasTable
                     ->url('https://www.drcalc.net')
                     ->openUrlInNewTab()
                     ->color('info'),
+                Action::make('sync_indices')
+                    ->label('Sincronizar Índices')
+                    ->icon('heroicon-o-arrow-path')
+                    ->color('warning')
+                    ->requiresConfirmation()
+                    ->action(function (BcbSgsService $bcbSgsService) {
+                        $indexadores = Indexador::whereNotNull('codigo_sgs')->get();
+
+                        if ($indexadores->isEmpty()) {
+                            Notification::make()
+                                ->title('Nenhum indexador cadastrado')
+                                ->warning()
+                                ->send();
+
+                            return;
+                        }
+
+                        $now = now();
+                        $count = 0;
+
+                        foreach ($indexadores as $indexador) {
+                            $cotacoesData = $bcbSgsService->fetchHistorico($indexador->codigo_sgs);
+
+                            if (empty($cotacoesData)) {
+                                continue;
+                            }
+
+                            $upsertData = [];
+                            $acumulado = 1.0000000000;
+
+                            foreach ($cotacoesData as $item) {
+                                $taxa = ((float) $item['valor']) / 100.0;
+                                $acumulado = $acumulado * (1 + $taxa);
+
+                                $upsertData[] = [
+                                    'indexador_id' => $indexador->id,
+                                    'data_referencia' => $item['data_referencia'],
+                                    'valor' => $acumulado,
+                                    'created_at' => $now,
+                                    'updated_at' => $now,
+                                ];
+                            }
+
+                            $chunks = array_chunk($upsertData, 1000);
+                            foreach ($chunks as $chunk) {
+                                IndexadorCotacao::upsert(
+                                    $chunk,
+                                    ['indexador_id', 'data_referencia'],
+                                    ['valor', 'updated_at']
+                                );
+                            }
+
+                            $count += count($cotacoesData);
+                        }
+
+                        Notification::make()
+                            ->title('Índices sincronizados com sucesso!')
+                            ->body("Sincronizados {$count} registros de cotação.")
+                            ->success()
+                            ->send();
+                    }),
             ])
             ->actions([
                 Action::make('gerar_pdf')
