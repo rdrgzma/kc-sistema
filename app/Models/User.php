@@ -2,12 +2,10 @@
 
 namespace App\Models;
 
-use App\Traits\LogsSystemActivity;
-
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Traits\HasLegacyData;
+// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Traits\LogsSystemActivity;
 use Database\Factories\UserFactory;
-use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -20,14 +18,26 @@ use Illuminate\Support\Str;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Spatie\Permission\Traits\HasRoles;
 
-#[Fillable(['name', 'email', 'password', 'escritorio_id', 'is_active'])]
 #[Hidden(['password', 'two_factor_secret', 'two_factor_recovery_codes', 'remember_token'])]
 class User extends Authenticatable
 {
-    use LogsSystemActivity;
-
     /** @use HasFactory<UserFactory> */
     use HasFactory, HasLegacyData, HasRoles, Notifiable, SoftDeletes, TwoFactorAuthenticatable;
+
+    use LogsSystemActivity;
+
+    /**
+     * @var list<string>
+     */
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+        'escritorio_id',
+        'is_active',
+        'legacy_id',
+        'legacy_table',
+    ];
 
     /**
      * Get the attributes that should be cast.

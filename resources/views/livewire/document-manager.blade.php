@@ -105,7 +105,7 @@
                                                 <p class="text-sm font-black text-slate-900 dark:text-gray-200 group-hover:text-primary-600 transition-colors truncate max-w-md">{{ $doc->nome_arquivo }}</p>
                                                 @if($doc->pecaProcessual)
                                                     <span class="inline-flex items-center px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-wider bg-indigo-50 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
-                                                        Peça: {{ $doc->pecaProcessual->tipo_peca->getLabel() }}
+                                                        Peça: {{ $doc->pecaProcessual->tipoPeca?->nome ?? '—' }}
                                                     </span>
                                                 @endif
                                             </div>

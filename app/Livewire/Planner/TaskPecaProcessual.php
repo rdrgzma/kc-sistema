@@ -2,10 +2,10 @@
 
 namespace App\Livewire\Planner;
 
-use App\Enums\TipoPecaProduzida;
 use App\Models\PecaProcessual;
 use App\Models\Processo;
 use App\Models\Task;
+use App\Models\TipoPeca;
 use App\Models\User;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
@@ -117,9 +117,9 @@ class TaskPecaProcessual extends Component implements HasActions, HasForms
         return [
             Grid::make(2)
                 ->schema([
-                    Select::make('tipo_peca')
+                    Select::make('tipo_peca_id')
                         ->label('Tipo de Peça')
-                        ->options(TipoPecaProduzida::class)
+                        ->options(fn () => TipoPeca::pluck('nome', 'id')->toArray())
                         ->required(),
 
                     DatePicker::make('data_producao')

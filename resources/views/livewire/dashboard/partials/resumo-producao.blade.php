@@ -27,7 +27,7 @@
                         @php $totalGeral += $item->total; @endphp
                         <tr class="hover:bg-slate-50 dark:hover:bg-zinc-800/50 transition-colors">
                             <td class="px-6 py-4 font-medium text-slate-900 dark:text-zinc-100">
-                                {{ $item->tipo_peca->getLabel() }}
+                                {{ $item->tipoPeca?->nome ?? '—' }}
                             </td>
                             <td class="px-6 py-4 text-right">
                                 <span class="inline-flex items-center justify-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary-100 text-primary-800 dark:bg-primary-900/30 dark:text-primary-400">

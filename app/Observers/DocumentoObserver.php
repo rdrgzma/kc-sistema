@@ -25,7 +25,7 @@ class DocumentoObserver
             if ($documento->wasChanged('peca_processual_id')) {
                 if ($documento->peca_processual_id) {
                     $peca = $documento->pecaProcessual;
-                    $tipoLabel = $peca?->tipo_peca ? $peca->tipo_peca->getLabel() : 'Peça';
+                    $tipoLabel = $peca?->tipoPeca ? $peca->tipoPeca->nome : 'Peça';
                     $documento->documentable->timelineEvents()->create([
                         'tipo' => 'A',
                         'descricao' => "Documento {$documento->nome_arquivo} associado à peça: {$tipoLabel}.",

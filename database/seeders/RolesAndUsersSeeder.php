@@ -28,6 +28,7 @@ class RolesAndUsersSeeder extends Seeder
             'view cases',
             'manage clients',
             'view clients',
+            'visualizar todas tarefas',
         ];
 
         foreach ($permissions as $perm) {

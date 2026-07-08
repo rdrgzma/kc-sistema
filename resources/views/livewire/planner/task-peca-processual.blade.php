@@ -15,7 +15,7 @@
                 <div>
                     <span class="block text-xs font-medium text-slate-500 dark:text-zinc-400">Tipo de Peça</span>
                     <span class="block text-sm text-slate-900 dark:text-zinc-100 mt-1 font-medium">
-                        {{ $task->pecaProcessual->tipo_peca->getLabel() }}
+                        {{ $task->pecaProcessual->tipoPeca?->nome ?? '—' }}
                     </span>
                 </div>
                 <div>

@@ -2,10 +2,8 @@
 
 namespace App\Models;
 
-use App\Traits\LogsSystemActivity;
-
-use App\Enums\TipoPecaProduzida;
 use App\Observers\PecaProcessualObserver;
+use App\Traits\LogsSystemActivity;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -15,15 +13,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 #[ObservedBy(PecaProcessualObserver::class)]
 class PecaProcessual extends Model
 {
-    use LogsSystemActivity;
-
     use HasFactory;
+    use LogsSystemActivity;
 
     protected $fillable = [
         'processo_id',
         'autor_id',
         'task_id',
-        'tipo_peca',
+        'tipo_peca_id',
         'data_producao',
         'observacoes',
     ];
@@ -31,7 +28,7 @@ class PecaProcessual extends Model
     protected function casts(): array
     {
         return [
-            'tipo_peca' => TipoPecaProduzida::class,
+
             'data_producao' => 'date',
         ];
     }
@@ -39,6 +36,11 @@ class PecaProcessual extends Model
     public function processo(): BelongsTo
     {
         return $this->belongsTo(Processo::class);
+    }
+
+    public function tipoPeca(): BelongsTo
+    {
+        return $this->belongsTo(TipoPeca::class);
     }
 
     public function autor(): BelongsTo

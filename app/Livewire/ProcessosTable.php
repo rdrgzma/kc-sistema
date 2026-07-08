@@ -137,15 +137,13 @@ class ProcessosTable extends Component implements HasActions, HasForms, HasTable
                         ->label('Escritório')
                         ->relationship('escritorio', 'nome')
                         ->searchable()
-                        ->preload()
-                        ->required(),
+                        ->preload(),
 
                     Select::make('equipe_id')
                         ->label('Equipe')
                         ->relationship('equipe', 'nome')
                         ->searchable()
-                        ->preload()
-                        ->required(),
+                        ->preload(),
                 ]),
 
             Section::make('Classificação Estratégica')
@@ -167,6 +165,7 @@ class ProcessosTable extends Component implements HasActions, HasForms, HasTable
                     Select::make('area_id')
                         ->label('Área Jurídica')
                         ->relationship('area', 'nome')
+                        ->default("Direito Administrativo")
                         ->searchable()
                         ->preload()
                         ->createOptionForm([

@@ -64,8 +64,9 @@ class ProdutividadeRankingTable extends Component implements HasActions, HasForm
                         $resumo = clone $record->pecasProcessuais()
                             ->when($this->dataInicio, fn ($q) => $q->whereDate('data_producao', '>=', $this->dataInicio))
                             ->when($this->dataFim, fn ($q) => $q->whereDate('data_producao', '<=', $this->dataFim))
-                            ->selectRaw('tipo_peca, count(*) as total')
-                            ->groupBy('tipo_peca')
+                            ->selectRaw('tipo_peca_id, count(*) as total')
+                            ->groupBy('tipo_peca_id')
+                            ->with('tipoPeca')
                             ->get();
 
                         return view('livewire.dashboard.partials.resumo-producao', [

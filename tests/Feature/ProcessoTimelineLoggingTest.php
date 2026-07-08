@@ -3,7 +3,6 @@
 use App\Enums\ClassificacaoDecisao;
 use App\Enums\StatusFinanceiroDecisao;
 use App\Enums\TaskUrgency;
-use App\Enums\TipoPecaProduzida;
 use App\Livewire\DocumentManager;
 use App\Livewire\Processo\DecisoesRelationManager;
 use App\Models\Area;
@@ -18,6 +17,7 @@ use App\Models\Procedimento;
 use App\Models\Processo;
 use App\Models\Sentenca;
 use App\Models\Task;
+use App\Models\TipoPeca;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -101,7 +101,7 @@ test('creating and updating a peca processual creates timeline events', function
     $peca = PecaProcessual::create([
         'processo_id' => $this->processo->id,
         'autor_id' => $this->user->id,
-        'tipo_peca' => TipoPecaProduzida::PETICOES_EXPEDIENTE,
+        'tipo_peca_id' => TipoPeca::firstOrCreate(['nome' => 'Petições de Expediente'])->id,
         'data_producao' => now(),
         'observacoes' => 'Petição inicial pronta',
     ]);
@@ -113,7 +113,7 @@ test('creating and updating a peca processual creates timeline events', function
         'descricao' => 'Nova peça processual registrada: Petições de Expediente.',
     ]);
 
-    $peca->update(['tipo_peca' => TipoPecaProduzida::CONTESTACAO]);
+    $peca->update(['tipo_peca_id' => TipoPeca::firstOrCreate(['nome' => 'Contestação'])->id]);
 
     $this->assertDatabaseHas('timeline_events', [
         'timelineable_type' => Processo::class,
@@ -197,7 +197,7 @@ test('associating and disassociating a document to a piece processual logs prope
     $peca = PecaProcessual::create([
         'processo_id' => $this->processo->id,
         'autor_id' => $this->user->id,
-        'tipo_peca' => TipoPecaProduzida::PETICOES_EXPEDIENTE,
+        'tipo_peca_id' => TipoPeca::firstOrCreate(['nome' => 'Petições de Expediente'])->id,
         'data_producao' => now(),
         'observacoes' => 'Petição com doc',
     ]);
@@ -258,7 +258,7 @@ test('task lifecycle and document/piece propagation to process logs timeline eve
         'processo_id' => null,
         'task_id' => $task->id,
         'autor_id' => $this->user->id,
-        'tipo_peca' => TipoPecaProduzida::PETICOES_EXPEDIENTE,
+        'tipo_peca_id' => TipoPeca::firstOrCreate(['nome' => 'Petições de Expediente'])->id,
         'data_producao' => now(),
     ]);
 

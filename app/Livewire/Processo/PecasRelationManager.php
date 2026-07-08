@@ -2,7 +2,6 @@
 
 namespace App\Livewire\Processo;
 
-use App\Enums\TipoPecaProduzida;
 use App\Models\PecaProcessual;
 use App\Models\Planner;
 use App\Models\Processo;
@@ -46,11 +45,10 @@ class PecasRelationManager extends Component implements HasActions, HasForms, Ha
                 PecaProcessual::query()->where('processo_id', $this->processo->id)->with('autor', 'task')->latest()
             )
             ->columns([
-                TextColumn::make('tipo_peca')
+                TextColumn::make('tipoPeca.nome')
                     ->label('Tipo de Peça')
                     ->badge()
                     ->color('info')
-                    ->formatStateUsing(fn (TipoPecaProduzida $state): string => $state->getLabel())
                     ->sortable(),
 
                 TextColumn::make('autor.name')
@@ -112,9 +110,9 @@ class PecasRelationManager extends Component implements HasActions, HasForms, Ha
         return [
             Grid::make(2)
                 ->schema([
-                    Select::make('tipo_peca')
+                    Select::make('tipo_peca_id')
                         ->label('Tipo de Peça')
-                        ->options(TipoPecaProduzida::class)
+                        ->relationship('tipoPeca', 'nome')
                         ->required(),
 
                     DatePicker::make('data_producao')

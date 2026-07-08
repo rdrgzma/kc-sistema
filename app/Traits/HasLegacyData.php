@@ -4,10 +4,15 @@ namespace App\Traits;
 
 trait HasLegacyData
 {
-    public function initializeHasLegacyData()
+    public function initializeHasLegacyData(): void
     {
-        $this->fillable[] = 'legacy_id';
-        $this->fillable[] = 'legacy_table';
+        if (! in_array('legacy_id', $this->fillable)) {
+            $this->fillable[] = 'legacy_id';
+        }
+
+        if (! in_array('legacy_table', $this->fillable)) {
+            $this->fillable[] = 'legacy_table';
+        }
     }
 
     public function scopeFromLegacy($query, $id, $table = null)

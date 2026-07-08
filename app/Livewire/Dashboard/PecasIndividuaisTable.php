@@ -33,7 +33,7 @@ class PecasIndividuaisTable extends Component implements HasActions, HasForms, H
                     ->where('autor_id', $this->userId)
                     ->when($this->dataInicio, fn ($q) => $q->whereDate('data_producao', '>=', $this->dataInicio))
                     ->when($this->dataFim, fn ($q) => $q->whereDate('data_producao', '<=', $this->dataFim))
-                    ->with(['processo', 'task'])
+                    ->with(['processo', 'task', 'tipoPeca'])
                     ->latest('data_producao')
             )
             ->columns([
@@ -42,7 +42,7 @@ class PecasIndividuaisTable extends Component implements HasActions, HasForms, H
                     ->date('d/m/Y')
                     ->sortable(),
 
-                TextColumn::make('tipo_peca')
+                TextColumn::make('tipoPeca.nome')
                     ->label('Tipo de Peça')
                     ->badge()
                     ->color('info')

@@ -15,8 +15,8 @@ test('profile information can be updated', function () {
     $this->actingAs($user);
 
     $response = Livewire::test('pages::settings.profile')
-        ->set('name', 'Test User')
-        ->set('email', 'test@example.com')
+        ->set('data.name', 'Test User')
+        ->set('data.email', 'test@example.com')
         ->call('updateProfileInformation');
 
     $response->assertHasNoErrors();
@@ -34,8 +34,8 @@ test('email verification status is unchanged when email address is unchanged', f
     $this->actingAs($user);
 
     $response = Livewire::test('pages::settings.profile')
-        ->set('name', 'Test User')
-        ->set('email', $user->email)
+        ->set('data.name', 'Test User')
+        ->set('data.email', $user->email)
         ->call('updateProfileInformation');
 
     $response->assertHasNoErrors();
@@ -56,7 +56,8 @@ test('user can delete their account', function () {
         ->assertHasNoErrors()
         ->assertRedirect('/');
 
-    expect($user->fresh())->toBeNull();
+    // User has SoftDeletes — confirm it was soft-deleted (not found without trashed)
+    expect(User::find($user->id))->toBeNull();
     expect(auth()->check())->toBeFalse();
 });
 

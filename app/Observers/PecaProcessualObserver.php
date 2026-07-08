@@ -9,7 +9,7 @@ class PecaProcessualObserver
     public function created(PecaProcessual $peca): void
     {
         if ($peca->processo_id) {
-            $tipoLabel = $peca->tipo_peca ? $peca->tipo_peca->getLabel() : 'Peça';
+            $tipoLabel = $peca->tipoPeca ? $peca->tipoPeca->nome : 'Peça';
             $peca->processo->timelineEvents()->create([
                 'tipo' => 'J', // Jurídico
                 'descricao' => "Nova peça processual registrada: {$tipoLabel}.",
@@ -22,7 +22,8 @@ class PecaProcessualObserver
     public function updated(PecaProcessual $peca): void
     {
         if ($peca->processo_id) {
-            $tipoLabel = $peca->tipo_peca ? $peca->tipo_peca->getLabel() : 'Peça';
+            $peca->unsetRelation('tipoPeca');
+            $tipoLabel = $peca->tipoPeca ? $peca->tipoPeca->nome : 'Peça';
             $peca->processo->timelineEvents()->create([
                 'tipo' => 'J',
                 'descricao' => "Peça processual editada: {$tipoLabel}.",

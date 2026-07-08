@@ -4,7 +4,6 @@ use App\Enums\ClassificacaoDecisao;
 use App\Enums\ModalidadeAtividade;
 use App\Enums\StatusFinanceiroDecisao;
 use App\Enums\TipoAtividadeDeslocamento;
-use App\Enums\TipoPecaProduzida;
 use App\Livewire\DashboardProdutividade;
 use App\Models\ApontamentoTempo;
 use App\Models\Area;
@@ -13,6 +12,7 @@ use App\Models\PecaProcessual;
 use App\Models\Procedimento;
 use App\Models\Processo;
 use App\Models\Sentenca;
+use App\Models\TipoPeca;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Collection;
@@ -25,7 +25,6 @@ test('enums resolve correctly', function () {
     expect(ModalidadeAtividade::ONLINE->getLabel())->toBe('On-line');
     expect(ClassificacaoDecisao::FAVORAVEL->getLabel())->toBe('Favorável');
     expect(StatusFinanceiroDecisao::SUB_JUDICE->getLabel())->toBe('Sub judice');
-    expect(TipoPecaProduzida::CONTESTACAO->getLabel())->toBe('Contestação');
 });
 
 test('can create apontamento tempo and calculate displacement time via property hook', function () {
@@ -81,14 +80,14 @@ test('can create peca processual and access author and process relationships', f
     $peca = PecaProcessual::create([
         'processo_id' => $processo->id,
         'autor_id' => $user->id,
-        'tipo_peca' => TipoPecaProduzida::CONTESTACAO,
+        'tipo_peca_id' => TipoPeca::create(['nome' => 'Contestação'])->id,
         'data_producao' => now()->toDateString(),
         'observacoes' => 'Contestação elaborada no prazo',
     ]);
 
     expect($peca->autor->id)->toBe($user->id);
     expect($peca->processo->id)->toBe($processo->id);
-    expect($peca->tipo_peca)->toBe(TipoPecaProduzida::CONTESTACAO);
+    expect($peca->tipoPeca->nome)->toBe('Contestação');
 
     // Verify Processo and User hasMany relations
     expect($processo->pecasProcessuais)->toHaveCount(1);

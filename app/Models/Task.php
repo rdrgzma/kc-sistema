@@ -2,13 +2,13 @@
 
 namespace App\Models;
 
-use App\Traits\LogsSystemActivity;
-
 use App\Enums\DurationUnit;
 use App\Enums\TaskUrgency;
 use App\Observers\TaskObserver;
 use App\Services\TaskDurationService;
+use App\Traits\LogsSystemActivity;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -16,13 +16,12 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Database\Eloquent\Builder;
+use Spatie\Permission\Exceptions\PermissionDoesNotExist;
 
 #[ObservedBy(TaskObserver::class)]
 class Task extends Model
 {
     use LogsSystemActivity;
-
     use SoftDeletes;
 
     protected $fillable = [
@@ -124,7 +123,15 @@ class Task extends Model
             return $query;
         }
 
-        if ($user->hasPermissionTo('visualizar todas tarefas') || $user->hasRole('Administrador')) {
+        $hasFullAccess = false;
+
+        try {
+            $hasFullAccess = $user->hasRole('Administrador') || $user->can('visualizar todas tarefas');
+        } catch (PermissionDoesNotExist) {
+            $hasFullAccess = false;
+        }
+
+        if ($hasFullAccess) {
             return $query;
         }
 
@@ -132,12 +139,12 @@ class Task extends Model
 
         return $query->where(function ($q) use ($user, $equipesIds) {
             $q->where('assigned_to', $user->id)
-              ->orWhereHas('bucket.planner', function ($qPlanner) use ($user) {
-                  $qPlanner->where('user_id', $user->id);
-              })
-              ->orWhereHas('processo', function ($qProcesso) use ($equipesIds) {
-                  $qProcesso->whereIn('equipe_id', $equipesIds);
-              });
+                ->orWhereHas('bucket.planner', function ($qPlanner) use ($user) {
+                    $qPlanner->where('user_id', $user->id);
+                })
+                ->orWhereHas('processo', function ($qProcesso) use ($equipesIds) {
+                    $qProcesso->whereIn('equipe_id', $equipesIds);
+                });
         });
     }
 }

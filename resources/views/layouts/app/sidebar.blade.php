@@ -59,6 +59,18 @@
                     ]
                 ],
                 [
+                    'label' => 'Cadastros Base',
+                    'roles' => ['Administrador', 'Sócio'],
+                    'items' => [
+                        ['route' => 'admin.areas', 'icon' => 'heroicon-o-briefcase', 'label' => 'Áreas'],
+                        ['route' => 'admin.tipo-pecas', 'icon' => 'heroicon-o-document-duplicate', 'label' => 'Tipos de Peça'],
+                        ['route' => 'admin.fases', 'icon' => 'heroicon-o-adjustments-horizontal', 'label' => 'Fases'],
+                        ['route' => 'admin.procedimentos', 'icon' => 'heroicon-o-list-bullet', 'label' => 'Procedimentos'],
+                        ['route' => 'admin.seguradoras', 'icon' => 'heroicon-o-building-office', 'label' => 'Seguradoras'],
+                        ['route' => 'admin.sentencas', 'icon' => 'heroicon-o-document-check', 'label' => 'Sentenças'],
+                    ]
+                ],
+                [
                     'label' => 'Sistema',
                     'roles' => ['Administrador', 'Sócio'],
                     'items' => [
@@ -70,7 +82,7 @@
                         ['route' => 'admin.peritos', 'icon' => 'heroicon-o-academic-cap', 'label' => 'Peritos'],
                         ['route' => 'admin.assistentes', 'icon' => 'heroicon-o-briefcase', 'label' => 'Assistentes'],
                         ['route' => 'admin.especialidades', 'icon' => 'heroicon-o-tag', 'label' => 'Especialidades'],
-                        ['route' => 'admin.fases', 'icon' => 'heroicon-o-adjustments-horizontal', 'label' => 'Fases'],
+
 
                     ]
                 ]
