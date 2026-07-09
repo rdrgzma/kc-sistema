@@ -35,6 +35,7 @@
                     'label' => 'Operacional',
                     'items' => [
                         ['route' => 'dashboard', 'icon' => 'heroicon-o-chart-pie', 'label' => 'Início'],
+                        ['route' => 'minhas-tarefas', 'icon' => 'heroicon-o-clipboard-document-check', 'label' => 'Minhas Tarefas'],
                         ['route' => 'processos.index', 'icon' => 'heroicon-o-scale', 'label' => 'Processos', 'except_roles' => ['equipe_gr']],
                         ['route' => 'pessoas.index', 'icon' => 'heroicon-o-user-circle', 'label' => 'Clientes'],
                         ['route' => 'calculos.index', 'icon' => 'heroicon-o-calculator', 'label' => 'Cálculos', 'except_roles' => ['equipe_gr']],

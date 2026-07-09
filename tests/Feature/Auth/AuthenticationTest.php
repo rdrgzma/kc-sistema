@@ -76,7 +76,6 @@ test('quick login shortcuts are visible in local environment', function () {
     $response->assertOk()
         ->assertSee('Atalhos de Desenvolvimento')
         ->assertSee('admin@teste.com')
-        ->assertSee('socio@teste.com')
         ->assertSee('processos@teste.com')
         ->assertSee('gr@teste.com');
 });

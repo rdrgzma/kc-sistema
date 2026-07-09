@@ -76,6 +76,34 @@ class TaskObserver
             }
         }
 
+        if ($task->wasChanged('bucket_id') && $task->bucket_id) {
+            $bucket = Bucket::find($task->bucket_id);
+            if ($bucket) {
+                $statusName = strtolower(trim($bucket->name));
+                $isCompleted = in_array($statusName, ['completed', 'done', 'concluido', 'concluído', 'finalizado']);
+                $actionLabel = $isCompleted ? 'concluída' : 'reaberta / movida';
+
+                if ($task->processo_id) {
+                    $processo = Processo::find($task->processo_id);
+                    if ($processo) {
+                        $processo->timelineEvents()->create([
+                            'tipo' => 'A',
+                            'descricao' => "Tarefa {$actionLabel}: {$task->title} (Coluna: {$bucket->name}).",
+                            'data_evento' => now(),
+                            'user_id' => auth()->id(),
+                        ]);
+                    }
+                }
+
+                $task->timelineEvents()->create([
+                    'tipo' => 'A',
+                    'descricao' => "Tarefa movida para a coluna {$bucket->name}.",
+                    'data_evento' => now(),
+                    'user_id' => auth()->id(),
+                ]);
+            }
+        }
+
         if ($task->wasChanged(['processo_id', 'pessoa_id'])) {
             if ($task->processo_id || $task->pessoa_id) {
                 $this->propagateToProcess($task);

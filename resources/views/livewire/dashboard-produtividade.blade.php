@@ -21,11 +21,13 @@
                     <x-heroicon-o-arrow-down-tray class="w-4 h-4" />
                     Decisões
                 </a>
+                @unlessrole('equipe_gr')
                 <a href="{{ route('produtividade.exportar-apontamentos') }}"
                    class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-lg transition-colors shadow-sm">
                     <x-heroicon-o-arrow-down-tray class="w-4 h-4" />
                     Deslocamento
                 </a>
+                @endunlessrole
             </div>
         </div>
     </header>
@@ -35,22 +37,13 @@
         $stats = $this->stats;
     @endphp
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-        {{-- Card 1: Decisões --}}
+        {{-- Card 1: Documentos / Peças --}}
         <div class="bg-white dark:bg-zinc-900 p-4 md:p-6 rounded-2xl border border-slate-300 dark:border-zinc-800 shadow-sm hover:shadow-md transition-all">
             <div class="flex items-center justify-between mb-4">
-                <p class="text-[9px] md:text-[10px] font-black text-slate-500 dark:text-zinc-500 uppercase tracking-[0.15em]">Decisões</p>
-                <x-heroicon-o-scale class="w-4 h-4 md:w-5 md:h-5 text-primary-500 shrink-0" />
+                <p class="text-[9px] md:text-[10px] font-black text-slate-500 dark:text-zinc-500 uppercase tracking-[0.15em]">Documentos / Peças</p>
+                <x-heroicon-o-document-text class="w-4 h-4 md:w-5 md:h-5 text-primary-500 shrink-0" />
             </div>
-            <div class="flex gap-2 md:gap-4 mt-2">
-                <div>
-                    <span class="text-xl md:text-2xl font-black text-emerald-600 dark:text-emerald-400">{{ $stats['favoraveis_mes'] }}</span>
-                    <p class="text-[8px] md:text-[9px] font-black text-slate-400 uppercase tracking-wider mt-1">Fav.</p>
-                </div>
-                <div class="border-l border-slate-200 dark:border-zinc-800 pl-2 md:pl-4">
-                    <span class="text-xl md:text-2xl font-black text-rose-600 dark:text-rose-400">{{ $stats['desfavoraveis_mes'] }}</span>
-                    <p class="text-[8px] md:text-[9px] font-black text-slate-400 uppercase tracking-wider mt-1">Desf.</p>
-                </div>
-            </div>
+            <p class="text-lg sm:text-2xl md:text-3xl font-black text-primary-600 dark:text-primary-400 mt-2 tracking-tight">{{ $stats['total_pecas'] }} <span class="text-xs sm:text-sm md:text-lg font-normal">produzidos</span></p>
         </div>
 
         {{-- Card 2: Economia Gerada --}}
@@ -81,6 +74,7 @@
         </div>
 
         {{-- Card 4: Deslocamento --}}
+        @unlessrole('equipe_gr')
         <div class="bg-white dark:bg-zinc-900 p-4 md:p-6 rounded-2xl border border-slate-300 dark:border-zinc-800 shadow-sm hover:shadow-md transition-all">
             <div class="flex items-center justify-between mb-4">
                 <p class="text-[9px] md:text-[10px] font-black text-slate-500 dark:text-zinc-500 uppercase tracking-[0.15em]">Deslocamento</p>
@@ -88,15 +82,16 @@
             </div>
             <p class="text-lg sm:text-2xl md:text-3xl font-black text-blue-600 dark:text-blue-400 mt-2 tracking-tight">{{ $stats['total_horas_deslocamento'] }} <span class="text-xs sm:text-sm md:text-lg font-normal">h</span></p>
         </div>
+        @endunlessrole
     </div>
 
     {{-- Rankings de Produtividade --}}
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div class="grid grid-cols-1 {{ auth()->user()?->hasRole('equipe_gr') ? 'lg:grid-cols-2' : 'lg:grid-cols-3' }} gap-8">
         {{-- Ranking de Peças --}}
         <div class="bg-white dark:bg-zinc-900 p-8 rounded-[2rem] border border-slate-300 dark:border-zinc-800 shadow-sm flex flex-col justify-between">
             <div>
                 <div class="flex items-center justify-between mb-6 gap-2">
-                    <h2 class="text-xs font-black text-slate-900 dark:text-zinc-50 uppercase tracking-widest italic">Ranking de Documentos / Peças</h2>
+                    <h2 class="text-xs font-black text-slate-900 dark:text-zinc-50 uppercase tracking-widest italic">Documentos / Peças</h2>
                     <a href="{{ route('dashboard.produtividade-equipe', ['dataInicio' => $dataInicio, 'dataFim' => $dataFim]) }}" wire:navigate
                        class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-slate-100 dark:bg-zinc-800/40 dark:hover:bg-zinc-800 text-slate-700 dark:text-zinc-300 text-xs font-bold rounded-lg transition-colors border border-slate-200 dark:border-zinc-800 shrink-0">
                         <x-heroicon-o-presentation-chart-line class="w-4 h-4 text-primary-500" />
@@ -114,7 +109,7 @@
         <div class="bg-white dark:bg-zinc-900 p-8 rounded-[2rem] border border-slate-300 dark:border-zinc-800 shadow-sm flex flex-col justify-between">
             <div>
                 <div class="flex items-center justify-between mb-6 gap-2">
-                    <h2 class="text-xs font-black text-slate-900 dark:text-zinc-50 uppercase tracking-widest italic">Ranking de Tarefas</h2>
+                    <h2 class="text-xs font-black text-slate-900 dark:text-zinc-50 uppercase tracking-widest italic">Tarefas</h2>
                     <a href="{{ route('dashboard.produtividade-usuarios') }}" wire:navigate
                        class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-slate-100 dark:bg-zinc-800/40 dark:hover:bg-zinc-800 text-slate-700 dark:text-zinc-300 text-xs font-bold rounded-lg transition-colors border border-slate-200 dark:border-zinc-800 shrink-0">
                         <x-heroicon-o-presentation-chart-line class="w-4 h-4 text-emerald-500" />
@@ -129,10 +124,11 @@
         </div>
 
         {{-- Ranking de Deslocamentos --}}
+        @unlessrole('equipe_gr')
         <div class="bg-white dark:bg-zinc-900 p-8 rounded-[2rem] border border-slate-300 dark:border-zinc-800 shadow-sm flex flex-col justify-between">
             <div>
                 <div class="flex items-center justify-between mb-6 gap-2">
-                    <h2 class="text-xs font-black text-slate-900 dark:text-zinc-50 uppercase tracking-widest italic">Ranking de Deslocamentos</h2>
+                    <h2 class="text-xs font-black text-slate-900 dark:text-zinc-50 uppercase tracking-widest italic">Deslocamentos</h2>
                     <a href="{{ route('dashboard.produtividade-deslocamentos') }}" wire:navigate
                        class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-slate-50 hover:bg-slate-100 dark:bg-zinc-800/40 dark:hover:bg-zinc-800 text-slate-700 dark:text-zinc-300 text-xs font-bold rounded-lg transition-colors border border-slate-200 dark:border-zinc-800 shrink-0">
                         <x-heroicon-o-presentation-chart-line class="w-4 h-4 text-blue-500" />
@@ -145,6 +141,7 @@
                 </div>
             </div>
         </div>
+        @endunlessrole
     </div>
 
 </div>

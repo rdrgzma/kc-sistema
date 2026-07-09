@@ -22,6 +22,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Notifications\Notification;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
@@ -435,6 +436,72 @@ class PlannerBoard extends Component implements HasActions, HasForms
         if ($task && $task->bucket_id !== $bucketId) {
             $task->update(['bucket_id' => $bucketId]);
             $this->loadPlanners();
+        }
+    }
+
+    public function concluirTarefa(int $taskId): void
+    {
+        $task = Task::find($taskId);
+        if ($task) {
+            $completedBucket = Bucket::where('planner_id', $task->bucket->planner_id)
+                ->where(function ($q) {
+                    $q->where('name', 'like', '%completed%')
+                        ->orWhere('name', 'like', '%done%')
+                        ->orWhere('name', 'like', '%conclu%')
+                        ->orWhere('name', 'like', '%finalizado%');
+                })
+                ->first();
+
+            if ($completedBucket) {
+                $task->update(['bucket_id' => $completedBucket->id]);
+            } else {
+                $lastBucket = Bucket::where('planner_id', $task->bucket->planner_id)
+                    ->orderBy('id', 'desc')
+                    ->first();
+                if ($lastBucket) {
+                    $task->update(['bucket_id' => $lastBucket->id]);
+                }
+            }
+
+            $this->loadPlanners();
+
+            Notification::make()
+                ->title('Tarefa concluída com sucesso!')
+                ->success()
+                ->send();
+        }
+    }
+
+    public function reabrirTarefa(int $taskId): void
+    {
+        $task = Task::find($taskId);
+        if ($task) {
+            $firstBucket = Bucket::where('planner_id', $task->bucket->planner_id)
+                ->where(function ($q) {
+                    $q->where('name', 'not like', '%completed%')
+                        ->where('name', 'not like', '%done%')
+                        ->where('name', 'not like', '%conclu%')
+                        ->where('name', 'not like', '%finalizado%');
+                })
+                ->orderBy('sort', 'asc')
+                ->first();
+
+            if (! $firstBucket) {
+                $firstBucket = Bucket::where('planner_id', $task->bucket->planner_id)
+                    ->orderBy('sort', 'asc')
+                    ->first();
+            }
+
+            if ($firstBucket) {
+                $task->update(['bucket_id' => $firstBucket->id]);
+            }
+
+            $this->loadPlanners();
+
+            Notification::make()
+                ->title('Tarefa reaberta com sucesso!')
+                ->info()
+                ->send();
         }
     }
 

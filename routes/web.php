@@ -27,6 +27,7 @@ use App\Livewire\DashboardProdutividade;
 use App\Livewire\DashboardProdutividadeEquipe;
 use App\Livewire\DashboardProdutividadeGR;
 use App\Livewire\Financeiro\FinanceiroManager;
+use App\Livewire\MinhasTarefas;
 use App\Livewire\OnboardingWizard;
 use App\Livewire\PessoaDetalhe;
 use App\Livewire\PessoasTable;
@@ -43,6 +44,7 @@ Route::get('/', function () {
 Route::middleware(['auth'])->group(function () {
     // Rota do Dashboard (Página Inicial)
     Route::livewire('/dashboard', Dashboard::class)->name('dashboard');
+    Route::get('/operacional/minhas-tarefas', MinhasTarefas::class)->name('minhas-tarefas');
     Route::get('/dashboard/produtividade', DashboardProdutividade::class)->name('dashboard.produtividade');
     Route::get('/dashboard/produtividade/equipe', DashboardProdutividadeEquipe::class)->name('dashboard.produtividade-equipe');
     Route::get('/dashboard/produtividade/gr', DashboardProdutividadeGR::class)->middleware(['role:equipe_gr|Administrador|Sócio'])->name('dashboard.produtividade-gr');

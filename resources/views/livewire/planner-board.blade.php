@@ -152,9 +152,30 @@
 
                                         <div class="flex flex-col gap-5">
                                             <div>
-                                                <h4 class="text-md font-black text-slate-900 dark:text-gray-100 leading-[1.5] group-hover:text-primary-600 transition-colors tracking-tight">
-                                                    {{ $task->title }}
-                                                </h4>
+                                                <div class="flex flex-col gap-1">
+                                                    <h4 class="text-md font-black text-slate-900 dark:text-gray-100 leading-[1.5] group-hover:text-primary-600 transition-colors tracking-tight flex-1">
+                                                        {{ $task->title }}
+                                                    </h4>
+                                                    <div class="flex gap-2 mt-2">
+                                                        @if(str_contains(strtolower($bucket->name), 'conclu') || str_contains(strtolower($bucket->name), 'done') || str_contains(strtolower($bucket->name), 'completed') || str_contains(strtolower($bucket->name), 'finalizado'))
+                                                            <button 
+                                                                wire:click.stop="reabrirTarefa({{ $task->id }})" 
+                                                                class="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/40 dark:hover:bg-blue-900/40 text-blue-600 dark:text-blue-400 rounded-xl border border-blue-200 dark:border-blue-900 text-[10px] font-black uppercase tracking-wider cursor-pointer transition-all active:scale-95 shadow-sm"
+                                                                title="Reabrir Tarefa"
+                                                            >
+                                                                <x-flux::icon.arrow-path class="w-3.5 h-3.5" /> Reabrir Tarefa
+                                                            </button>
+                                                        @else
+                                                            <button 
+                                                                wire:click.stop="concluirTarefa({{ $task->id }})" 
+                                                                class="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/40 dark:hover:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 rounded-xl border border-emerald-200 dark:border-emerald-900 text-[10px] font-black uppercase tracking-wider cursor-pointer transition-all active:scale-95 shadow-sm"
+                                                                title="Concluir Tarefa"
+                                                            >
+                                                                <x-flux::icon.check-circle class="w-3.5 h-3.5" /> Concluir Tarefa
+                                                            </button>
+                                                        @endif
+                                                    </div>
+                                                </div>
                                                 @if($task->pessoa)
                                                     <div class="flex items-center gap-1.5 text-xs text-slate-500 dark:text-zinc-400 mt-2 font-medium">
                                                         <x-flux::icon.user class="w-4 h-4 text-slate-400 dark:text-zinc-500 shrink-0" />

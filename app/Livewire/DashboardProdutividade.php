@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Enums\ClassificacaoDecisao;
 use App\Enums\ModalidadeAtividade;
 use App\Models\ApontamentoTempo;
+use App\Models\PecaProcessual;
 use App\Models\Sentenca;
 use App\Models\Task;
 use Filament\Actions\Concerns\InteractsWithActions;
@@ -100,6 +101,16 @@ class DashboardProdutividade extends Component implements HasActions, HasForms
         $somaConclusoes = (clone $tasksQuery)->sum('conclusoes_count');
         $repeticoes = max(0, $somaConclusoes - $concluidas);
 
+        // 5. Total de Documentos / Peças no período
+        $pecasQuery = PecaProcessual::query();
+        if ($start) {
+            $pecasQuery->whereDate('data_producao', '>=', $start);
+        }
+        if ($end) {
+            $pecasQuery->whereDate('data_producao', '<=', $end);
+        }
+        $totalPecas = $pecasQuery->count();
+
         return [
             'favoraveis_mes' => $favoraveisMes,
             'desfavoraveis_mes' => $desfavoraveisMes,
@@ -108,6 +119,7 @@ class DashboardProdutividade extends Component implements HasActions, HasForms
             'total_tarefas' => $totalTarefas,
             'tarefas_concluidas' => $concluidas,
             'tarefas_repeticoes' => $repeticoes,
+            'total_pecas' => $totalPecas,
         ];
     }
 

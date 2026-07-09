@@ -9,6 +9,13 @@ use Livewire\Component;
 #[Title('Dashboard')]
 class Dashboard extends Component
 {
+    public function mount()
+    {
+        if (auth()->user()?->hasAnyRole(['equipe_gr', 'GR', 'Processos'])) {
+            return redirect()->route('dashboard.produtividade');
+        }
+    }
+
     // Aqui no futuro injetaremos os Services para buscar os dados reais do banco
     public string $ganhos = 'R$ 780.000,00';
 
